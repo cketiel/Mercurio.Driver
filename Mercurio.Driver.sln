@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mercurio.Driver", "Mercurio.Driver.csproj", "{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92ABFBF9-2F1B-45AD-9AFC-08E52B90331B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E8F9F42-9D07-4371-9BFD-547E1A5E6B58}
+	EndGlobalSection
+EndGlobal
