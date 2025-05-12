@@ -1,12 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Mercurio.Driver.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Mercurio.Driver
 {
     public static class MauiProgram
     {
         public static MauiApp CreateMauiApp()
-        {
+        {            
             var builder = MauiApp.CreateBuilder();
+          
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
