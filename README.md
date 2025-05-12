@@ -1,44 +1,46 @@
 ﻿# 🚗 Mercurio.Driver
 
-**Mercurio.Driver** es una aplicación móvil desarrollada con **.NET MAUI** destinada a choferes de transporte médico no urgente. Esta app está diseñada para funcionar en dispositivos **Android** e **iOS** (en futuras versiones).
+**Mercurio.Driver** is a mobile application built with **.NET MAUI**, designed for non-emergency medical transportation drivers. The app is currently targeted for **Android**, with future support for **iOS**.
 
 ---
 
-## 📱 Tecnologías
+## 📱 Technologies
 
-- [.NET MAUI](https://learn.microsoft.com/es-es/dotnet/maui/what-is-maui)
+- [.NET MAUI](https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui)
 - Visual Studio 2022
 - C#
-- Android SDK / Emulador / Dispositivo físico
+- Android SDK / Emulator / Physical Device
 
 ---
 
-## 🔧 Requisitos
+## 🔧 Requirements
 
 - Windows 11
-- Visual Studio 2022 (con la carga de trabajo **.NET MAUI**)
-- Android SDK y herramientas instaladas
+- Visual Studio 2022 with **.NET MAUI** workload installed
+- Android SDK and related tools
 - Git
 
 ---
 
-## 🚀 Primeros pasos
+## 🚀 Getting Started
 
-### Clonar el repositorio:
+### Clone the repository:
 
 bash
-git clone https://github.com/tu-usuario/Mercurio.Driver.git
+git clone https://github.com/your-username/Mercurio.Driver.git
 cd Mercurio.Driver
 
-### Abrir en Visual Studio:
-1. Abre Mercurio.Driver.sln
-2. Ejecuta el proyecto seleccionando un emulador o dispositivo Android
 
-## 📦 Generar APK
+### Open in Visual Studio:
+1. Open the Mercurio.Driver.sln solution file.
+2. Run the project using an Android emulator or a physical device.
+
+## 📦 Build APK
+To generate an unsigned .apk file for testing:
 dotnet publish -f net8.0-android -c Release
-El archivo .apk generado estará en:
+The APK will be located at:
 bin\Release\net8.0-android\publish\
 
-## 🤝 Contribuciones
-¡Pull requests y sugerencias son bienvenidas!
+## 🤝 Contributing
+Pull requests and suggestions are welcome!
 
