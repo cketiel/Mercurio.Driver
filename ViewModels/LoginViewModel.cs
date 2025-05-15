@@ -2,24 +2,43 @@
 using Mercurio.Driver.Services;
 using Mercurio.Driver.Models;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+using CommunityToolkit.Mvvm.ComponentModel; // For ObservableObject y ObservableProperty
+using CommunityToolkit.Mvvm.Input;         // For RelayCommand
 
 namespace Mercurio.Driver.ViewModels;
-
-public class LoginViewModel : BindableObject
+public partial class LoginViewModel : ObservableObject
 {
     private readonly AuthService _authService;
 
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public ICommand LoginCommand { get; }
+    [ObservableProperty]
+    string _username;
+
+    [ObservableProperty]
+    string _password;
+
+    [ObservableProperty]
+    string _errorMessage;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PasswordToggleIcon))] // Update icon when it changes
+    bool _isPasswordMasked = true;
+
+    [ObservableProperty]
+    bool _rememberMe;
+
+    // For show/hide password icon
+    public string PasswordToggleIcon => IsPasswordMasked ? "\uf070" : "\uf06e"; // eye-slash / eye
 
     public LoginViewModel()
     {
-        //_authService = authService;
-        LoginCommand = new Command(async () => await LoginAsync());
+             
     }
 
-    private async Task LoginAsync()
+    [RelayCommand]
+    private async Task Login()
     {
         // Validation
         if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
@@ -43,5 +62,17 @@ public class LoginViewModel : BindableObject
         {
             await Application.Current.MainPage.DisplayAlert("Login Failed", "Invalid credentials", "OK");
         }
+    }
+
+    [RelayCommand]
+    private void TogglePasswordMask()
+    {
+        IsPasswordMasked = !IsPasswordMasked;
+    }
+
+    [RelayCommand]
+    private void GoToMilanesPageCommand()
+    {
+        //
     }
 }
