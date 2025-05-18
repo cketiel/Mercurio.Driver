@@ -4,10 +4,17 @@ namespace Mercurio.Driver.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+    LoginViewModel _viewModel;
+    public LoginPage()
 	{
 		InitializeComponent();
-        BindingContext = new LoginViewModel();
+        _viewModel = new LoginViewModel();
+        BindingContext = _viewModel;
+        //BindingContext = new LoginViewModel();
     }
-    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel?.OnAppearing(); // Call the ViewModel method
+    }
 }

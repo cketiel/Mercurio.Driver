@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Mercurio.Driver.Exceptions;
 using Mercurio.Driver.Models;
@@ -26,11 +27,25 @@ namespace Mercurio.Driver.Services
             }
 
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(baseUrl);
+            
+            try
+            {
+                _httpClient.BaseAddress = new Uri(baseUrl);
+            }
+            catch (UriFormatException ex)
+            {               
+                System.Diagnostics.Debug.WriteLine($"Error setting BaseAddress: {ex.Message}");              
+                throw new InvalidOperationException("The API base URL is invalid.", ex);
+            }
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
+            if (_httpClient.BaseAddress == null)
+            {             
+                // If BaseAddress could not be set in the constructor.
+                throw new ApiException("The authentication service configuration is incorrect (invalid base URL).");
+            }
             try
             {
                 var response = await _httpClient.PostAsJsonAsync("api/auth/login", request);
@@ -38,36 +53,63 @@ namespace Mercurio.Driver.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     //throw await CreateApiException(response, "Authentication error");
-                    return new LoginResponse { IsSuccess = false, Message = "Invalid login" };
+                    //throw await CreateApiException(response, $"Authentication error ({(int)response.StatusCode})");
+                    return new LoginResponse { IsSuccess = false, Message = "Login Failed: Invalid credentials. Incorrect username or password." };
                 }
+                // Trying to deserialize, could fail if the JSON is not as expected.
+                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                if (loginResponse == null)
+                {
+                    throw new ApiException("Unexpected response from the server after login.");
+                }
+                return loginResponse;
 
-                return await response.Content.ReadFromJsonAsync<LoginResponse>();               
+                //return await response.Content.ReadFromJsonAsync<LoginResponse>();               
+            }             
+            catch (HttpRequestException ex) // Network errors, DNS, server not available, etc.
+            {             
+                throw new ApiException("Server connection error. Check your internet connection.", ex);
             }
-            catch (HttpRequestException ex)
+            catch (JsonException ex) // Error deserializing JSON response
             {
-                throw new ApiException("Server connection error", ex);
+                throw new ApiException("Error processing server response.", ex);
             }
-            
+       
+            catch (Exception ex)
+            {
+                throw new ApiException("An unexpected error occurred during login.", ex);
+            }
+
         }
 
         private async Task<ApiException> CreateApiException(HttpResponseMessage response, string context)
         {
             try
             {
+                // Try to read ProblemDetails if available (common in ASP.NET Core APIs)
                 var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
                 return new ApiException(
-                    message: $"{context}: {problemDetails?.Title}",
+                    message: $"{context}: {problemDetails?.Title ?? "Unknown error"}",
                     statusCode: response.StatusCode,
                     details: problemDetails?.Detail);
             }
-            catch
+            catch (JsonException) // If the content is not ProblemDetails or is not JSON
             {
-                var content = await response.Content.ReadAsStringAsync();
+                var errorContent = await response.Content.ReadAsStringAsync();
+                // Limit the length of the errorContent so as not to show too much in the UI
+                if (errorContent.Length > 200) errorContent = errorContent.Substring(0, 200) + "...";
                 return new ApiException(
-                    message: $"{context}: Error no especificado",
+                    message: $"{context}",
                     statusCode: response.StatusCode,
-                    details: content);
+                    details: string.IsNullOrWhiteSpace(errorContent) ? "The server did not provide additional details." : errorContent);
             }
+            catch (Exception ex) // Another error processing the error response
+            {
+                return new ApiException(
+                   message: $"{context}: Could not process the server error response.",
+                   statusCode: response.StatusCode,
+                   details: ex.Message);
+            }           
         }
     }
 }

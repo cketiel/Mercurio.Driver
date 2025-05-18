@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Mercurio.Driver.Views.LoginPage"
              xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
              Shell.NavBarIsVisible="False"
              NavigationPage.HasNavigationBar="False">
 
@@ -12,6 +13,8 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             
             <Color x:Key="PageBackgroundColorStart">#E94560</Color>
             <!-- Rosa/Rojo claro -->
@@ -153,6 +156,7 @@
 
                         <Button Text="Log In"
                                 Command="{Binding LoginCommand}"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" 
                                 BackgroundColor="{StaticResource LoginButtonColor}"
                                 TextColor="{StaticResource PrimaryTextColor}"
                                 HeightRequest="50"
@@ -160,13 +164,19 @@
                                 FontSize="24"
                                 FontAttributes="Bold"
                                 Margin="0,10,0,0"/>
-                       
 
-                        <Label Text="{Binding ErrorMessage}" 
-                               TextColor="{StaticResource AccentColorRed}" 
-                               HorizontalOptions="Center" 
-                               
-                               Margin="0,5,0,0"/>
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                            IsVisible="{Binding IsBusy}"
+                            Color="{StaticResource PrimaryTextColor}"
+                            HorizontalOptions="Center"
+                            Margin="0,10,0,0"/>
+
+                        <Label Text="{Binding ErrorMessage}"
+                            TextColor="{StaticResource AccentColorRed}"
+                            HorizontalOptions="Center"
+                            Margin="0,5,0,0"
+                            IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+                        
                     </VerticalStackLayout>
                 </Border>
 
