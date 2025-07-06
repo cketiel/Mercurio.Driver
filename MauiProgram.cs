@@ -1,4 +1,5 @@
-﻿using Mercurio.Driver.Models;
+﻿using CommunityToolkit.Maui;
+using Mercurio.Driver.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,7 @@ namespace Mercurio.Driver
           
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

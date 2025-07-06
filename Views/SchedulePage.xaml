@@ -2,11 +2,81 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Mercurio.Driver.Views.SchedulePage"
-             Title="SchedulePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.NavBarIsVisible="False">
+
+    <!-- Asignamos el ViewModel -->
+    <ContentPage.BindingContext>
+        <viewmodels:ScheduleViewModel />
+    </ContentPage.BindingContext>
+
+    <!-- Configuración para la barra de estado -->
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <Grid>
+        <!-- Imagen de fondo con el mapa (opcional pero recomendado para el look) -->
+        <Image Source="map_background.png" 
+               Aspect="AspectFill"
+               Opacity="0.2"/>
+
+        <VerticalStackLayout Padding="30,40" Spacing="20" 
+                             VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+
+            <!-- Logo de la aplicación -->
+            <Image Source="logo.png"
+                   Aspect="AspectFit"
+                   WidthRequest="280"
+                   Margin="0,0,0,30"/>
+
+            <!-- Campo de texto Run Login -->
+            <Border StrokeShape="RoundRectangle 10" 
+                    StrokeThickness="1" 
+                    Stroke="#CCCCCC" 
+                    BackgroundColor="White" 
+                    Padding="15,0" 
+                    HeightRequest="50">
+                <Entry Placeholder="Run Login"
+                       Text="{Binding RunLogin}"
+                       VerticalTextAlignment="Center"
+                       FontSize="16"/>
+            </Border>
+
+            <!-- Campo de texto Vehicle Login -->
+            <Border StrokeShape="RoundRectangle 10"
+                    StrokeThickness="1" 
+                    Stroke="#CCCCCC" 
+                    BackgroundColor="White" 
+                    Padding="15,0" 
+                    HeightRequest="50">
+                <Entry Placeholder="Vehicle Login"
+                       Text="{Binding VehicleLogin}"
+                       VerticalTextAlignment="Center"
+                       FontSize="16"/>
+            </Border>
+
+            <!-- Botón Today's Schedule (Verde) -->
+            <Button Text="TODAY'S SCHEDULE"
+                    Command="{Binding GoToTodayScheduleCommand}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    HeightRequest="55"
+                    CornerRadius="10"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    Margin="0,20,0,0"/>
+
+            <!-- Botón Future Schedule (Azul) -->
+            <Button Text="FUTURE SCHEDULE"
+                    Command="{Binding GoToFutureScheduleCommand}"
+                    BackgroundColor="#1976D2"
+                    TextColor="White"
+                    HeightRequest="55"
+                    CornerRadius="10"
+                    FontSize="18"
+                    FontAttributes="Bold"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
