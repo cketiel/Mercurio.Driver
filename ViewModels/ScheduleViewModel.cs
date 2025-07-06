@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mercurio.Driver.Views;
 using System.Diagnostics;
 
 namespace Mercurio.Driver.ViewModels
@@ -20,9 +21,11 @@ namespace Mercurio.Driver.ViewModels
         [RelayCommand]
         private async Task GoToTodaySchedule()
         {
+            await Shell.Current.GoToAsync(nameof(TodaySchedulePage));
+
             // Aquí irá la lógica para navegar al horario de hoy
-            Debug.WriteLine("Navegando al horario de hoy...");
-            await Shell.Current.DisplayAlert("Navegación", "Ir a Horario de Hoy (lógica pendiente)", "OK");
+            //Debug.WriteLine("Navegando al horario de hoy...");
+            //await Shell.Current.DisplayAlert("Navegación", "Ir a Horario de Hoy (lógica pendiente)", "OK");
         }
 
         [RelayCommand]
