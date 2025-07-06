@@ -12,6 +12,7 @@
     <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" />
     <ShellContent Route="HomePage" ContentTemplate="{DataTemplate views:HomePage}" />
     <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
+    <ShellContent Route="TodaySchedulePage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
 
     <!--<ShellContent
         Title="Home"
