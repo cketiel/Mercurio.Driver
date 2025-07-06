@@ -18,7 +18,9 @@ namespace Mercurio.Driver.Services
         public AuthService()
         {
             //var baseUrl = Preferences.Get("ApiBaseUrl", string.Empty);
-            var baseUrl = "http://cketiel-001-site1.ntempurl.com/";
+            // "https://localhost:7244/"
+            //var baseUrl = "http://cketiel-001-site1.ntempurl.com/";
+            var baseUrl = "https://localhost:7244/";
 
             if (string.IsNullOrEmpty(baseUrl))
             {
