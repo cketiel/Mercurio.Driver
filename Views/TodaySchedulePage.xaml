@@ -1,12 +1,118 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:dto="clr-namespace:Mercurio.Driver.DTOs"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
              x:Class="Mercurio.Driver.Views.TodaySchedulePage"
-             Title="TodaySchedulePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:TodayScheduleViewModel"
+             Title="Today's Schedule">
+
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" />
+        <converters:ScheduleDisplayTimeConverter x:Key="ScheduleDisplayTimeConverter" />
+        <converters:ScheduleTimeLabelConverter x:Key="ScheduleTimeLabelConverter" />
+
+        <Style TargetType="Label" x:Key="IconLabel">
+            <Setter Property="FontFamily" Value="FontAwesomeSolid" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="TextColor" Value="#555" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="WidthRequest" Value="25"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, *" RowSpacing="10" BackgroundColor="#F0F0F0">
+
+        <!-- Barra superior con Menú y Botones -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="10, 5" BackgroundColor="White">
+            <ImageButton Source="hamburger_menu_icon.png" WidthRequest="30" HeightRequest="30" VerticalOptions="Center" />
+            <!-- El menú Flyout se configurará en AppShell más adelante -->
+
+            <!-- Icono para expandir (opcional, como en la imagen) -->
+            <!--<ImageButton Grid.Column="2" Source="expand_icon.png" WidthRequest="25" HeightRequest="25" VerticalOptions="Center" />-->
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="10,0">
+            <Button Text="VIEW HISTORY" BackgroundColor="#1976D2" TextColor="White" />
+            <Button Grid.Column="1" Text="CHANGE ROUTE" BackgroundColor="#4CAF50" TextColor="White" />
+        </Grid>
+
+        <!-- Lista de Eventos -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Events}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:ScheduleDto">
+                    <Border StrokeThickness="1" Stroke="#DDDDDD" Margin="10,0,10,10"
+                            StrokeShape="RoundRectangle 5">
+                        <!-- Borde izquierdo con color dinámico -->
+                        <!--<Border.StrokeBrush>
+                            <LinearGradientBrush EndPoint="1,0">
+                                <GradientStop Color="{Binding ., Converter={StaticResource ScheduleColorConverter}}" Offset="0.1" />
+                                <GradientStop Color="#DDDDDD" Offset="0.1" />
+                            </LinearGradientBrush>
+                        </Border.StrokeBrush>-->
+
+                        <Grid RowDefinitions="Auto, Auto" BackgroundColor="White">
+                            <!-- Encabezado del Evento -->
+                            <Grid Grid.Row="0" Padding="10, 5" 
+                                  BackgroundColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}">
+                                <Label Text="{Binding SpaceType}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start" />
+                                <Label Text="{Binding FundingSource}" TextColor="White" FontAttributes="Bold" HorizontalOptions="End" />
+                            </Grid>
+
+                            <!-- Cuerpo del Evento -->
+                            <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="8">
+                                <!-- Primera línea (ETA y Tipo) -->
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackLayout Orientation="Horizontal" Spacing="5">
+                                        <Label Text="{Binding ETA, StringFormat='{0:hh\\:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
+                                        <Label Text="ETA" TextColor="Gray" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                        <Label Text="{Binding EventType, StringFormat='{}{0} Appt'}" FontSize="20" FontAttributes="Bold"/>
+                                        <!-- La flecha podría ser otro Label de icono -->
+                                        <Label Text="" FontFamily="FontAwesomeSolid" FontSize="20"
+                                               TextColor="{Binding ., Converter={StaticResource ScheduleColorConverter}}"
+                                               VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+                                </Grid>
+
+                                <!-- Líneas de detalles con iconos -->
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                    <!-- Reloj -->
+                                    <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                        <Label Text="{Binding ., Converter={StaticResource ScheduleDisplayTimeConverter}}" />
+                                        <Label Text="{Binding ., Converter={StaticResource ScheduleTimeLabelConverter}}" TextColor="Gray"/>
+                                    </StackLayout>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                    <!-- Usuario -->
+                                    <Label Grid.Column="1" Text="{Binding Patient}" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <Label Grid.Column="0" Text="" Style="{StaticResource IconLabel}"/>
+                                    <!-- Pin de mapa -->
+                                    <Label Grid.Column="1" Text="{Binding Address}" LineBreakMode="WordWrap"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" Grid.RowSpan="3" />
+    </Grid>
 </ContentPage>
