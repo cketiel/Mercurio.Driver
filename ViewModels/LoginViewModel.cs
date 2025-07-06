@@ -77,8 +77,10 @@ public partial class LoginViewModel : ObservableObject
                     Preferences.Remove("LastUsername");
                 }
 
-                // Navigate to HomePage
-                await Shell.Current.GoToAsync("//HomePage");
+                // Navigate to HomePage 
+                //await Shell.Current.GoToAsync("//HomePage");
+                // Navigate to SchedulePage
+                await Shell.Current.GoToAsync("//SchedulePage");
             }
             else
             {
