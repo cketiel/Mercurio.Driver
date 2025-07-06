@@ -11,7 +11,8 @@
     <!-- Page paths -->
     <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" />
     <ShellContent Route="HomePage" ContentTemplate="{DataTemplate views:HomePage}" />
-    
+    <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
+
     <!--<ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
