@@ -67,6 +67,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Meditrans.Backend\Meditrans.Shared\Meditrans.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiFont Update="Resources\Fonts\fa-solid-900.ttf">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </MauiFont>
