@@ -30,15 +30,18 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, Auto, *" RowSpacing="10" BackgroundColor="#F0F0F0">
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="10, 5" BackgroundColor="Black">
-            <ImageButton Source="hamburger_menu_icon.png" WidthRequest="30" HeightRequest="30" VerticalOptions="Center" />
-        </Grid>
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="10,0">
+        <!--<Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="10, 5" BackgroundColor="Black">
+            <ImageButton Source="hamburger_menu_icon.png" 
+                         WidthRequest="30" HeightRequest="30" 
+                         VerticalOptions="Center"
+                          />
+        </Grid>-->
+        <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="10,0">
             <Button Text="VIEW HISTORY" BackgroundColor="#1976D2" TextColor="White" />
             <Button Grid.Column="1" Text="CHANGE ROUTE" BackgroundColor="#4CAF50" TextColor="White" />
         </Grid>
 
-        <CollectionView Grid.Row="2"
+        <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Events}"
                         SelectionMode="None">
             <CollectionView.ItemTemplate>

@@ -3,20 +3,115 @@
     x:Class="Mercurio.Driver.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Mercurio.Driver"
     xmlns:views="clr-namespace:Mercurio.Driver.Views"
-    Shell.FlyoutBehavior="Disabled"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="Mercurio.Driver">
 
-    <!-- Page paths -->
-    <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" />
-    <ShellContent Route="HomePage" ContentTemplate="{DataTemplate views:HomePage}" />
-    <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
-    <ShellContent Route="TodaySchedulePage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    <Shell.Resources>
+        <!-- Global style for the top navigation bar (Navbar) -->
+        <Style TargetType="Shell" ApplyToDerivedTypes="True">
+            <Setter Property="Shell.BackgroundColor" Value="#B82E49" />
+            <Setter Property="Shell.ForegroundColor" Value="White" />
+            <Setter Property="Shell.TitleColor" Value="White" />
+        </Style>
 
-    <!--<ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />-->
+        <!-- STYLE AND TEMPLATE FOR MENU ITEMS (FORMA CORRECTA) -->
+        <Style TargetType="FlyoutItem" ApplyToDerivedTypes="True">
+            <Setter Property="Shell.ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Grid HeightRequest="50" ColumnSpacing="20" Padding="25,10">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <!-- Change the background to red -->
+                                                <Setter Property="BackgroundColor" Value="#B82E49" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Menu icon -->
+                            <Image Source="{Binding FlyoutIcon}" HeightRequest="25" VerticalOptions="Center">
+                                <Image.Behaviors>
+                                    <mct:IconTintColorBehavior TintColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                </Image.Behaviors>
+                            </Image>
+
+                            <!-- Menu text -->
+                            <Label Grid.Column="1" Text="{Binding Title}" FontSize="16" VerticalTextAlignment="Center">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+                                        <Style.Triggers>
+                                            <!-- When the item is selected, the text turns white -->
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=BackgroundColor}"
+                                                         Value="#B82E49">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Shell.Resources>
+
+    <!-- Flyout header with logo -->
+    <Shell.FlyoutHeader>
+        <Grid Padding="20, 40" BackgroundColor="White">
+            <Image Source="logo.png" Aspect="AspectFit" HeightRequest="80" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- DEFINITION OF MENU ITEMS -->
+
+    <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="CONTACTS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="ContactsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+    </FlyoutItem>
+
+    <!-- Logout Item (MenuItem) -->
+    <MenuItem Text="SIGNOUT" IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <MenuItem.Command>
+            <Binding Path="BindingContext.SignOutCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+        </MenuItem.Command>
+    </MenuItem>
+
+    <!-- Pages that do not appear in the menu but are navigable -->
+    <ShellContent Route="TodaySchedulePage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" IsEnabled="False"/>
+    <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" FlyoutItemIsVisible="False" IsEnabled="False"/>
 
 </Shell>

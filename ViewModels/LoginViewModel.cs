@@ -8,7 +8,8 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel; // For ObservableObject y ObservableProperty
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
-using Mercurio.Driver.Exceptions;         // For RelayCommand
+using Mercurio.Driver.Exceptions;
+using Mercurio.Driver.Views;         // For RelayCommand
 
 namespace Mercurio.Driver.ViewModels;
 public partial class LoginViewModel : ObservableObject
@@ -80,7 +81,8 @@ public partial class LoginViewModel : ObservableObject
                 // Navigate to HomePage 
                 //await Shell.Current.GoToAsync("//HomePage");
                 // Navigate to SchedulePage
-                await Shell.Current.GoToAsync("//SchedulePage");
+                //await Shell.Current.GoToAsync("//SchedulePage");
+                await Shell.Current.GoToAsync($"//{nameof(SchedulePage)}");
             }
             else
             {

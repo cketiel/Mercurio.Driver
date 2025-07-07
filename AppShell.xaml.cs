@@ -1,4 +1,5 @@
-﻿using Mercurio.Driver.Views;
+﻿using Mercurio.Driver.ViewModels;
+using Mercurio.Driver.Views;
 
 namespace Mercurio.Driver
 {
@@ -7,7 +8,9 @@ namespace Mercurio.Driver
         public AppShell()
         {
             InitializeComponent();
+            BindingContext = new AppShellViewModel();
 
+            Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             Routing.RegisterRoute(nameof(SchedulePage), typeof(SchedulePage));
             Routing.RegisterRoute(nameof(TodaySchedulePage), typeof(TodaySchedulePage));
 
