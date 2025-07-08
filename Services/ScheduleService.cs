@@ -1,5 +1,7 @@
 ﻿
 
+using System.Text.Json;
+using System.Web;
 using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Models;
 
@@ -7,6 +9,54 @@ namespace Mercurio.Driver.Services
 {
     public class ScheduleService : IScheduleService
     {
+        private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _serializerOptions;
+        public ScheduleService()
+        {
+            // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
+            var baseUrl = Preferences.Get("ApiBaseUrl", "https://localhost:7244/");
+
+            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true // Important to match property names
+            };
+        }
+
+        public async Task<List<ScheduleDto>> GetSchedulesByRunAsync(string runLogin, DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(runLogin))
+                return new List<ScheduleDto>(); 
+
+            var dateString = date.ToString("yyyy-MM-dd");
+            dateString = "2025-04-30"; // esto es para probar
+            var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
+
+            var requestUri = $"api/Schedules/by-run-login?runLogin={encodedRunLogin}&date={dateString}";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var schedules = JsonSerializer.Deserialize<List<ScheduleDto>>(content, _serializerOptions);
+                    return schedules ?? new List<ScheduleDto>();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error fetching schedule: {response.StatusCode}");
+                    return new List<ScheduleDto>();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in GetSchedulesByRunAsync: {ex.Message}");              
+                throw;
+            }
+        }
+
         public Task<List<ScheduleDto>> GetTodayScheduleAsync()
         {
 

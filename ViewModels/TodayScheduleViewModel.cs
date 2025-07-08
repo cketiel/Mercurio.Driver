@@ -2,12 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Services;
-using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace Mercurio.Driver.ViewModels
 {
+    [QueryProperty(nameof(RunLogin), "runLogin")]
     public partial class TodayScheduleViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
@@ -18,7 +18,9 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        // Inyectamos el servicio a través del constructor
+        [ObservableProperty]
+        private string _runLogin;
+
         public TodayScheduleViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
@@ -28,12 +30,13 @@ namespace Mercurio.Driver.ViewModels
         [RelayCommand]
         private async Task LoadEventsAsync()
         {
-            if (IsBusy) return;
+            if (IsBusy || string.IsNullOrWhiteSpace(RunLogin))
+                return;
 
             try
             {
-                IsBusy = true;
-                var scheduleEvents = await _scheduleService.GetTodayScheduleAsync();
+                IsBusy = true;                             
+                var scheduleEvents = await _scheduleService.GetSchedulesByRunAsync(RunLogin, DateTime.Today);
 
                 Events.Clear();
                 foreach (var ev in scheduleEvents)
@@ -44,14 +47,28 @@ namespace Mercurio.Driver.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading events: {ex.Message}");
-                // Mostrar alerta al usuario
                 await Shell.Current.DisplayAlert("Error", "Could not load the schedule.", "OK");
             }
             finally
             {
                 IsBusy = false;
             }
-        }       
+        }
 
+        [RelayCommand]
+        private void OpenMenu()
+        {
+            Shell.Current.FlyoutIsPresented = true;
+        }
+
+        // Automatic loading when RunLogin is set
+        partial void OnRunLoginChanged(string value)
+        {
+            // When the RunLogin property receives a value, events are loaded
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                _ = LoadEventsAsync();
+            }
+        }
     }
 }

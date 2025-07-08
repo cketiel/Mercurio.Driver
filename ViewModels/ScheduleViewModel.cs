@@ -1,37 +1,41 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Views;
+using Mercurio.Driver.Views; 
 using System.Diagnostics;
+using System.Web; 
 
 namespace Mercurio.Driver.ViewModels
 {
     public partial class ScheduleViewModel : ObservableObject
     {
         [ObservableProperty]
-        string _runLogin;
+        private string _runLogin;
 
         [ObservableProperty]
-        string _vehicleLogin;
+        private string _vehicleLogin;
 
-        public ScheduleViewModel()
-        {
-            // Constructor puede estar vacío por ahora
-        }
+        public ScheduleViewModel() { }
 
         [RelayCommand]
         private async Task GoToTodaySchedule()
         {
-            await Shell.Current.GoToAsync(nameof(TodaySchedulePage));
+            if (string.IsNullOrWhiteSpace(RunLogin))
+            {
+                await Shell.Current.DisplayAlert("Input Required", "Please enter a Run Login.", "OK");
+                return;
+            }
 
-            // Aquí irá la lógica para navegar al horario de hoy
-            //Debug.WriteLine("Navegando al horario de hoy...");
-            //await Shell.Current.DisplayAlert("Navegación", "Ir a Horario de Hoy (lógica pendiente)", "OK");
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "runLogin", RunLogin }
+            };
+         
+            await Shell.Current.GoToAsync(nameof(TodaySchedulePage), navigationParameter);
         }
 
         [RelayCommand]
         private async Task GoToFutureSchedule()
         {
-            // Aquí irá la lógica para navegar a los horarios futuros
             Debug.WriteLine("Navegando al horario futuro...");
             await Shell.Current.DisplayAlert("Navegación", "Ir a Horario Futuro (lógica pendiente)", "OK");
         }

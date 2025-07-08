@@ -4,7 +4,13 @@ namespace Mercurio.Driver.Views;
 
 public partial class TodaySchedulePage : ContentPage
 {
-    private readonly TodayScheduleViewModel _viewModel;
+    public TodaySchedulePage(TodayScheduleViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
+
+    /*private readonly TodayScheduleViewModel _viewModel;
 
     public TodaySchedulePage(TodayScheduleViewModel viewModel)
     {
@@ -18,5 +24,5 @@ public partial class TodaySchedulePage : ContentPage
         base.OnAppearing();
         // Load events when page appears
         await _viewModel.LoadEventsCommand.ExecuteAsync(null);
-    }
+    }*/
 }
