@@ -24,12 +24,16 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _isOdometerEntered;
 
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(OdometerOrPerformActionCommand))] 
+        private bool _isBusy;
+
         public PullOutDetailPageViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanExecuteAction))]
         private async Task OdometerOrPerformAction()
         {
             if (IsOdometerEntered)
@@ -44,45 +48,93 @@ namespace Mercurio.Driver.ViewModels
             }
         }
 
+        // Method that determines whether the command can be executed
+        private bool CanExecuteAction() => !IsBusy;
+
         private async Task EnterOdometer()
         {
-            var result = await Shell.Current.DisplayPromptAsync(
-                "Odometer",
-                "Enter Odometer Reading.",
-                "OK",
-                "Cancel",
-                keyboard: Keyboard.Numeric
-            );
-
-            if (string.IsNullOrWhiteSpace(result)) return;
-
-            if (long.TryParse(result, out long odometerValue) && odometerValue > 0)
+            // To avoid double clicks.
+            if (IsBusy) return;
+            IsBusy = true;
+            try
             {
-                Event.Odometer = odometerValue;
+                var result = await Shell.Current.DisplayPromptAsync(
+                    "Odometer",
+                    "Enter Odometer Reading.",
+                    "OK",
+                    "Cancel",
+                    keyboard: Keyboard.Numeric
+                );
 
-                bool success = await _scheduleService.UpdateScheduleAsync(Event);
+                if (string.IsNullOrWhiteSpace(result)) return;
 
-                if (success)
-                {                   
-                    IsOdometerEntered = true;
-                    await Shell.Current.DisplayAlert("Success", "Odometer reading has been saved.", "OK");
+                if (long.TryParse(result, out long odometerValue) && odometerValue > 0)
+                {
+                    Event.Odometer = odometerValue;
+
+                    bool success = await _scheduleService.UpdateScheduleAsync(Event);
+
+                    if (success)
+                    {
+                        IsOdometerEntered = true;
+                        await Shell.Current.DisplayAlert("Success", "Odometer reading has been saved.", "OK");
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Error", "Could not save the odometer reading. Please try again.", "OK");
+                    }
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Error", "Could not save the odometer reading. Please try again.", "OK");
+                    await Shell.Current.DisplayAlert("Invalid Input", "Please enter a valid number greater than 0 for the odometer.", "OK");
                 }
             }
-            else
+            finally
             {
-                await Shell.Current.DisplayAlert("Invalid Input", "Please enter a valid number greater than 0 for the odometer.", "OK");
+                IsBusy = false;
             }
         }
 
         private async Task PerformAction()
         {
-            // TODO: Implementar la lógica real para "Perform"
-            // Por ahora, solo mostramos una alerta de confirmación
-            await Shell.Current.DisplayAlert("Action Performed", "The 'Perform' action has been completed successfully.", "OK");
+            if (IsBusy) return; // Prevent user from clicking multiple times
+
+            IsBusy = true;
+
+            try
+            {               
+                Event.Performed = true;
+
+                bool success = await _scheduleService.UpdateScheduleAsync(Event);
+
+                if (success)
+                {
+                    // We navigate back in the navigation stack.
+                    // ".." is the shell syntax for going to the previous page.
+                    await Shell.Current.GoToAsync("..");
+                }
+                else
+                {
+                    // If it fails, we inform the user and revert the change locally
+                    // to maintain state consistency.
+                    Event.Performed = false;
+                    await Shell.Current.DisplayAlert("Error", "Could not perform the action. Please check your connection and try again.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error performing action: {ex.Message}");
+                Event.Performed = false; // Rollback in case of exception
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred.", "OK");
+            }
+            finally
+            {
+                // We ensure that the 'IsBusy' status is always reset
+                IsBusy = false;
+            }
+
+            // Alerta de confirmación
+            //await Shell.Current.DisplayAlert("Action Performed", "The 'Perform' action has been completed successfully.", "OK");
         }
 
         [RelayCommand]

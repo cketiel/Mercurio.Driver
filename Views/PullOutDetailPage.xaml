@@ -39,6 +39,8 @@
         </Style>
     </ContentPage.Resources>
 
+    <Grid>
+    
     <VerticalStackLayout Spacing="1">
 
         <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
@@ -138,4 +140,12 @@
             </VerticalStackLayout>
         </Border>
     </VerticalStackLayout>
+    
+    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                       IsVisible="{Binding IsBusy}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Color="{StaticResource Primary}"/>
+
+    </Grid>
 </ContentPage>
