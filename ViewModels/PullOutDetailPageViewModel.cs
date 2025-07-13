@@ -21,9 +21,68 @@ namespace Mercurio.Driver.ViewModels
 
         private readonly ScheduleColorConverter _colorConverter = new();
 
+        [ObservableProperty]
+        private bool _isOdometerEntered;
+
         public PullOutDetailPageViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
+        }
+
+        [RelayCommand]
+        private async Task OdometerOrPerformAction()
+        {
+            if (IsOdometerEntered)
+            {
+                // Logic for when the user presses "Perform"
+                await PerformAction();
+            }
+            else
+            {
+                // Logic for when the user presses "Odometer"
+                await EnterOdometer();
+            }
+        }
+
+        private async Task EnterOdometer()
+        {
+            var result = await Shell.Current.DisplayPromptAsync(
+                "Odometer",
+                "Enter Odometer Reading.",
+                "OK",
+                "Cancel",
+                keyboard: Keyboard.Numeric
+            );
+
+            if (string.IsNullOrWhiteSpace(result)) return;
+
+            if (long.TryParse(result, out long odometerValue) && odometerValue > 0)
+            {
+                Event.Odometer = odometerValue;
+
+                bool success = await _scheduleService.UpdateScheduleAsync(Event);
+
+                if (success)
+                {                   
+                    IsOdometerEntered = true;
+                    await Shell.Current.DisplayAlert("Success", "Odometer reading has been saved.", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Could not save the odometer reading. Please try again.", "OK");
+                }
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Invalid Input", "Please enter a valid number greater than 0 for the odometer.", "OK");
+            }
+        }
+
+        private async Task PerformAction()
+        {
+            // TODO: Implementar la lógica real para "Perform"
+            // Por ahora, solo mostramos una alerta de confirmación
+            await Shell.Current.DisplayAlert("Action Performed", "The 'Perform' action has been completed successfully.", "OK");
         }
 
         [RelayCommand]
@@ -100,10 +159,12 @@ namespace Mercurio.Driver.ViewModels
             if (value != null)
             {              
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
+                IsOdometerEntered = value.Odometer != null && value.Odometer > 0;
             }
             else
             {               
                 EventColor = Colors.Gray;
+                IsOdometerEntered = false;
             }
         }
       

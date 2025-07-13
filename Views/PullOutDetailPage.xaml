@@ -4,11 +4,13 @@
              xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
              x:Class="Mercurio.Driver.Views.PullOutDetailPage"
              x:DataType="viewmodels:PullOutDetailPageViewModel"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters" 
              Title="Pull Out Details"
              BackgroundColor="#F0F0F0">
 
     <ContentPage.Resources>
-        <!-- Ya no necesitamos el converter aquí, puedes borrar esta línea si no se usa en otro lugar -->
+        
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <!-- <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" /> -->
 
         <Style TargetType="Grid" x:Key="NavRowStyle">
@@ -41,26 +43,46 @@
 
         <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
             <Grid.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding GoToOdometerCommand}"/>
+                <TapGestureRecognizer Command="{Binding OdometerOrPerformActionCommand}"/>
             </Grid.GestureRecognizers>
-
-            <!-- CAMBIO CLAVE: Enlace directo a la nueva propiedad EventColor -->
+           
             <BoxView Grid.Column="0" 
                      Color="{Binding EventColor}"/>
 
-            <Grid Grid.Column="1" Padding="15,15,15,15" ColumnDefinitions="Auto, *, Auto">
+            <Grid Grid.Column="1" Padding="15" ColumnDefinitions="Auto, *, Auto">
+
+                <!-- VIEW FOR "ODOMETER" STATUS -->
+                <!-- Displayed when IsOdometerEntered is false -->
+                <Grid ColumnDefinitions="Auto, *, Auto" 
+                      IsVisible="{Binding IsOdometerEntered, Converter={StaticResource InvertedBoolConverter}}">
+                    <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+                    <Label Grid.Column="1" Text="Odometer" Style="{StaticResource NavLabelStyle}"/>
+                    <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+                </Grid>
+
+                <!-- VIEW FOR THE "PERFORM" STATUS -->
+                <!-- Displayed when IsOdometerEntered is true -->
+                <Grid ColumnDefinitions="Auto, *, Auto"
+                      IsVisible="{Binding IsOdometerEntered}">
+                    <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+                    <Label Grid.Column="1" Text="Perform" Style="{StaticResource NavLabelStyle}"/>
+                    <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+                </Grid>
+
+            </Grid>
+
+            <!--<Grid Grid.Column="1" Padding="15,15,15,15" ColumnDefinitions="Auto, *, Auto">
                 <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
                 <Label Grid.Column="1" Text="Odometer" Style="{StaticResource NavLabelStyle}"/>
                 <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
-            </Grid>
+            </Grid>-->
         </Grid>
 
         <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GoToMapsCommand}"/>
             </Grid.GestureRecognizers>
-
-            <!-- CAMBIO CLAVE: Enlace directo a la nueva propiedad EventColor -->
+           
             <BoxView Grid.Column="0" 
                      Color="{Binding EventColor}"/>
 
