@@ -72,7 +72,7 @@
         </Grid>
 
         <!-- Details Section -->
-        <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray"/>
+        <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray" HorizontalOptions="Center" FontAttributes="Bold"/>
 
         <Border StrokeThickness="0" BackgroundColor="White" Padding="15" Margin="10,0"
                 StrokeShape="RoundRectangle 5">
