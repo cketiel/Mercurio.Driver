@@ -39,8 +39,7 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SchedulePage>();
             builder.Services.AddTransient<TodaySchedulePage>();
-            builder.Services.AddTransient<PullOutDetailPageViewModel>();
-
+            builder.Services.AddTransient<PullOutDetailPageViewModel>();     
 
 
 #if DEBUG
