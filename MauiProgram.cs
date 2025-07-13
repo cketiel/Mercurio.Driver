@@ -33,11 +33,13 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ScheduleViewModel>();
             builder.Services.AddTransient<TodayScheduleViewModel>();
+            builder.Services.AddTransient<PullOutDetailPage>();
 
             // Vistas / Páginas (Transient)
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SchedulePage>();
             builder.Services.AddTransient<TodaySchedulePage>();
+            builder.Services.AddTransient<PullOutDetailPageViewModel>();
 
 
 
