@@ -48,6 +48,13 @@
                 <DataTemplate x:DataType="dto:ScheduleDto">
                     <Border StrokeThickness="1" Stroke="#DDDDDD" Margin="10,0,10,10"
                             StrokeShape="RoundRectangle 5" Padding="0" BackgroundColor="White">
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TodayScheduleViewModel}}, Path=SelectEventCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
                         <Grid ColumnDefinitions="7, *">
                             <BoxView Grid.Column="0"
                                      Color="{Binding ., Converter={StaticResource ScheduleColorConverter}}"/>
