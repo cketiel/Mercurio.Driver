@@ -35,5 +35,6 @@ namespace Mercurio.Driver.DTOs
         public string? SpaceType { get; set; }
         public string? TripType { get; set; }
         public string? Patient { get; set; }
+        public bool Performed { get; set; }
     }
 }
