@@ -1,5 +1,6 @@
 ﻿
 
+using System.Text;
 using System.Text.Json;
 using System.Web;
 using Mercurio.Driver.DTOs;
@@ -54,6 +55,37 @@ namespace Mercurio.Driver.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Exception in GetSchedulesByRunAsync: {ex.Message}");              
                 throw;
+            }
+        }
+
+        public async Task<bool> UpdateScheduleAsync(ScheduleDto scheduleToUpdate)
+        {
+            if (scheduleToUpdate == null)
+                return false;
+
+            // Prepares JSON content to send in the request body
+            var jsonContent = JsonSerializer.Serialize(scheduleToUpdate, _serializerOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+         
+            var requestUri = $"api/Schedules/{scheduleToUpdate.Id}";
+
+            try
+            {
+                // The HTTP PUT verb is used, which is the standard for full updates to a resource
+                var response = await _httpClient.PutAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                {                   
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"Error updating schedule: {response.StatusCode}. Body: {errorBody}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in UpdateScheduleAsync: {ex.Message}");
+                return false;
             }
         }
 
