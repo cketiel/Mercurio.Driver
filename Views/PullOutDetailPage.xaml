@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             x:Class="Mercurio.Driver.Views.PullOutDetailPage"
+             x:DataType="viewmodels:PullOutDetailPageViewModel"
+             Title="Pull Out Details"
+             BackgroundColor="#F0F0F0">
+
+    <ContentPage.Resources>
+        <Style TargetType="Grid" x:Key="NavRowStyle">
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="BackgroundColor" Value="White"/>
+        </Style>
+        <Style TargetType="Label" x:Key="NavLabelStyle">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+        <Style TargetType="Label" x:Key="NavIconStyle">
+            <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+            <Setter Property="WidthRequest" Value="30"/>
+        </Style>
+        <Style TargetType="Label" x:Key="DetailHeaderLabel">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextColor" Value="Gray"/>
+        </Style>
+        <Style TargetType="Label" x:Key="DetailValueLabel">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Spacing="1">
+
+        <!-- Odometer Row -->
+        <Grid Style="{StaticResource NavRowStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoToOdometerCommand}"/>
+            </Grid.GestureRecognizers>
+
+            <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+            <!-- Car Icon -->
+            <Label Grid.Column="1" Text="Odometer" Style="{StaticResource NavLabelStyle}"/>
+            <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+            <!-- Chevron Right -->
+        </Grid>
+
+        <!-- Maps Row -->
+        <Grid Style="{StaticResource NavRowStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoToMapsCommand}"/>
+            </Grid.GestureRecognizers>
+
+            <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+            <!-- Map Marked Alt Icon -->
+            <Label Grid.Column="1" Text="Maps - Pullout Address" Style="{StaticResource NavLabelStyle}"/>
+            <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+            <!-- Chevron Right -->
+        </Grid>
+
+        <!-- Details Section -->
+        <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray"/>
+
+        <Border StrokeThickness="0" BackgroundColor="White" Padding="15" Margin="10,0"
+                StrokeShape="RoundRectangle 5">
+            <VerticalStackLayout Spacing="20">
+                <!-- Address -->
+                <VerticalStackLayout>
+                    <Grid>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopyAddressCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Label Style="{StaticResource DetailHeaderLabel}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="ADDRESS "/>
+                                    <Span Text="(Tap to Copy)" TextColor="#1E90FF"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+                    <Label Text="{Binding Event.Address}" Style="{StaticResource DetailValueLabel}" LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+
+                <!-- Event Type -->
+                <VerticalStackLayout>
+                    <Label Text="EVENT TYPE" Style="{StaticResource DetailHeaderLabel}"/>
+                    <Label Text="{Binding Event.Name}" Style="{StaticResource DetailValueLabel}"/>
+                </VerticalStackLayout>
+
+                <!-- Scheduled Time -->
+                <VerticalStackLayout>
+                    <Label Text="SCHEDULED TIME" Style="{StaticResource DetailHeaderLabel}"/>
+                    <!-- Usamos el campo Pickup que parece contener la hora programada para Pull-in/Pull-out -->
+                    <Label Text="{Binding Event.Pickup, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
+                </VerticalStackLayout>
+
+                <!-- ETA -->
+                <VerticalStackLayout>
+                    <Label Text="ETA" Style="{StaticResource DetailHeaderLabel}"/>
+                    <Label Text="{Binding Event.ETA, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </Border>
+    </VerticalStackLayout>
+</ContentPage>
