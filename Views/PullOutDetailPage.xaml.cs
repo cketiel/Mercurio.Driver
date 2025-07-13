@@ -7,6 +7,6 @@ public partial class PullOutDetailPage : ContentPage
     public PullOutDetailPage(PullOutDetailPageViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = viewModel; 
     }
 }
