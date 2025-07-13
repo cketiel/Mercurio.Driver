@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Services;
+using Mercurio.Driver.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -59,6 +60,29 @@ namespace Mercurio.Driver.ViewModels
         private void OpenMenu()
         {
             Shell.Current.FlyoutIsPresented = true;
+        }
+
+        [RelayCommand]
+        private async Task SelectEvent(ScheduleDto selectedEvent)
+        {
+            if (selectedEvent == null)
+                return;
+
+            // Verificamos si es un evento que requiere la página de detalles
+            if (selectedEvent.Name == "Pull-in" || selectedEvent.Name == "Pull-out")
+            {
+                // Navegamos pasando el objeto como parámetro
+                await Shell.Current.GoToAsync(nameof(PullOutDetailPage), new Dictionary<string, object>
+                {
+                    { "EventDetail", selectedEvent }
+                });
+            }
+            else
+            {
+                // TODO: Implementar la navegación para eventos normales (Pickup/Dropoff)
+                Debug.WriteLine($"Evento normal seleccionado: {selectedEvent.Patient}");
+                // Por ejemplo: await Shell.Current.GoToAsync(nameof(NormalEventDetailPage), ...);
+            }
         }
 
         // Automatic loading when RunLogin is set
