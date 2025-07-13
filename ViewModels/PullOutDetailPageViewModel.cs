@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.DTOs;
 using System.Diagnostics;
+using Mercurio.Driver.Converters;
 
 namespace Mercurio.Driver.ViewModels
 {
@@ -11,6 +12,11 @@ namespace Mercurio.Driver.ViewModels
     {
         [ObservableProperty]
         private ScheduleDto _event;
+
+        [ObservableProperty]
+        private Color _eventColor;
+
+        private readonly ScheduleColorConverter _colorConverter = new();
 
         public PullOutDetailPageViewModel()
         {
@@ -48,8 +54,15 @@ namespace Mercurio.Driver.ViewModels
         // This method is automatically fired when the 'Event' property receives a value
         partial void OnEventChanged(ScheduleDto value)
         {
-            // Aquí se puede realizar lógica adicional si fuera necesario al recibir el evento.
-            // Por ahora, el binding directo en la vista es suficiente.
+            if (value != null)
+            {              
+                EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
+            }
+            else
+            {               
+                EventColor = Colors.Gray;
+            }
         }
+      
     }
 }

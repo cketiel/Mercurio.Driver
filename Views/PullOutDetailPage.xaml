@@ -8,10 +8,13 @@
              BackgroundColor="#F0F0F0">
 
     <ContentPage.Resources>
+        <!-- Ya no necesitamos el converter aquí, puedes borrar esta línea si no se usa en otro lugar -->
+        <!-- <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" /> -->
+
         <Style TargetType="Grid" x:Key="NavRowStyle">
-            <Setter Property="Padding" Value="15"/>
             <Setter Property="BackgroundColor" Value="White"/>
         </Style>
+        <!-- ... El resto de tus estilos permanecen igual ... -->
         <Style TargetType="Label" x:Key="NavLabelStyle">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="VerticalOptions" Value="Center"/>
@@ -36,40 +39,36 @@
 
     <VerticalStackLayout Spacing="1">
 
-        <!-- Odometer Row -->
-        <Grid Style="{StaticResource NavRowStyle}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GoToOdometerCommand}"/>
             </Grid.GestureRecognizers>
 
-            <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
-            <!-- Car Icon -->
-            <Label Grid.Column="1" Text="Odometer" Style="{StaticResource NavLabelStyle}"/>
-            <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
-            <!-- Chevron Right -->
+            <!-- CAMBIO CLAVE: Enlace directo a la nueva propiedad EventColor -->
+            <BoxView Grid.Column="0" 
+                     Color="{Binding EventColor}"/>
+
+            <Grid Grid.Column="1" Padding="15,15,15,15" ColumnDefinitions="Auto, *, Auto">
+                <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+                <Label Grid.Column="1" Text="Odometer" Style="{StaticResource NavLabelStyle}"/>
+                <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+            </Grid>
         </Grid>
 
-        <!-- Maps Row -->
-        <Grid Style="{StaticResource NavRowStyle}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GoToMapsCommand}"/>
             </Grid.GestureRecognizers>
 
-            <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
-            <!-- Map Marked Alt Icon -->
-            <Label Grid.Column="1" Text="Maps - Pullout Address" Style="{StaticResource NavLabelStyle}"/>
-            <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
-            <!-- Chevron Right -->
+            <!-- CAMBIO CLAVE: Enlace directo a la nueva propiedad EventColor -->
+            <BoxView Grid.Column="0" 
+                     Color="{Binding EventColor}"/>
+
+            <Grid Grid.Column="1" Padding="15,15,15,15" ColumnDefinitions="Auto, *, Auto">
+                <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
+                <Label Grid.Column="1" Text="Maps - Pullout Address" Style="{StaticResource NavLabelStyle}"/>
+                <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+            </Grid>
         </Grid>
 
         <!-- Details Section -->
@@ -105,7 +104,6 @@
                 <!-- Scheduled Time -->
                 <VerticalStackLayout>
                     <Label Text="SCHEDULED TIME" Style="{StaticResource DetailHeaderLabel}"/>
-                    <!-- Usamos el campo Pickup que parece contener la hora programada para Pull-in/Pull-out -->
                     <Label Text="{Binding Event.Pickup, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
 
