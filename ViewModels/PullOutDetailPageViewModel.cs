@@ -12,6 +12,7 @@ namespace Mercurio.Driver.ViewModels
     public partial class PullOutDetailPageViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
+        private readonly IGpsService _gpsService;
 
         [ObservableProperty]
         private ScheduleDto _event;
@@ -28,9 +29,16 @@ namespace Mercurio.Driver.ViewModels
         [NotifyCanExecuteChangedFor(nameof(OdometerOrPerformActionCommand))] 
         private bool _isBusy;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotTracking))]
+        private bool isTracking;
+
+        public bool IsNotTracking => !IsTracking;
+
         public PullOutDetailPageViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
+            _gpsService = new GpsService();
         }
 
         [RelayCommand(CanExecute = nameof(CanExecuteAction))]
@@ -109,6 +117,7 @@ namespace Mercurio.Driver.ViewModels
 
                 if (success)
                 {
+                    StartGpsTracking();
                     // We navigate back in the navigation stack.
                     // ".." is the shell syntax for going to the previous page.
                     await Shell.Current.GoToAsync("..");
@@ -219,6 +228,23 @@ namespace Mercurio.Driver.ViewModels
                 IsOdometerEntered = false;
             }
         }
-      
+
+        public void StartGpsTracking() 
+        {
+            if (_gpsService.IsTracking) return;
+
+            _gpsService.StartTracking(Event.VehicleRouteId);
+            IsTracking = _gpsService.IsTracking;
+
+        }
+
+        public void StopGpsTracking()
+        {
+            if (!_gpsService.IsTracking) return;
+
+            _gpsService.StopTracking();
+            IsTracking = _gpsService.IsTracking;
+        }
+
     }
 }
