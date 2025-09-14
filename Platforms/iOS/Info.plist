@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Permission to access location when the app is in use -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to record and show your route on the map while you work.</string>
+	
+	<!-- Permission to access location always (including background) -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs continuous access to your location to accurately record your route, even if the app is in the background.</string>
+
+	<!-- Enable the ability to receive location updates in the background -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIDeviceFamily</key>
