@@ -29,18 +29,21 @@ namespace Mercurio.Driver
             // Services (Singleton because they do not save state and can be shared)
             builder.Services.AddSingleton<IScheduleService, ScheduleService>();
             builder.Services.AddSingleton<IGpsService, GpsService>();
+            builder.Services.AddSingleton<IMapService, MapService>();
 
             // ViewModels (Transient because each page should have its own instance)
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ScheduleViewModel>();
             builder.Services.AddTransient<TodayScheduleViewModel>();
             builder.Services.AddTransient<PullOutDetailPage>();
+            builder.Services.AddTransient<SettingsViewModel>();
 
             // Views/Pages (Transient)
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SchedulePage>();
             builder.Services.AddTransient<TodaySchedulePage>();
-            builder.Services.AddTransient<PullOutDetailPageViewModel>();     
+            builder.Services.AddTransient<PullOutDetailPageViewModel>();
+            builder.Services.AddTransient<SettingsPage>();
 
 
 #if DEBUG

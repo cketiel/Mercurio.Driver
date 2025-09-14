@@ -100,7 +100,7 @@
     </FlyoutItem>
 
     <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}" />
     </FlyoutItem>
 
     <!-- Logout Item (MenuItem) -->
