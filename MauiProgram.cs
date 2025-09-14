@@ -24,18 +24,19 @@ namespace Mercurio.Driver
                     fonts.AddFont("fa-solid-900.ttf", "FontAwesomeSolid");
                 });
 
-            // --- INYECCIÓN DE DEPENDENCIAS ---
+            // --- DEPENDENCY INJECTION ---
 
-            // Servicios (Singleton porque no guardan estado y pueden ser compartidos)
+            // Services (Singleton because they do not save state and can be shared)
             builder.Services.AddSingleton<IScheduleService, ScheduleService>();
+            builder.Services.AddSingleton<IGpsService, GpsService>();
 
-            // ViewModels (Transient porque cada página debería tener su propia instancia)
+            // ViewModels (Transient because each page should have its own instance)
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ScheduleViewModel>();
             builder.Services.AddTransient<TodayScheduleViewModel>();
             builder.Services.AddTransient<PullOutDetailPage>();
 
-            // Vistas / Páginas (Transient)
+            // Views/Pages (Transient)
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SchedulePage>();
             builder.Services.AddTransient<TodaySchedulePage>();
