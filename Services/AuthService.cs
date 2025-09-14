@@ -20,7 +20,7 @@ namespace Mercurio.Driver.Services
             //var baseUrl = Preferences.Get("ApiBaseUrl", string.Empty);
             // "https://localhost:7244/"
             //var baseUrl = "http://cketiel-001-site1.ntempurl.com/";
-            var baseUrl = "https://localhost:7244/";
+            var baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
 
             if (string.IsNullOrEmpty(baseUrl))
             {

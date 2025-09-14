@@ -15,7 +15,10 @@ namespace Mercurio.Driver.Services
         public ScheduleService()
         {
             // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
-            var baseUrl = Preferences.Get("ApiBaseUrl", "https://localhost:7244/");
+            // https://krasnovbw-001-site1.rtempurl.com/
+            // https://localhost:7244/
+            var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
+            baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
 
             _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
             _serializerOptions = new JsonSerializerOptions
@@ -30,7 +33,7 @@ namespace Mercurio.Driver.Services
                 return new List<ScheduleDto>(); 
 
             var dateString = date.ToString("yyyy-MM-dd");
-            dateString = "2025-04-30"; // esto es para probar
+            dateString = "2025-09-15"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
 
             var requestUri = $"api/Schedules/by-run-login?runLogin={encodedRunLogin}&date={dateString}";
