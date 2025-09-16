@@ -1,16 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mercurio.Driver.Converters;
 using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Models; 
+using Mercurio.Driver.Models;
+using Mercurio.Driver.Services;
+using Mercurio.Driver.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Mercurio.Driver.Converters;
 
 namespace Mercurio.Driver.ViewModels
 {
     [QueryProperty(nameof(Event), "EventDetail")]
+    [QueryProperty(nameof(SignatureSaved), "SignatureSaved")] // Receive the result of the signature page
     public partial class EventDetailPageViewModel : ObservableObject
     {
+        private readonly IScheduleService _scheduleService;
+
         // The selected event we received from the previous page
         [ObservableProperty]
         private ScheduleDto _event;
@@ -30,10 +35,16 @@ namespace Mercurio.Driver.ViewModels
 
         private readonly ScheduleColorConverter _colorConverter = new();
 
-        public EventDetailPageViewModel()
+        [ObservableProperty]
+        private bool _hasSignature;
+
+        // Property that is set when returning from the signature page
+        [ObservableProperty]
+        private bool _signatureSaved;
+
+        public EventDetailPageViewModel(IScheduleService scheduleService)
         {
-            
-            
+            _scheduleService = scheduleService;
         }
 
         // Called automatically when the 'Event' property receives a value
@@ -44,6 +55,7 @@ namespace Mercurio.Driver.ViewModels
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
                 // We initialize the status based on whether the arrival has already been recorded
                 HasArrived = value.Arrive.HasValue;
+                HasSignature = value.PassengerSignature != null; // Initialize signature status
                 BuildActionsList();
                 
             }
@@ -51,6 +63,16 @@ namespace Mercurio.Driver.ViewModels
             {
                 EventColor = Colors.Gray;
 
+            }
+        }
+
+        // Method that fires when SignatureSaved changes
+        partial void OnSignatureSavedChanged(bool value)
+        {
+            if (value)
+            {
+                HasSignature = true;
+                BuildActionsList(); // Refrescar la lista de acciones
             }
         }
 
@@ -65,11 +87,16 @@ namespace Mercurio.Driver.ViewModels
             {
                 Actions.Add(new EventAction { Text = "Arrive", IconGlyph = "", Command = ArriveCommand });
             }
-            else
+            else if (HasArrived && !HasSignature) // If it has arrived but there is no signature
+            {
+                Actions.Add(new EventAction { Text = "Passenger Signature", IconGlyph = "", Command = GoToSignaturePageCommand });
+                Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
+            }
+            else // If it has arrived AND there is a signature
             {
                 Actions.Add(new EventAction { Text = "Perform", IconGlyph = "", Command = PerformCommand });
                 Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
-            }
+            }           
 
             // Common actions that are always visible
             Actions.Add(new EventAction { Text = "Call Customer", IconGlyph = "", Command = CallCustomerCommand });
@@ -79,22 +106,38 @@ namespace Mercurio.Driver.ViewModels
         }
 
         [RelayCommand]
+        private async Task GoToSignaturePage()
+        {
+            await Shell.Current.GoToAsync(nameof(SignaturePage), new Dictionary<string, object>
+        {
+            { "ScheduleId", Event.Id }
+        });
+        }
+
+        [RelayCommand]
         private async Task Arrive()
         {
-            if (IsBusy) return;
+            if (IsBusy || Event is null) return;
 
             IsBusy = true;
             Debug.WriteLine("Running the Arrive action...");
-           
-            Event.Arrive = TimeSpan.FromHours(DateTime.Now.Hour); 
-          
-            //var success = await _scheduleService.UpdateScheduleAsync(Event);
 
-            
-            // await Task.Delay(500); // Simula una llamada de red
-           
-            HasArrived = true;
-            BuildActionsList(); // Rebuilds the action list to show "Perform" and "Cancel"
+            // We use the precise current time
+            Event.Arrive = DateTime.Now.TimeOfDay;
+
+            var success = await _scheduleService.UpdateScheduleAsync(Event);
+
+            if (success)
+            {
+                HasArrived = true;
+                BuildActionsList();
+            }
+            else
+            {
+                // Revert local change if API fails
+                Event.Arrive = null;
+                await Shell.Current.DisplayAlert("Error", "Could not save arrival time. Please try again.", "OK");
+            }
 
             IsBusy = false;
         }

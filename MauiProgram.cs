@@ -38,6 +38,7 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<PullOutDetailPage>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<EventDetailPageViewModel>();
+            builder.Services.AddTransient<SignatureViewModel>();           
 
             // Views/Pages (Transient)
             builder.Services.AddTransient<LoginPage>();
@@ -46,6 +47,7 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<PullOutDetailPageViewModel>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<EventDetailPage>();
+            builder.Services.AddTransient<SignaturePage>();
 
 
 #if DEBUG

@@ -133,5 +133,63 @@ namespace Mercurio.Driver.Services
 
             return Task.FromResult(mockSchedules);
         }
+
+        public async Task<bool> SaveSignatureAsync(int scheduleId, string signatureBase64)
+        {
+            var requestUri = $"api/Schedules/{scheduleId}/signature";
+           
+            var uploadDto = new SignatureUploadDto { SignatureBase64 = signatureBase64 };
+
+            var jsonContent = JsonSerializer.Serialize(uploadDto, _serializerOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"Error saving signature: {response.StatusCode}. Body: {errorBody}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in SaveSignatureAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<byte[]?> GetSignatureAsync(int scheduleId)
+        {
+            var requestUri = $"api/Schedules/{scheduleId}/signature";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // The backend returns the file bytes directly
+                    return await response.Content.ReadAsByteArrayAsync();
+                }
+
+                // If the response is 404 (Not Found), it means there is no signature, we return null
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Error getting signature: {response.StatusCode}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in GetSignatureAsync: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

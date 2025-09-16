@@ -16,6 +16,7 @@ namespace Mercurio.Driver
             Routing.RegisterRoute(nameof(Views.PullOutDetailPage), typeof(Views.PullOutDetailPage));
             Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
             Routing.RegisterRoute(nameof(EventDetailPage), typeof(EventDetailPage));
+            Routing.RegisterRoute(nameof(SignaturePage), typeof(SignaturePage));
 
             //Routing.RegisterRoute("LoginPage", typeof(Views.LoginPage));
             //Routing.RegisterRoute("HomePage", typeof(Views.HomePage));

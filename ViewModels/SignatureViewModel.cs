@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Views;   
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mercurio.Driver.Services;
 using System.Collections.ObjectModel;
 
 namespace Mercurio.Driver.ViewModels
@@ -9,6 +10,8 @@ namespace Mercurio.Driver.ViewModels
     [QueryProperty(nameof(ScheduleId), "ScheduleId")]
     public partial class SignatureViewModel : ObservableObject
     {
+        private readonly IScheduleService _scheduleService;
+
         [ObservableProperty]
         private int _scheduleId;
 
@@ -20,6 +23,12 @@ namespace Mercurio.Driver.ViewModels
         private bool _isBusy;
 
         private bool CanSaveSignature => Lines.Any() && !IsBusy;
+
+        public SignatureViewModel(IScheduleService scheduleService)
+        {
+            _scheduleService = scheduleService;
+        }
+
 
         [RelayCommand(CanExecute = nameof(CanSaveSignature))]
         private async Task SaveSignature()
@@ -38,13 +47,8 @@ namespace Mercurio.Driver.ViewModels
                 // Convert the bytes to Base64 to send it through the API
                 var signatureBase64 = Convert.ToBase64String(signatureBytes);
 
-                // TODO: Llamar al servicio real para enviar la firma al backend.
-                // Reemplaza esto con tu llamada a IScheduleService.
-                // var success = await _scheduleService.SaveSignatureAsync(ScheduleId, signatureBase64);
-
-                await Task.Delay(1000); // Simulación de llamada de red
-                var success = true;
-
+                var success = await _scheduleService.SaveSignatureAsync(ScheduleId, signatureBase64);
+              
                 if (success)
                 {
                     // We return to the previous page, passing a parameter to indicate that it was saved
