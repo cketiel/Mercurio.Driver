@@ -191,5 +191,25 @@ namespace Mercurio.Driver.Services
                 return null;
             }
         }
+
+        public async Task<bool> CancelTripByDriverAsync(int tripId, string reason)
+        {
+            var requestUri = $"api/Trips/{tripId}/cancel-by-driver";
+            var uploadDto = new DriverCancelTripDto { Reason = reason };
+
+            var jsonContent = JsonSerializer.Serialize(uploadDto, _serializerOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync(requestUri, content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in CancelTripByDriverAsync: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
