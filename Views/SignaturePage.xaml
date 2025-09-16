@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             x:Class="Mercurio.Driver.Views.SignaturePage"
+             x:DataType="viewmodels:SignatureViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        
+        <VerticalStackLayout VerticalOptions="End" HorizontalOptions="Start" Spacing="10" Margin="20">
+            <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="Gray" TextColor="White" />
+            <Button Text="Done" Command="{Binding SaveSignatureCommand}" BackgroundColor="Green" TextColor="White" />
+        </VerticalStackLayout>
+       
+        <Button Text="Clear" Command="{Binding ClearSignatureCommand}"
+                VerticalOptions="Start" HorizontalOptions="End" Margin="20" />
+       
+        <toolkit:DrawingView x:Name="SignatureView"
+                             Lines="{Binding Lines, Mode=TwoWay}"
+                             LineColor="Black"
+                             LineWidth="5"
+                             BackgroundColor="White"
+                             IsMultiLineModeEnabled="True"/>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" Color="Black" />
+    </Grid>
+</ContentPage>
