@@ -210,7 +210,7 @@ namespace Mercurio.Driver.ViewModels
             if (Event != null && !string.IsNullOrWhiteSpace(Event.Address))
             {
                 await Clipboard.SetTextAsync(Event.Address);
-                await Shell.Current.DisplayAlert("Copiado", "La dirección ha sido copiada al portapapeles.", "OK");
+                await Shell.Current.DisplayAlert("Copied", "The address has been copied to the clipboard.", "OK");
             }
         }
 

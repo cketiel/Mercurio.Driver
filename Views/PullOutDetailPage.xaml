@@ -37,11 +37,17 @@
             <Setter Property="TextColor" Value="Black"/>
             <Setter Property="FontAttributes" Value="Bold"/>
         </Style>
+        <!-- Style for dividers inside the details card -->
+        <Style TargetType="BoxView" x:Key="DetailSeparatorStyle">
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Color" Value="#F0F0F0" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+        </Style>
     </ContentPage.Resources>
 
     <Grid>
     
-    <VerticalStackLayout Spacing="1">
+    <VerticalStackLayout Spacing="3">
 
         <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
             <Grid.GestureRecognizers>
@@ -100,9 +106,9 @@
 
         <Border StrokeThickness="0" BackgroundColor="White" Padding="15" Margin="10,0"
                 StrokeShape="RoundRectangle 5">
-            <VerticalStackLayout Spacing="20">
+            <VerticalStackLayout Spacing="0">
                 <!-- Address -->
-                <VerticalStackLayout>
+                <VerticalStackLayout Padding="0,10">
                     <Grid>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding CopyAddressCommand}"/>
@@ -119,20 +125,26 @@
                     <Label Text="{Binding Event.Address}" Style="{StaticResource DetailValueLabel}" LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>
 
+                <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
                 <!-- Event Type -->
-                <VerticalStackLayout>
+                <VerticalStackLayout Padding="0,10">
                     <Label Text="EVENT TYPE" Style="{StaticResource DetailHeaderLabel}"/>
                     <Label Text="{Binding Event.Name}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
 
+                <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+                
                 <!-- Scheduled Time -->
-                <VerticalStackLayout>
+                <VerticalStackLayout Padding="0,10">
                     <Label Text="SCHEDULED TIME" Style="{StaticResource DetailHeaderLabel}"/>
                     <Label Text="{Binding Event.Pickup, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
 
+                <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+                
                 <!-- ETA -->
-                <VerticalStackLayout>
+                <VerticalStackLayout Padding="0,10">
                     <Label Text="ETA" Style="{StaticResource DetailHeaderLabel}"/>
                     <Label Text="{Binding Event.ETA, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
