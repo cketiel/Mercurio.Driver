@@ -12,5 +12,6 @@ namespace Mercurio.Driver.Services
         Task<List<MapApp>> GetAvailableMapAppsAsync();
         string GetDefaultMapAppScheme();
         void SetDefaultMapAppScheme(string scheme);
+        Task LaunchNavigationAsync(double latitude, double longitude, string placemarkName);
     }
 }

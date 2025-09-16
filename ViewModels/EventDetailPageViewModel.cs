@@ -16,6 +16,7 @@ namespace Mercurio.Driver.ViewModels
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
+        private readonly IMapService _mapService;
 
         // The selected event we received from the previous page
         [ObservableProperty]
@@ -43,10 +44,11 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _signatureSaved;
 
-        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService)
+        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService)
         {
             _scheduleService = scheduleService;
             _gpsService = gpsService;   
+            _mapService = mapService;
         }
 
         // Called automatically when the 'Event' property receives a value
@@ -121,7 +123,14 @@ namespace Mercurio.Driver.ViewModels
             // Common actions (Call, Map, etc.) are always added at the end.
             Actions.Add(new EventAction { Text = "Call Customer", IconGlyph = "", Command = CallCustomerCommand });
             Actions.Add(new EventAction { Text = "Text Customer", IconGlyph = "", Command = TextCustomerCommand });
-            Actions.Add(new EventAction { Text = "Maps - Appointment Address", IconGlyph = "", Command = MapsCommand });
+
+            string mapActionText = Event.TripType == "Appointment"
+                ? "Maps - Appointment Address"
+                : "Maps - Return Address";
+
+            Actions.Add(new EventAction { Text = mapActionText, IconGlyph = "", Command = MapsCommand });
+            //Actions.Add(new EventAction { Text = "Maps - Appointment Address", IconGlyph = "", Command = MapsCommand });
+
             Actions.Add(new EventAction { Text = "Send Dispatch Message", IconGlyph = "", Command = SendDispatchMessageCommand });
         }
 
@@ -273,7 +282,28 @@ namespace Mercurio.Driver.ViewModels
         }
         [RelayCommand] private void CallCustomer() => Debug.WriteLine("Call Customer Tapped");
         [RelayCommand] private void TextCustomer() => Debug.WriteLine("Text Customer Tapped");
-        [RelayCommand] private void Maps() => Debug.WriteLine("Maps Tapped");
+
+        [RelayCommand]
+        private async Task Maps()
+        {
+            if (IsBusy || Event is null) return;
+
+            IsBusy = true;
+            try
+            {               
+                await _mapService.LaunchNavigationAsync(Event.ScheduleLatitude, Event.ScheduleLongitude, Event.Address);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in MapsCommand: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred while trying to open maps.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         [RelayCommand] private void SendDispatchMessage() => Debug.WriteLine("Send Dispatch Tapped");
 
         [RelayCommand]
