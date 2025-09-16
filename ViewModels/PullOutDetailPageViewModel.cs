@@ -117,7 +117,7 @@ namespace Mercurio.Driver.ViewModels
 
                 if (success)
                 {
-                    StartGpsTracking();
+                    //StartGpsTracking();
                     // We navigate back in the navigation stack.
                     // ".." is the shell syntax for going to the previous page.
                     await Shell.Current.GoToAsync("..");
