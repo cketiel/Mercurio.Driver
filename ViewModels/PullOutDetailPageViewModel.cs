@@ -9,6 +9,7 @@ namespace Mercurio.Driver.ViewModels
 {
     // We use QueryProperty to receive the ScheduleDto object during navigation
     [QueryProperty(nameof(Event), "EventDetail")]
+    [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
     public partial class PullOutDetailPageViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
@@ -34,6 +35,20 @@ namespace Mercurio.Driver.ViewModels
         private bool isTracking;
 
         public bool IsNotTracking => !IsTracking;
+
+        [ObservableProperty]
+        private bool _isFirstEvent;
+
+        // Controls the visibility of the Odometer/Perform action row
+        [ObservableProperty]
+        private bool _isPrimaryActionVisible;
+
+        // Properties for dynamic texts in the UI
+        [ObservableProperty]
+        private string _pageTitle;
+
+        [ObservableProperty]
+        private string _mapActionText;
 
         public PullOutDetailPageViewModel(IScheduleService scheduleService)
         {
@@ -218,7 +233,16 @@ namespace Mercurio.Driver.ViewModels
         partial void OnEventChanged(ScheduleDto value)
         {
             if (value != null)
-            {              
+            {
+                PageTitle = value.Name; // "Pull-out" o "Pull-in"
+                MapActionText = $"Maps - {value.Name} Address";
+
+                // Determine if the main action (Odometer/Perform) should be visible.
+                //    - A "Pull-out" is always the first event, so it is always actionable.
+                //    - A "Pull-in" is only actionable if it is the only event left in the list
+                //      (which means IsFirstEvent will be true for it).
+                IsPrimaryActionVisible = value.Name == "Pull-out" || (value.Name == "Pull-in" && IsFirstEvent);
+
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
                 IsOdometerEntered = value.Odometer != null && value.Odometer > 0;
             }

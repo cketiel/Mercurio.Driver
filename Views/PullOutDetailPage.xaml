@@ -5,7 +5,7 @@
              x:Class="Mercurio.Driver.Views.PullOutDetailPage"
              x:DataType="viewmodels:PullOutDetailPageViewModel"
              xmlns:converters="clr-namespace:Mercurio.Driver.Converters" 
-             Title="Pull Out Details"
+             Title="{Binding PageTitle}"
              BackgroundColor="#F0F0F0">
 
     <ContentPage.Resources>
@@ -49,7 +49,7 @@
     
     <VerticalStackLayout Spacing="3">
 
-        <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}">
+        <Grid ColumnDefinitions="7,*" Style="{StaticResource NavRowStyle}" IsVisible="{Binding IsPrimaryActionVisible}">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding OdometerOrPerformActionCommand}"/>
             </Grid.GestureRecognizers>

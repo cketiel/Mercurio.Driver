@@ -1,5 +1,4 @@
-﻿using Foundation;
-using Mercurio.Driver.Models;
+﻿using Mercurio.Driver.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
