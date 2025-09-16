@@ -11,5 +11,7 @@ namespace Mercurio.Driver.Services
         Task<bool> SaveSignatureAsync(int scheduleId, string signatureBase64);
         Task<byte[]?> GetSignatureAsync(int scheduleId);
         Task<bool> CancelTripByDriverAsync(int tripId, string reason);
+
+        Task<List<ScheduleDto>> GetPendingSchedulesByRunAsync(string runLogin, DateTime date);
     }
 }

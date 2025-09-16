@@ -36,11 +36,12 @@ namespace Mercurio.Driver.ViewModels
 
             try
             {
-                IsBusy = true;                             
-                var scheduleEvents = await _scheduleService.GetSchedulesByRunAsync(RunLogin, DateTime.Today);
+                IsBusy = true;
+                var pendingEvents = await _scheduleService.GetPendingSchedulesByRunAsync(RunLogin, DateTime.Today);
+                // var pendingEvents = allScheduleEvents.Where(ev => !ev.Performed).ToList();
 
                 Events.Clear();
-                foreach (var ev in scheduleEvents)
+                foreach (var ev in pendingEvents)
                 {
                     Events.Add(ev);
                 }

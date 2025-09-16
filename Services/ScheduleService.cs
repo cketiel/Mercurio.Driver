@@ -61,6 +61,40 @@ namespace Mercurio.Driver.Services
             }
         }
 
+        public async Task<List<ScheduleDto>> GetPendingSchedulesByRunAsync(string runLogin, DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(runLogin))
+                return new List<ScheduleDto>();
+
+            var dateString = date.ToString("yyyy-MM-dd");
+            dateString = "2025-09-15"; // esto es para probar
+            var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
+          
+            var requestUri = $"api/Schedules/driver/pending?runLogin={encodedRunLogin}&date={dateString}";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var schedules = JsonSerializer.Deserialize<List<ScheduleDto>>(content, _serializerOptions);
+                    return schedules ?? new List<ScheduleDto>();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error fetching schedule: {response.StatusCode}");
+                    return new List<ScheduleDto>();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in GetSchedulesByRunAsync: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<bool> UpdateScheduleAsync(ScheduleDto scheduleToUpdate)
         {
             if (scheduleToUpdate == null)
