@@ -79,9 +79,11 @@ namespace Mercurio.Driver.ViewModels
             }
             else
             {
-                // TODO: Implementar la navegación para eventos normales (Pickup/Dropoff)
-                Debug.WriteLine($"Evento normal seleccionado: {selectedEvent.Patient}");
-                // Por ejemplo: await Shell.Current.GoToAsync(nameof(NormalEventDetailPage), ...);
+                
+                await Shell.Current.GoToAsync(nameof(EventDetailPage), new Dictionary<string, object>
+                {
+                    { "EventDetail", selectedEvent }
+                });
             }
         }
 
