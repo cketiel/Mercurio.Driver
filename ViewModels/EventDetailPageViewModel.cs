@@ -15,6 +15,7 @@ namespace Mercurio.Driver.ViewModels
     public partial class EventDetailPageViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
+        private readonly IGpsService _gpsService;
 
         // The selected event we received from the previous page
         [ObservableProperty]
@@ -42,9 +43,10 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _signatureSaved;
 
-        public EventDetailPageViewModel(IScheduleService scheduleService)
+        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService)
         {
             _scheduleService = scheduleService;
+            _gpsService = gpsService;   
         }
 
         // Called automatically when the 'Event' property receives a value
@@ -120,26 +122,57 @@ namespace Mercurio.Driver.ViewModels
             if (IsBusy || Event is null) return;
 
             IsBusy = true;
-            Debug.WriteLine("Running the Arrive action...");
-
-            // We use the precise current time
-            Event.Arrive = DateTime.Now.TimeOfDay;
-
-            var success = await _scheduleService.UpdateScheduleAsync(Event);
-
-            if (success)
+            try
             {
-                HasArrived = true;
-                BuildActionsList();
-            }
-            else
-            {
-                // Revert local change if API fails
-                Event.Arrive = null;
-                await Shell.Current.DisplayAlert("Error", "Could not save arrival time. Please try again.", "OK");
-            }
+                // GET CURRENT DEVICE LOCATION
+                var currentLocation = await _gpsService.GetCurrentLocationAsync();
 
-            IsBusy = false;
+                if (currentLocation == null)
+                {
+                    // If the location could not be obtained, we inform the user and cancel the action.
+                    await Shell.Current.DisplayAlert("Location Error", "Could not get current location. Please ensure GPS is enabled and permissions are granted.", "OK");
+                    return;
+                }
+               
+                var eventLocation = new Location(Event.ScheduleLatitude, Event.ScheduleLongitude);
+
+                // CALCULATE THE DISTANCE
+                var distanceInMiles = Location.CalculateDistance(currentLocation, eventLocation, DistanceUnits.Miles);
+
+                // Distance threshold for warning
+                const double ProximityThresholdInMiles = 0.1;
+
+                if (distanceInMiles > ProximityThresholdInMiles)
+                {
+                    // If the distance is greater than the threshold, we show the alert with two options.
+                    bool userConfirmedArrival = await Shell.Current.DisplayAlert(
+                        "Proximity Warning", 
+                        $"You are {distanceInMiles:F2} miles away from the destination", 
+                        "Arrive", // Accept button (returns true)
+                        "Cancel"  // Cancel button (returns false)
+                    );
+
+                    // If the user pressed "Cancel", we simply exit the method.
+                    if (!userConfirmedArrival)
+                    {
+                        return; // The action is cancelled.
+                    }
+
+                    // If the user pressed "Arrive" on the alert, we go ahead and finish the arrival.
+                    await FinalizeArrival(distanceInMiles, currentLocation.ToString());
+                }
+                else
+                {
+                    // If the distance is less than or equal to the threshold, no warning is displayed.
+                    // We proceed directly to finalize the arrival.
+                    await FinalizeArrival(distanceInMiles, currentLocation.ToString());
+                }
+              
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         [RelayCommand] private void Perform() => Debug.WriteLine("Perform Tapped");
@@ -166,6 +199,29 @@ namespace Mercurio.Driver.ViewModels
             {
                 await Clipboard.SetTextAsync(Event.Address);
                 await Shell.Current.DisplayAlert("Copied", "The phone number has been copied to the clipboard.", "OK");
+            }
+        }
+
+        private async Task FinalizeArrival(double distanceInMiles, string gpsArrive)
+        {          
+            Event.Arrive = DateTime.Now.TimeOfDay;
+            Event.ArriveDist = distanceInMiles;
+            Event.GPSArrive = gpsArrive;
+           
+            var success = await _scheduleService.UpdateScheduleAsync(Event);
+
+            if (success)
+            {               
+                HasArrived = true;
+                BuildActionsList(); // Update the UI
+            }
+            else
+            {
+                // Roll back local changes if the API fails to maintain consistency
+                Event.Arrive = null;
+                Event.ArriveDist = null;
+                Event.GPSArrive = null;
+                await Shell.Current.DisplayAlert("Error", "Could not save arrival time. Please try again.", "OK");
             }
         }
     }

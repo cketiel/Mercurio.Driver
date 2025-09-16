@@ -73,7 +73,7 @@ namespace Mercurio.Driver.Services
             }
         }
 
-        private async Task<Location> GetCurrentLocationAsync()
+        public async Task<Location> GetCurrentLocationAsync()
         {
             try
             {
@@ -83,14 +83,17 @@ namespace Mercurio.Driver.Services
             catch (FeatureNotSupportedException fnsEx)
             {
                 // GPS is not supported on this device
+                Debug.WriteLine($"Geolocation is not supported on this device: {fnsEx.Message}");
             }
             catch (FeatureNotEnabledException fneEx)
             {
                 // GPS is not activated
+                Debug.WriteLine($"The GPS is not activated: {fneEx.Message}");
             }
             catch (PermissionException pEx)
             {
                 // You do not have the necessary permissions
+                Debug.WriteLine($"You do not have geolocation permissions: {pEx.Message}");
             }
             catch (Exception ex)
             {

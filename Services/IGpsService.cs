@@ -11,5 +11,6 @@ namespace Mercurio.Driver.Services
         bool IsTracking { get; }
         void StartTracking(int vehicleRouteId);
         void StopTracking();
+        Task<Location?> GetCurrentLocationAsync();
     }
 }
