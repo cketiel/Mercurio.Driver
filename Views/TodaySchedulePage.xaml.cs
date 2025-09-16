@@ -10,6 +10,17 @@ public partial class TodaySchedulePage : ContentPage
         BindingContext = viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // We check if the BindingContext is of the correct type and call the command to reload.
+        if (BindingContext is TodayScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
+        {
+            vm.LoadEventsCommand.Execute(null);
+        }
+    }
+
     /*private readonly TodayScheduleViewModel _viewModel;
 
     public TodaySchedulePage(TodayScheduleViewModel viewModel)

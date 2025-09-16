@@ -12,11 +12,15 @@ namespace Mercurio.Driver.ViewModels
 {
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(SignatureSaved), "SignatureSaved")] // Receive the result of the signature page
+    [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
     public partial class EventDetailPageViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
         private readonly IMapService _mapService;
+
+        [ObservableProperty]
+        private bool _isFirstEvent;
 
         // The selected event we received from the previous page
         [ObservableProperty]
@@ -89,36 +93,43 @@ namespace Mercurio.Driver.ViewModels
 
             Actions.Clear();
 
-            if (!HasArrived)
+            // We only show the main actions (Arrive, Signature, Perform, Cancel)
+            // IF AND ONLY IF this is the first event on the list.
+            if (IsFirstEvent)
             {
-                // STATUS 1: The driver has not arrived yet.
-                // The action is "Arrive", regardless of whether it is Pickup or Dropoff.
-                Actions.Add(new EventAction { Text = "Arrive", IconGlyph = "", Command = ArriveCommand });
-            }
-            else // The driver has already arrived (HasArrived == true)
-            {
-                // STATUS 2: The driver has arrived. Now we must decide the next action.             
-
-                // We check if a signature is required.
-                // A signature is only required if it is a 'Pickup' type event AND one has not yet been captured.
-                bool isSignatureRequired = Event.EventType == ScheduleEventType.Pickup && !HasSignature;
-
-                if (isSignatureRequired)
+                if (!HasArrived)
                 {
-                    // CASE A: It is a Pickup and needs a signature.
-                    Actions.Add(new EventAction { Text = "Passenger Signature", IconGlyph = "", Command = GoToSignaturePageCommand });
-                    Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
+                    // STATUS 1: The driver has not arrived yet.
+                    // The action is "Arrive", regardless of whether it is Pickup or Dropoff.
+                    Actions.Add(new EventAction { Text = "Arrive", IconGlyph = "", Command = ArriveCommand });
                 }
-                else
+                else // The driver has already arrived (HasArrived == true)
                 {
-                    // CASE B: No signature required. This occurs if:
-                    // 1. It is a 'Dropoff' type event (which skips the signature).
-                    // 2. It is a 'Pickup' type event that already has a signature saved.
-                    // In both cases, the next action is "Perform".
-                    Actions.Add(new EventAction { Text = "Perform", IconGlyph = "", Command = PerformCommand });
-                    Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
-                }               
+                    // STATUS 2: The driver has arrived. Now we must decide the next action.             
+
+                    // We check if a signature is required.
+                    // A signature is only required if it is a 'Pickup' type event AND one has not yet been captured.
+                    bool isSignatureRequired = Event.EventType == ScheduleEventType.Pickup && !HasSignature;
+
+                    if (isSignatureRequired)
+                    {
+                        // CASE A: It is a Pickup and needs a signature.
+                        Actions.Add(new EventAction { Text = "Passenger Signature", IconGlyph = "", Command = GoToSignaturePageCommand });
+                        Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
+                    }
+                    else
+                    {
+                        // CASE B: No signature required. This occurs if:
+                        // 1. It is a 'Dropoff' type event (which skips the signature).
+                        // 2. It is a 'Pickup' type event that already has a signature saved.
+                        // In both cases, the next action is "Perform".
+                        Actions.Add(new EventAction { Text = "Perform", IconGlyph = "", Command = PerformCommand });
+                        Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
+                    }
+                }
+
             }
+                
 
             // Common actions (Call, Map, etc.) are always added at the end.
             Actions.Add(new EventAction { Text = "Call Customer", IconGlyph = "", Command = CallCustomerCommand });
