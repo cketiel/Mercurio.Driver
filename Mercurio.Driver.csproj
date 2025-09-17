@@ -105,6 +105,9 @@
 	<!-- Se eliminaron los ItemGroup duplicados e innecesarios para MauiFont y MauiImage -->
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\ComingSoonPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\EventDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -50,10 +50,10 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _mapActionText;
 
-        public PullOutDetailPageViewModel(IScheduleService scheduleService)
+        public PullOutDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService)
         {
             _scheduleService = scheduleService;
-            _gpsService = new GpsService();
+            _gpsService = gpsService;
         }
 
         [RelayCommand(CanExecute = nameof(CanExecuteAction))]
@@ -227,6 +227,19 @@ namespace Mercurio.Driver.ViewModels
                 await Clipboard.SetTextAsync(Event.Address);
                 await Shell.Current.DisplayAlert("Copied", "The address has been copied to the clipboard.", "OK");
             }
+        }
+
+        [RelayCommand]
+        private async Task GoBack()
+        {
+            // If there is an operation in progress, we do not allow returning to avoid inconsistent states.
+            if (IsBusy)
+            {
+                return;
+            }
+
+            // We use ".." to navigate to the previous page in the navigation stack.
+            await Shell.Current.GoToAsync("..");
         }
 
         // This method is automatically fired when the 'Event' property receives a value

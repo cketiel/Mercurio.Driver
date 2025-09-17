@@ -80,23 +80,23 @@
     <!-- DEFINITION OF MENU ITEMS -->
 
     <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+        <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
-
+  
     <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
         <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+        <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="CONTACTS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="ContactsPage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" />
+        <ShellContent Route="ContactsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
@@ -110,8 +110,7 @@
         </MenuItem.Command>
     </MenuItem>
 
-    <!-- Pages that do not appear in the menu but are navigable -->
-    <ShellContent Route="TodaySchedulePage" ContentTemplate="{DataTemplate views:TodaySchedulePage}" IsEnabled="False"/>
+    <!-- Pages that do not appear in the menu but are navigable -->    
     <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" FlyoutItemIsVisible="False" IsEnabled="False"/>
 
 </Shell>

@@ -18,6 +18,15 @@ namespace Mercurio.Driver
             // Go directly to LoginPage on startup
             //Shell.Current.GoToAsync("//LoginPage");
         }
+
+        /// <summary>
+        /// This method is called by the framework AFTER the app has been initialized
+        /// and MainPage has been assigned. Shell.Current is GUARANTEED not to be null here.
+        /// </summary>
+        protected override void OnStart()
+        {           
+            Shell.Current.GoToAsync("///LoginPage");
+        }
     }
 
  

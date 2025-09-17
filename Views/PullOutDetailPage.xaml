@@ -8,6 +8,10 @@
              Title="{Binding PageTitle}"
              BackgroundColor="#F0F0F0">
 
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />
+    </Shell.BackButtonBehavior>
+
     <ContentPage.Resources>
         
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
