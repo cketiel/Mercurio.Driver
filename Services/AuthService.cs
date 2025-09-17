@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Mercurio.Driver.Exceptions;
 using Mercurio.Driver.Models;
+using Mercurio.Driver.Views;
 
 namespace Mercurio.Driver.Services
 {
@@ -14,9 +16,12 @@ namespace Mercurio.Driver.Services
     {
         private readonly HttpClient _httpClient;
         //private string URI = App.Configuration["ApiAddress:ApiTest"];
+        private readonly IGpsService _gpsService;
 
-        public AuthService()
+        public AuthService(IGpsService gpsService)
         {
+            _gpsService = gpsService;
+
             //var baseUrl = Preferences.Get("ApiBaseUrl", string.Empty);
             // "https://localhost:7244/"
             //var baseUrl = "http://cketiel-001-site1.ntempurl.com/";
@@ -41,6 +46,19 @@ namespace Mercurio.Driver.Services
             }
         }
 
+        public void Logout()
+        {
+            Preferences.Clear();
+
+            // Stop GPS tracking
+            if (_gpsService.IsTracking)
+            {
+                Debug.WriteLine("Logging out. Stopping GPS tracking service.");
+                _gpsService.StopTracking();
+            }
+
+            Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        }
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             if (_httpClient.BaseAddress == null)

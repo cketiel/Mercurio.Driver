@@ -1,29 +1,52 @@
-﻿using Mercurio.Driver.DTOs;
-using System;
-using System.Collections.Generic;
+﻿using Android.App;
+using Android.Content;
+using Android.OS;
+using Mercurio.Driver.DTOs;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+using Debug = System.Diagnostics.Debug;
 
 namespace Mercurio.Driver.Services
 {
-    public class GpsService : IGpsService
+    [Service]
+    public class GpsServiceAndroid : Service, IGpsService
     {
         private System.Timers.Timer _timer;
         private readonly HttpClient _httpClient;
         private int _idVehicleRoute;
+        private GpsServiceBinder _binder;
+
+        private const int SERVICE_RUNNING_NOTIFICATION_ID = 10000;
+        private const string NOTIFICATION_CHANNEL_ID = "com.mercurio.driver.gps";
+        private const string NOTIFICATION_CHANNEL_NAME = "Gps Service";
 
         public bool IsTracking => _timer?.Enabled ?? false;
 
         public event Action<bool> IsTrackingChanged;
 
-        public GpsService()
+        public GpsServiceAndroid()
         {
-            _httpClient = new HttpClient();           
-            //_httpClient.BaseAddress = new Uri("http://10.0.2.2:5000/"); // Example for Android Emulator
+            _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/");
+        }
+
+        public override IBinder OnBind(Intent intent)
+        {
+            _binder = new GpsServiceBinder(this);
+            return _binder;
+        }
+
+        public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
+        {
+            if (intent.HasExtra("vehicle_route_id"))
+            {
+                int vehicleRouteId = intent.GetIntExtra("vehicle_route_id", 0);
+                if (vehicleRouteId > 0)
+                {
+                    StartTracking(vehicleRouteId);
+                }
+            }
+            return StartCommandResult.Sticky;
         }
 
         public void StartTracking(int idVehicleRoute)
@@ -31,10 +54,12 @@ namespace Mercurio.Driver.Services
             if (IsTracking) return;
 
             _idVehicleRoute = idVehicleRoute;
+            StartForegroundService();
+
             _timer = new System.Timers.Timer(60000); // 1 minuto
             _timer.Elapsed += async (s, e) => await SendLocationAsync();
             _timer.Start();
-          
+
             Task.Run(SendLocationAsync);
 
             IsTrackingChanged?.Invoke(true);
@@ -46,7 +71,29 @@ namespace Mercurio.Driver.Services
             _timer?.Dispose();
             _timer = null;
 
+            StopForeground(true);
+            StopSelf();
+
             IsTrackingChanged?.Invoke(false);
+        }
+
+        private void StartForegroundService()
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationImportance.Default);
+                var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+                notificationManager.CreateNotificationChannel(channel);
+            }
+
+            var notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .SetContentTitle("Mercurio Driver")
+                .SetContentText("El seguimiento de la ruta está activo.")
+                .SetSmallIcon(Resource.Drawable.dotnet_bot) // Asegúrate de que este ícono exista
+                .SetOngoing(true)
+                .Build();
+
+            StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
         }
 
         private async Task SendLocationAsync()
@@ -56,6 +103,7 @@ namespace Mercurio.Driver.Services
                 var location = await GetCurrentLocationAsync();
                 if (location == null) return;
 
+                // --- LÓGICA COMPLETADA ---
                 var gpsData = new GpsDataDto
                 {
                     IdVehicleRoute = _idVehicleRoute,
@@ -65,6 +113,7 @@ namespace Mercurio.Driver.Services
                     Longitude = location.Longitude,
                     Direction = GetCardinalDirection(location.Course)
                 };
+                // --- FIN LÓGICA COMPLETADA ---
 
                 var response = await _httpClient.PostAsJsonAsync("api/Gps", gpsData);
 
@@ -79,6 +128,7 @@ namespace Mercurio.Driver.Services
             }
         }
 
+        // --- MÉTODO AÑADIDO PARA CUMPLIR LA INTERFAZ ---
         public async Task<Location> GetCurrentLocationAsync()
         {
             try
@@ -86,34 +136,26 @@ namespace Mercurio.Driver.Services
                 var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
                 return await Geolocation.Default.GetLocationAsync(request);
             }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                // GPS is not supported on this device
-                Debug.WriteLine($"Geolocation is not supported on this device: {fnsEx.Message}");
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
-                // GPS is not activated
-                Debug.WriteLine($"The GPS is not activated: {fneEx.Message}");
-            }
-            catch (PermissionException pEx)
-            {
-                // You do not have the necessary permissions
-                Debug.WriteLine($"You do not have geolocation permissions: {pEx.Message}");
-            }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unable to get location: {ex.Message}");
-                //return null;
+                return null;
             }
-            return null;
         }
 
+        // --- MÉTODO AUXILIAR AÑADIDO ---
         private string GetCardinalDirection(double? bearing)
         {
-            if (!bearing.HasValue) return null;
+            if (!bearing.HasValue) return "N/A";
             string[] directions = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
             return directions[(int)Math.Round(bearing.Value % 360 / 45)];
         }
+    }
+
+    // Clase Binder para la comunicación
+    public class GpsServiceBinder : Binder
+    {
+        public GpsServiceAndroid Service { get; }
+        public GpsServiceBinder(GpsServiceAndroid service) => Service = service;
     }
 }

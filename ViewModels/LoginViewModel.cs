@@ -15,6 +15,7 @@ namespace Mercurio.Driver.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly AuthService _authService;
+    private readonly ISessionManagerService _sessionManager;
 
     [ObservableProperty]
     string _username;
@@ -38,9 +39,9 @@ public partial class LoginViewModel : ObservableObject
     // For show/hide password icon
     public string PasswordToggleIcon => IsPasswordMasked ? "\uf070" : "\uf06e"; // eye-slash / eye
 
-    public LoginViewModel()
+    public LoginViewModel(ISessionManagerService sessionManager)
     {
-             
+        _sessionManager = sessionManager;
     }
 
     [RelayCommand]
@@ -59,7 +60,7 @@ public partial class LoginViewModel : ObservableObject
 
         try
         {
-            var authService = new AuthService();
+            var authService = new AuthService(new GpsService());
             var result = await authService.LoginAsync(new LoginRequest { Username = Username, Password = Password });
 
             if (result != null && result.IsSuccess)
@@ -77,6 +78,9 @@ public partial class LoginViewModel : ObservableObject
                 {
                     Preferences.Remove("LastUsername");
                 }
+
+                //aqui no puede ser pq no se sabe la linea
+                //await _sessionManager.CheckAndResumeGpsTrackingAsync();
 
                 // Navigate to HomePage 
                 //await Shell.Current.GoToAsync("//HomePage");

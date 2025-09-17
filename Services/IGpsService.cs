@@ -12,5 +12,8 @@ namespace Mercurio.Driver.Services
         void StartTracking(int vehicleRouteId);
         void StopTracking();
         Task<Location?> GetCurrentLocationAsync();
+
+        // Event to notify state changes to the UI
+        event Action<bool> IsTrackingChanged;
     }
 }

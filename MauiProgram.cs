@@ -30,6 +30,8 @@ namespace Mercurio.Driver
             builder.Services.AddSingleton<IScheduleService, ScheduleService>();
             builder.Services.AddSingleton<IGpsService, GpsService>();
             builder.Services.AddSingleton<IMapService, MapService>();
+            builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
+            builder.Services.AddSingleton<App>();
 
             // ViewModels (Transient because each page should have its own instance)
             builder.Services.AddTransient<LoginViewModel>();
@@ -48,6 +50,18 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<EventDetailPage>();
             builder.Services.AddTransient<SignaturePage>();
+
+            // We register the GPS service using a factory
+            // which gets the static instance of MainActivity
+            builder.Services.AddSingleton<IGpsService>(provider =>
+        {
+#if ANDROID
+            return MainActivity.GpsService;
+#else
+            // Aquí registrarías la implementación para iOS o una de prueba
+            return new GpsService(); // O una implementación dummy
+#endif
+        });
 
 
 #if DEBUG

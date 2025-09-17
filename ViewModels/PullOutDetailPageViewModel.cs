@@ -10,7 +10,7 @@ namespace Mercurio.Driver.ViewModels
     // We use QueryProperty to receive the ScheduleDto object during navigation
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
-    public partial class PullOutDetailPageViewModel : ObservableObject
+    public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
@@ -54,6 +54,14 @@ namespace Mercurio.Driver.ViewModels
         {
             _scheduleService = scheduleService;
             _gpsService = gpsService;
+
+            // Subscribe to service status changes
+            if (_gpsService != null)
+            {
+                _gpsService.IsTrackingChanged += OnGpsTrackingChanged;
+                // Synchronize initial state
+                IsTracking = _gpsService.IsTracking;
+            }
         }
 
         [RelayCommand(CanExecute = nameof(CanExecuteAction))]
@@ -68,6 +76,25 @@ namespace Mercurio.Driver.ViewModels
             {
                 // Logic for when the user presses "Odometer"
                 await EnterOdometer();
+            }
+        }
+
+        private void OnGpsTrackingChanged(bool isTracking)
+        {
+            // The service notifies us that its status has changed
+            // We update the property in the UI thread
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                IsTracking = isTracking;
+            });
+        }
+
+        public void Dispose()
+        {
+            // Unsubscribe from the event to avoid memory leaks
+            if (_gpsService != null)
+            {
+                _gpsService.IsTrackingChanged -= OnGpsTrackingChanged;
             }
         }
 
@@ -91,7 +118,7 @@ namespace Mercurio.Driver.ViewModels
 
                 if (string.IsNullOrWhiteSpace(result)) return;
 
-                if (long.TryParse(result, out long odometerValue) && odometerValue > 0)
+                if (long.TryParse(result, out long odometerValue) && odometerValue > -1)
                 {
                     Event.Odometer = odometerValue;
 
@@ -109,7 +136,7 @@ namespace Mercurio.Driver.ViewModels
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Invalid Input", "Please enter a valid number greater than 0 for the odometer.", "OK");
+                    await Shell.Current.DisplayAlert("Invalid Input", "Please enter a valid number for the odometer.", "OK");
                 }
             }
             finally
@@ -126,13 +153,26 @@ namespace Mercurio.Driver.ViewModels
 
             try
             {               
-                Event.Performed = true;
+                Event.Performed = true; 
 
                 bool success = await _scheduleService.UpdateScheduleAsync(Event);
 
                 if (success)
-                {
-                    //StartGpsTracking();
+                {                  
+                    if (Event.Name == "Pull-out")
+                    {
+                        // The ViewModel just gives the order. The service takes care of the rest.
+                        _gpsService?.StartTracking(Event.VehicleRouteId);
+
+                        //StartGpsTracking();
+                        //Debug.WriteLine("GPS tracking started due to Pull-out event.");
+                    }
+                    else if (Event.Name == "Pull-in")
+                    {
+                        _gpsService?.StopTracking();
+                        //StopGpsTracking();
+                        //Debug.WriteLine("GPS tracking stopped due to Pull-in event.");
+                    }
                     // We navigate back in the navigation stack.
                     // ".." is the shell syntax for going to the previous page.
                     await Shell.Current.GoToAsync("..");

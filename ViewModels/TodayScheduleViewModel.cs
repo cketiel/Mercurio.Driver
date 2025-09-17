@@ -45,6 +45,9 @@ namespace Mercurio.Driver.ViewModels
                 {
                     Events.Add(ev);
                 }
+
+                SessionManagerService _sessionManager = new SessionManagerService(new GpsService());
+                await _sessionManager.CheckAndResumeGpsTrackingAsync(Events);
             }
             catch (Exception ex)
             {
