@@ -3,16 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
-
-		<!-- Note for MacCatalyst:
-		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
-		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
-		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
-		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
-		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
-
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Mercurio.Driver</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -20,23 +10,73 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
-		<!-- Display name -->
+		
+		<!-- Propiedades Generales -->
 		<ApplicationTitle>Mercurio.Driver</ApplicationTitle>
-
-		<!-- App Identifier -->
 		<ApplicationId>com.mercurio.driver</ApplicationId>
-
-		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
+
+	<!-- =================================================================== -->
+	<!-- INICIO: CONFIGURACIÓN ESPECÍFICA PARA CADA PLATAFORMA (CORRECCIÓN) -->
+	<!-- =================================================================== -->
+
+	<!-- Configuración para Android -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-android'">
+		<!-- Versión mínima recomendada para estabilidad (Android 7.0) -->
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<!-- Configuración para iOS -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+		<SupportedOSPlatformVersion>11.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<!-- Configuración para Mac Catalyst -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-maccatalyst'">
+		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<!-- Configuración para Windows -->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
+		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<!-- Propiedades de publicación de Windows movidas aquí -->
+		<GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<PackageCertificateThumbprint>4D41E47A4AF5B5C0BC95295E972B5A1D72FEFF17</PackageCertificateThumbprint>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppInstallerUri>E:\Instaladores</AppInstallerUri>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+	</PropertyGroup>
+
+	<!-- =================================================================== -->
+	<!-- FIN: CONFIGURACIÓN ESPECÍFICA PARA CADA PLATAFORMA -->
+	<!-- =================================================================== -->
+
+	<!-- =================================================================== -->
+	<!-- INICIO: CONFIGURACIÓN DE PUBLICACIÓN (RELEASE) PARA ANDROID -->
+	<!-- =================================================================== -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+		<!-- Esta propiedad FUERZA la generación de un .apk en lugar de un .aab -->
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidSigningV2Enabled>True</AndroidSigningV2Enabled>
+		<AndroidSigningV3Enabled>True</AndroidSigningV3Enabled>
+		
+		<!-- Aquí irán las propiedades de firma que el asistente de publicación añade automáticamente -->
+		<!-- Ejemplo: -->
+		<!-- <AndroidSigningKeyStore>mi-keystore.keystore</AndroidSigningKeyStore> -->
+		<!-- <AndroidSigningKeyAlias>mi_alias</AndroidSigningKeyAlias> -->
+		<!-- <AndroidSigningKeyPass>mi_password</AndroidSigningKeyPass> -->
+		<!-- <AndroidSigningStorePass>mi_password</AndroidSigningStorePass> -->
+	</PropertyGroup>
+	<!-- =================================================================== -->
+	<!-- FIN: CONFIGURACIÓN DE PUBLICACIÓN (RELEASE) PARA ANDROID -->
+	<!-- =================================================================== -->
 
 	<ItemGroup>
 		<!-- App Icon -->
@@ -45,23 +85,11 @@
 		<MauiSplashScreen Include="Resources\Splash\splash_logo.svg" Color="#FFFFFF" BaseSize="300,375" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\apple_maps_icon.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</MauiImage>
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
-		<MauiImage Update="Resources\Images\google_maps_icon.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</MauiImage>
-		<MauiImage Update="Resources\Images\waze_icon.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</MauiImage>
-
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
-
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />		
-		
+		<!-- Raw Assets -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -70,15 +98,11 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" /> 
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <MauiFont Update="Resources\Fonts\fa-solid-900.ttf">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </MauiFont>
-	</ItemGroup>
+	<!-- Se eliminaron los ItemGroup duplicados e innecesarios para MauiFont y MauiImage -->
 
 	<ItemGroup>
 	  <MauiXaml Update="Views\EventDetailPage.xaml">
@@ -105,6 +129,18 @@
 	  <MauiXaml Update="Views\TodaySchedulePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Views\EventDetailPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Views\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Views\SignaturePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 
 </Project>
