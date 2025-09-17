@@ -82,7 +82,12 @@ public partial class LoginViewModel : ObservableObject
                 //await Shell.Current.GoToAsync("//HomePage");
                 // Navigate to SchedulePage
                 //await Shell.Current.GoToAsync("//SchedulePage");
+                // Navigate to the SchedulePage. The prefix "//" resets the navigation stack
+                // and set this page as the new root, restoring the menu.
+                // The // prefix tells MAUI Shell: "Replace the current page (LoginPage) with this new page (SchedulePage) and make it the main page of the application."
+                // Since SchedulePage is defined within your AppShell.xaml as a FlyoutItem, the Shell will automatically display the hamburger menu and navigation bar.
                 await Shell.Current.GoToAsync($"//{nameof(SchedulePage)}");
+                //await Shell.Current.GoToAsync($"//SchedulePage");
             }
             else
             {

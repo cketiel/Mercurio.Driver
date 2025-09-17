@@ -12,11 +12,11 @@ namespace Mercurio.Driver
         {
             //AppConfig.Init();
             InitializeComponent();
-            //Preferences.Set("ApiBaseUrl", "http://cketiel-001-site1.ntempurl.com/"); 
-            Preferences.Set("ApiBaseUrl", "https://localhost:7244/");
+            Preferences.Set("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/"); 
+            //Preferences.Set("ApiBaseUrl", "https://localhost:7244/");
             MainPage = new AppShell();
             // Go directly to LoginPage on startup
-            Shell.Current.GoToAsync("//LoginPage");
+            //Shell.Current.GoToAsync("//LoginPage");
         }
     }
 
