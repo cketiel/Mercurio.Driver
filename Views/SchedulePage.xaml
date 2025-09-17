@@ -5,8 +5,7 @@
              xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:converters="clr-namespace:Mercurio.Driver.Converters">
-
-    <!-- Asignamos el ViewModel -->
+  
     <ContentPage.BindingContext>
         <viewmodels:ScheduleViewModel />
     </ContentPage.BindingContext>
@@ -16,28 +15,25 @@
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <!-- Configuración para la barra de estado -->
+        
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <Grid>
-        <!-- Imagen de fondo con el mapa (opcional pero recomendado para el look) -->
+        
         <Image Source="map_background.png" 
                Aspect="AspectFill"
                Opacity="0.2"/>
 
         <VerticalStackLayout Padding="30,40" Spacing="20" 
                              VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-
-            <!-- Logo de la aplicación -->
+           
             <Image Source="logo.png"
                    Aspect="AspectFit"
                    WidthRequest="280"
                    Margin="0,0,0,30"/>
-
-            <!-- Campo de texto Run Login -->
+           
             <Border StrokeShape="RoundRectangle 10" 
                     StrokeThickness="1" 
                     Stroke="#CCCCCC" 
@@ -49,8 +45,7 @@
                        VerticalTextAlignment="Center"
                        FontSize="16"/>
             </Border>
-
-            <!-- Campo de texto Vehicle Login -->
+         
             <Border StrokeShape="RoundRectangle 10"
                     StrokeThickness="1" 
                     Stroke="#CCCCCC" 
@@ -63,7 +58,7 @@
                        FontSize="16"/>
             </Border>
 
-            <!-- Botón Today's Schedule (Verde) -->
+            <!-- Button Today's Schedule (Green) -->
             <Button Text="TODAY'S SCHEDULE"
                     Command="{Binding GoToTodayScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
@@ -75,7 +70,7 @@
                     FontAttributes="Bold"
                     Margin="0,20,0,0"/>
 
-            <!-- Botón Future Schedule (Azul) -->
+            <!-- Button Future Schedule (Blue) -->
             <Button Text="FUTURE SCHEDULE"
                     Command="{Binding GoToFutureScheduleCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
