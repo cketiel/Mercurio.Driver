@@ -33,6 +33,28 @@ namespace Mercurio.Driver.Services
                 return;
             }
 
+#if IOS
+    var status = await Permissions.CheckStatusAsync<Permissions.LocationAlways>();
+    if (status != PermissionStatus.Granted)
+    {
+        // Request "When used" permission first
+        var whenInUseStatus = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+        if (whenInUseStatus == PermissionStatus.Granted)
+        {
+            // Now request "Always" permission
+            status = await Permissions.RequestAsync<Permissions.LocationAlways>();
+        }
+    }
+
+    if (status != PermissionStatus.Granted)
+    {
+        Debug.WriteLine("SessionManager: 'Location Always' permission was not granted. Cannot start background tracking.");
+        // Show an alert to the user.
+        await Shell.Current.DisplayAlert("Permission Required", "For route tracking, please enable location permission to 'Always' in the app settings.", "OK");
+        return;
+    }
+#endif
+
             Debug.WriteLine("SessionManager: Checking conditions to resume GPS tracking...");
 
             try

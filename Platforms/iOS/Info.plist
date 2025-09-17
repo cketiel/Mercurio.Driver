@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Tells iOS that your app has special background capabilities. The location value is specific to location tracking.-->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	
 	<!-- Permission to access location when the app is in use -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to record and show your route on the map while you work.</string>

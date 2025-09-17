@@ -54,14 +54,17 @@ namespace Mercurio.Driver
             // We register the GPS service using a factory
             // which gets the static instance of MainActivity
             builder.Services.AddSingleton<IGpsService>(provider =>
-        {
+            {
 #if ANDROID
-            return MainActivity.GpsService;
+                
+                return MainActivity.GpsService ?? new Mercurio.Driver.Services.GpsServiceAndroid();
+#elif IOS
+    return new Mercurio.Driver.Services.GpsServiceIos();
 #else
-            // Aquí registrarías la implementación para iOS o una de prueba
-            return new GpsService(); // O una implementación dummy
+    // Implementación por defecto para otras plataformas (Windows, etc.)
+    return new GpsService(); 
 #endif
-        });
+            });
 
 
 #if DEBUG
