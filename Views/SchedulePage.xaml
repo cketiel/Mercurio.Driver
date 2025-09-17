@@ -4,13 +4,19 @@
              x:Class="Mercurio.Driver.Views.SchedulePage"
              xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             >
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters">
 
     <!-- Asignamos el ViewModel -->
     <ContentPage.BindingContext>
         <viewmodels:ScheduleViewModel />
     </ContentPage.BindingContext>
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <!-- Configuración para la barra de estado -->
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
@@ -60,6 +66,7 @@
             <!-- Botón Today's Schedule (Verde) -->
             <Button Text="TODAY'S SCHEDULE"
                     Command="{Binding GoToTodayScheduleCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                     BackgroundColor="#4CAF50"
                     TextColor="White"
                     HeightRequest="55"
@@ -71,6 +78,7 @@
             <!-- Botón Future Schedule (Azul) -->
             <Button Text="FUTURE SCHEDULE"
                     Command="{Binding GoToFutureScheduleCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                     BackgroundColor="#1976D2"
                     TextColor="White"
                     HeightRequest="55"
@@ -78,5 +86,14 @@
                     FontSize="18"
                     FontAttributes="Bold"/>
         </VerticalStackLayout>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="#B82E49"
+                           HeightRequest="50"
+                           WidthRequest="50"/>
+        
     </Grid>
 </ContentPage>
