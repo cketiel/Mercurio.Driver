@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.Services;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Mercurio.Driver.ViewModels
 {
@@ -27,7 +28,16 @@ namespace Mercurio.Driver.ViewModels
         public SignatureViewModel(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
+            Lines.CollectionChanged += OnLinesCollectionChanged;
         }
+
+        // This method will be executed every time a line is added or removed
+        private void OnLinesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // We manually notify the command that its "CanExecute" state may have changed.
+            SaveSignatureCommand.NotifyCanExecuteChanged();
+        }
+
 
 
         [RelayCommand(CanExecute = nameof(CanSaveSignature))]

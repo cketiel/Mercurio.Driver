@@ -8,15 +8,9 @@
              Shell.NavBarIsVisible="False">
 
     <Grid>
-        
-        <VerticalStackLayout VerticalOptions="End" HorizontalOptions="Start" Spacing="10" Margin="20">
-            <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="Gray" TextColor="White" />
-            <Button Text="Done" Command="{Binding SaveSignatureCommand}" BackgroundColor="Green" TextColor="White" />
-        </VerticalStackLayout>
-       
-        <Button Text="Clear" Command="{Binding ClearSignatureCommand}"
-                VerticalOptions="Start" HorizontalOptions="End" Margin="20" />
-       
+
+        <!-- The DrawingView IS NOW THE FIRST ELEMENT (THE BACKGROUND LAYER) -->
+        <!-- It will expand to fill the entire screen, which is what we want. -->
         <toolkit:DrawingView x:Name="SignatureView"
                              Lines="{Binding Lines, Mode=TwoWay}"
                              LineColor="Black"
@@ -24,6 +18,33 @@
                              BackgroundColor="White"
                              IsMultiLineModeEnabled="True"/>
 
+
+        <HorizontalStackLayout VerticalOptions="End" 
+                               HorizontalOptions="Center" 
+                               Spacing="20" 
+                               Padding="0,0,0,20">
+           
+            <Button Text="Cancel" 
+                    Command="{Binding CancelCommand}" 
+                    BackgroundColor="Transparent" 
+                    TextColor="Red"
+                    BorderColor="Red"
+                    BorderWidth="1"
+                    WidthRequest="120" />
+          
+            <Button Text="Done" 
+                    Command="{Binding SaveSignatureCommand}" 
+                    BackgroundColor="Green" 
+                    TextColor="White"
+                    WidthRequest="120"/>
+        </HorizontalStackLayout>
+
+        <!-- This button will be positioned in the upper right corner -->
+        <Button Text="Clear" Command="{Binding ClearSignatureCommand}"
+                VerticalOptions="Start" HorizontalOptions="End" Margin="20" BackgroundColor="#E0E0E0" TextColor="Black"/>
+
+        <!-- THE ACTIVITY INDICATOR IS THE LAST LAYER (THE HIGHEST) -->
+        <!-- This ensures that it is visible above all else when active. -->
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center" Color="Black" />
     </Grid>
