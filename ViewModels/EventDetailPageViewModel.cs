@@ -74,6 +74,14 @@ namespace Mercurio.Driver.ViewModels
             }
         }
 
+        // This method will fire when the IsFirstEvent property is set by the navigation.
+        partial void OnIsFirstEventChanged(bool value)
+        {
+            // We call the logic again to make sure it is rebuilt
+            // the list of actions in case this property was the last to arrive.
+            BuildActionsList();
+        }
+
         // Method that fires when SignatureSaved changes
         partial void OnSignatureSavedChanged(bool value)
         {
@@ -88,11 +96,15 @@ namespace Mercurio.Driver.ViewModels
         /// Build or rebuild the list of actions visible to the user.
         /// </summary>
         private void BuildActionsList()
-        {          
+        {
+            // If the Event has not yet been set, we exit to avoid errors.
+            // This is crucial for when OnIsFirstEventChanged is executed first.
             if (Event is null) return;
 
             Actions.Clear();
 
+            // Now, when this code is executed, we are guaranteed that
+            // both 'Event' and 'IsFirstEvent' have their correct values.
             // We only show the main actions (Arrive, Signature, Perform, Cancel)
             // IF AND ONLY IF this is the first event on the list.
             if (IsFirstEvent)
