@@ -15,7 +15,7 @@ namespace Mercurio.Driver.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly AuthService _authService;
-    private readonly ISessionManagerService _sessionManager;
+    //private readonly ISessionManagerService _sessionManager;
 
     [ObservableProperty]
     string _username;
@@ -39,9 +39,9 @@ public partial class LoginViewModel : ObservableObject
     // For show/hide password icon
     public string PasswordToggleIcon => IsPasswordMasked ? "\uf070" : "\uf06e"; // eye-slash / eye
 
-    public LoginViewModel(ISessionManagerService sessionManager)
+    public LoginViewModel(/*ISessionManagerService sessionManager*/)
     {
-        _sessionManager = sessionManager;
+        //_sessionManager = sessionManager;
     }
 
     [RelayCommand]

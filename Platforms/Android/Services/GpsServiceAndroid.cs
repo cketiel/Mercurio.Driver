@@ -8,7 +8,8 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Mercurio.Driver.Services
 {
-    [Service]
+    [Service(Name = "com.mercurio.driver.Services.GpsServiceAndroid",
+         ForegroundServiceType = Android.Content.PM.ForegroundService.TypeLocation)]
     public class GpsServiceAndroid : Service, IGpsService
     {
         private System.Timers.Timer _timer;
@@ -38,10 +39,11 @@ namespace Mercurio.Driver.Services
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            if (intent.HasExtra("vehicle_route_id"))
+            // The service now starts "empty" and waits for orders.
+            if (intent != null && intent.HasExtra("vehicle_route_id"))
             {
                 int vehicleRouteId = intent.GetIntExtra("vehicle_route_id", 0);
-                if (vehicleRouteId > 0)
+                if (vehicleRouteId > 0 && !IsTracking)
                 {
                     StartTracking(vehicleRouteId);
                 }
@@ -54,7 +56,7 @@ namespace Mercurio.Driver.Services
             if (IsTracking) return;
 
             _idVehicleRoute = idVehicleRoute;
-            StartForegroundService();
+            PromoteToForegroundService();
 
             _timer = new System.Timers.Timer(60000); // 1 minuto
             _timer.Elapsed += async (s, e) => await SendLocationAsync();
@@ -77,7 +79,7 @@ namespace Mercurio.Driver.Services
             IsTrackingChanged?.Invoke(false);
         }
 
-        private void StartForegroundService()
+        private void PromoteToForegroundService()
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
@@ -88,12 +90,19 @@ namespace Mercurio.Driver.Services
 
             var notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .SetContentTitle("Mercurio Driver")
-                .SetContentText("El seguimiento de la ruta está activo.")
-                .SetSmallIcon(Resource.Drawable.dotnet_bot) // Asegúrate de que este ícono exista
+                .SetContentText("Route tracking is active..")
+                .SetSmallIcon(global::Mercurio.Driver.Resource.Drawable.dotnet_bot)
                 .SetOngoing(true)
                 .Build();
 
-            StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+            {
+                StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification, Android.Content.PM.ForegroundService.TypeLocation);
+            }
+            else
+            {
+                StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            }
         }
 
         private async Task SendLocationAsync()
@@ -102,8 +111,7 @@ namespace Mercurio.Driver.Services
             {
                 var location = await GetCurrentLocationAsync();
                 if (location == null) return;
-
-                // --- LÓGICA COMPLETADA ---
+               
                 var gpsData = new GpsDataDto
                 {
                     IdVehicleRoute = _idVehicleRoute,
@@ -112,8 +120,7 @@ namespace Mercurio.Driver.Services
                     Latitude = location.Latitude,
                     Longitude = location.Longitude,
                     Direction = GetCardinalDirection(location.Course)
-                };
-                // --- FIN LÓGICA COMPLETADA ---
+                };               
 
                 var response = await _httpClient.PostAsJsonAsync("api/Gps", gpsData);
 
@@ -128,7 +135,7 @@ namespace Mercurio.Driver.Services
             }
         }
 
-        // --- MÉTODO AÑADIDO PARA CUMPLIR LA INTERFAZ ---
+        
         public async Task<Location> GetCurrentLocationAsync()
         {
             try
@@ -143,7 +150,7 @@ namespace Mercurio.Driver.Services
             }
         }
 
-        // --- MÉTODO AUXILIAR AÑADIDO ---
+        
         private string GetCardinalDirection(double? bearing)
         {
             if (!bearing.HasValue) return "N/A";
@@ -152,7 +159,7 @@ namespace Mercurio.Driver.Services
         }
     }
 
-    // Clase Binder para la comunicación
+    // Binder class for communication
     public class GpsServiceBinder : Binder
     {
         public GpsServiceAndroid Service { get; }

@@ -135,6 +135,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Views\ComingSoonPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	  <None Update="Views\EventDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>

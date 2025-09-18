@@ -79,6 +79,29 @@ namespace Mercurio.Driver.ViewModels
             }
         }
 
+        private bool CanExecuteAction() => !IsBusy;
+
+        
+        private async Task<bool> CheckAndRequestLocationPermissionAsync()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+            if (status == PermissionStatus.Granted)
+                return true;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // On iOS, if the user denies permission, they cannot be asked again.
+                await Shell.Current.DisplayAlert("Permission Required", "Location permission was denied. Please activate it in the application settings.", "OK");
+                return false;
+            }
+
+            // Request permission from the user
+            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+
+            return status == PermissionStatus.Granted;
+        }
+
         private void OnGpsTrackingChanged(bool isTracking)
         {
             // The service notifies us that its status has changed
@@ -96,10 +119,7 @@ namespace Mercurio.Driver.ViewModels
             {
                 _gpsService.IsTrackingChanged -= OnGpsTrackingChanged;
             }
-        }
-
-        // Method that determines whether the command can be executed
-        private bool CanExecuteAction() => !IsBusy;
+        }       
 
         private async Task EnterOdometer()
         {
@@ -146,6 +166,60 @@ namespace Mercurio.Driver.ViewModels
         }
 
         private async Task PerformAction()
+        {
+            if (IsBusy) return;
+
+            IsBusy = true;
+
+            try
+            {
+                
+                if (Event.Name == "Pull-out")
+                {
+                    var hasPermission = await CheckAndRequestLocationPermissionAsync();
+                    if (!hasPermission)
+                    {
+                        // The user did not give permission, we cannot continue.
+                        await Shell.Current.DisplayAlert("Permission Required", "Tracking cannot be started without location permission.", "OK");
+                        return; // We leave the method
+                    }
+                }
+                
+
+                Event.Performed = true;
+                bool success = await _scheduleService.UpdateScheduleAsync(Event);
+
+                if (success)
+                {
+                    if (Event.Name == "Pull-out")
+                    {
+                        _gpsService.StartTracking(Event.VehicleRouteId);
+                    }
+                    else if (Event.Name == "Pull-in")
+                    {
+                        _gpsService.StopTracking();
+                    }
+                    await Shell.Current.GoToAsync("..");
+                }
+                else
+                {
+                    Event.Performed = false;
+                    await Shell.Current.DisplayAlert("Error", "The action could not be performed. Please check your connection and try again.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error performing action: {ex.Message}");
+                Event.Performed = false;
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        /*private async Task PerformAction()
         {
             if (IsBusy) return; // Prevent user from clicking multiple times
 
@@ -199,7 +273,7 @@ namespace Mercurio.Driver.ViewModels
 
             // Alerta de confirmación
             //await Shell.Current.DisplayAlert("Action Performed", "The 'Perform' action has been completed successfully.", "OK");
-        }
+        }*/
 
         [RelayCommand]
         private async Task GoToOdometer()
