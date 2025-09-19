@@ -13,5 +13,6 @@ namespace Mercurio.Driver.Services
         Task<bool> CancelTripByDriverAsync(int tripId, string reason);
 
         Task<List<ScheduleDto>> GetPendingSchedulesByRunAsync(string runLogin, DateTime date);
+        Task<List<ScheduleDto>> GetFutureSchedulesByRunAsync(string runLogin);
     }
 }

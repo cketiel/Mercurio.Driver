@@ -55,8 +55,30 @@ namespace Mercurio.Driver.ViewModels
         [RelayCommand]
         private async Task GoToFutureSchedule()
         {
-            Debug.WriteLine("Navegando al horario futuro...");
-            await Shell.Current.DisplayAlert("Navegación", "Ir a Horario Futuro (lógica pendiente)", "OK");
+            if (IsBusy) return;
+
+            if (string.IsNullOrWhiteSpace(RunLogin))
+            {
+                await Shell.Current.DisplayAlert("Input Required", "Please enter a Run Login.", "OK");
+                return;
+            }
+
+            try
+            {
+                IsBusy = true;
+                await Shell.Current.GoToAsync(nameof(FutureSchedulePage), new Dictionary<string, object>
+                {
+                    { "runLogin", RunLogin }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error navigating to future schedule: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

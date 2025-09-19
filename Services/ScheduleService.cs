@@ -1,5 +1,7 @@
 ﻿
 
+using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Web;
@@ -245,5 +247,24 @@ namespace Mercurio.Driver.Services
                 return false;
             }
         }
+
+        public async Task<List<ScheduleDto>> GetFutureSchedulesByRunAsync(string runLogin)
+        {
+            try
+            {
+                var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
+                var response = await _httpClient.GetAsync($"api/Schedules/driver/future?runLogin={encodedRunLogin}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<List<ScheduleDto>>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error fetching future schedules: {ex.Message}");
+            }
+            return new List<ScheduleDto>();
+        }
+
     }
 }

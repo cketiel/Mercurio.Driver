@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:models="clr-namespace:Mercurio.Driver.Models"
+             x:Class="Mercurio.Driver.Views.FutureDetailPage"
+             x:DataType="viewmodels:FutureDetailViewModel"
+             xmlns:enums="clr-namespace:Mercurio.Driver.Models"
+             Title="Future Event Details">
+
+    <ContentPage.Resources>
+        <Style TargetType="Grid" x:Key="NavRowStyle">
+            <Setter Property="BackgroundColor" Value="White"/>
+        </Style>
+        <Style TargetType="Label" x:Key="NavLabelStyle">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+        <Style TargetType="Label" x:Key="NavIconStyle">
+            <Setter Property="FontFamily" Value="FontAwesomeSolid"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="WidthRequest" Value="40"/>
+        </Style>
+        <Style TargetType="Label" x:Key="DetailHeaderLabel">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextColor" Value="Gray"/>
+        </Style>
+        <Style TargetType="Label" x:Key="DetailValueLabel">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="TextColor" Value="Black"/>
+        </Style>
+        <!-- Style for dividers inside the details card -->
+        <Style TargetType="BoxView" x:Key="DetailSeparatorStyle">
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Color" Value="#F0F0F0" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="1">
+            <!-- ACTION LIST -->
+            <CollectionView ItemsSource="{Binding Actions}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:EventAction">
+                        <!-- We use a VerticalStackLayout as the main container of the entire item -->
+                        <VerticalStackLayout Spacing="0">
+
+                            <Grid Style="{StaticResource NavRowStyle}" ColumnDefinitions="7,*">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Command}"/>
+                                </Grid.GestureRecognizers>
+
+                                <!-- The color bar in Column 0 -->
+                                <BoxView Grid.Column="0" 
+                        Color="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:EventDetailPageViewModel}}, Path=EventColor}"/>
+
+                                <!-- The content (icon, text, arrow) in Column 1 -->
+                                <Grid Grid.Column="1" Padding="15" ColumnDefinitions="Auto, *, Auto">
+                                    <Label Grid.Column="0" Text="{Binding IconGlyph}" Style="{StaticResource NavIconStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding Text}" Style="{StaticResource NavLabelStyle}"/>
+                                    <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
+                                </Grid>
+                            </Grid>
+
+                            <!-- The separator is now outside the Grid, spanning the full width -->
+                            <BoxView HeightRequest="3" Color="#E0E0E0" HorizontalOptions="Fill"/>
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- DETAILS SECTION -->
+            <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray" HorizontalOptions="Center" FontAttributes="Bold"/>
+
+            <Border StrokeThickness="0" BackgroundColor="White" Padding="15" Margin="10,0,10,10"
+        StrokeShape="RoundRectangle 5">
+                <VerticalStackLayout Spacing="0">
+                    <!-- Address -->
+                    <VerticalStackLayout Padding="0,10">
+
+                        <Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CopyAddressCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Style="{StaticResource DetailHeaderLabel}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="ADDRESS "/>
+                                        <Span Text="(Tap to Copy)" TextColor="#1E90FF"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                        <Label Text="{Binding Event.Address}" Style="{StaticResource DetailValueLabel}" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Event Type -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="EVENT TYPE" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.EventType}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Passenger -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="PASSENGER" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.Patient}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Space Type -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="SPACE TYPE" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.SpaceType}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Scheduled Time  -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="SCHEDULED TIME" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Style="{StaticResource DetailValueLabel}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding Event.EventType}" Value="{x:Static enums:ScheduleEventType.Pickup}">
+                                    <Setter Property="Text" Value="{Binding Event.Pickup, StringFormat='{0:hh\\:mm tt}'}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding Event.EventType}" Value="{x:Static enums:ScheduleEventType.Dropoff}">
+                                    <Setter Property="Text" Value="{Binding Event.Appt, StringFormat='{0:hh\\:mm tt}'}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- ETA -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="ETA" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.ETA, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Distance -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="DISTANCE" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.Distance, StringFormat='{0:F2} miles'}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Funding Source -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Label Text="FUNDING SOURCE" Style="{StaticResource DetailHeaderLabel}"/>
+                        <Label Text="{Binding Event.FundingSource}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Style="{StaticResource DetailSeparatorStyle}" />
+
+                    <!-- Home Phone -->
+                    <VerticalStackLayout Padding="0,10">
+                        <Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CopyPhoneCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <Label Style="{StaticResource DetailHeaderLabel}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="HOME PHONE "/>
+                                        <Span Text="(Tap to Copy)" TextColor="#1E90FF"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                        <Label Text="{Binding Event.Phone}" Style="{StaticResource DetailValueLabel}"/>
+                    </VerticalStackLayout>
+
+
+                </VerticalStackLayout>
+            </Border>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
