@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+﻿ using CommunityToolkit.Maui;
 using Mercurio.Driver.Models;
 using Mercurio.Driver.Services;
 using Mercurio.Driver.ViewModels;

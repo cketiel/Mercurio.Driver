@@ -12,6 +12,7 @@ namespace Mercurio.Driver.ViewModels
     public partial class TodayScheduleViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
+        private readonly ISessionManagerService _sessionManager;
 
         [ObservableProperty]
         private ObservableCollection<ScheduleDto> _events;
@@ -22,10 +23,22 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _runLogin;
 
-        public TodayScheduleViewModel(IScheduleService scheduleService)
+        [ObservableProperty]
+        private bool _hasEvents;
+
+        [ObservableProperty]
+        private bool _showNoEventsMessage;
+
+        public TodayScheduleViewModel(IScheduleService scheduleService, ISessionManagerService sessionManager)
         {
             _scheduleService = scheduleService;
+            _sessionManager = sessionManager;
             Events = new ObservableCollection<ScheduleDto>();
+        }
+        private void UpdateUiState()
+        {
+            HasEvents = Events.Any();
+            ShowNoEventsMessage = !HasEvents && !IsBusy;
         }
 
         [RelayCommand]
@@ -37,6 +50,8 @@ namespace Mercurio.Driver.ViewModels
             try
             {
                 IsBusy = true;
+                UpdateUiState();
+
                 var pendingEvents = await _scheduleService.GetPendingSchedulesByRunAsync(RunLogin, DateTime.Today);
                 // var pendingEvents = allScheduleEvents.Where(ev => !ev.Performed).ToList();
 
@@ -46,7 +61,7 @@ namespace Mercurio.Driver.ViewModels
                     Events.Add(ev);
                 }
 
-                SessionManagerService _sessionManager = new SessionManagerService(new GpsService());
+                //SessionManagerService _sessionManager = new SessionManagerService(new GpsService());
                 //await _sessionManager.CheckAndResumeGpsTrackingAsync(Events);
             }
             catch (Exception ex)
@@ -57,6 +72,7 @@ namespace Mercurio.Driver.ViewModels
             finally
             {
                 IsBusy = false;
+                UpdateUiState();
             }
         }
 
