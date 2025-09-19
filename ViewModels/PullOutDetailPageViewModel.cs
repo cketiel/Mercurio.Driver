@@ -14,6 +14,7 @@ namespace Mercurio.Driver.ViewModels
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
+        private readonly IMapService _mapService;
 
         [ObservableProperty]
         private ScheduleDto _event;
@@ -50,10 +51,11 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _mapActionText;
 
-        public PullOutDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService)
+        public PullOutDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService)
         {
             _scheduleService = scheduleService;
             _gpsService = gpsService;
+            _mapService = mapService;
 
             // Subscribe to service status changes
             if (_gpsService != null)
@@ -325,11 +327,21 @@ namespace Mercurio.Driver.ViewModels
         [RelayCommand]
         private async Task GoToMaps()
         {
-            // TODO: Implementar la apertura de mapas con la dirección del evento
-            if (Event != null && !string.IsNullOrWhiteSpace(Event.Address))
+            if (IsBusy || Event is null) return;
+
+            IsBusy = true;
+            try
             {
-                await Shell.Current.DisplayAlert("Función no implementada", $"Abrir mapas con la dirección: {Event.Address}", "OK");
-                Debug.WriteLine($"Abriendo mapas para la dirección: {Event.Address}");
+                await _mapService.LaunchNavigationAsync(Event.ScheduleLatitude, Event.ScheduleLongitude, Event.Address);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in MapsCommand: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred while trying to open maps.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
