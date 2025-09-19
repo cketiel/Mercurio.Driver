@@ -118,7 +118,8 @@ namespace Mercurio.Driver.Services
 
                 case "waze://": // Waze on iOS
                 case "com.waze": // Waze on Android
-                    navigationUri = new Uri($"https://waze.com/ul?ll={lat},{lon}&navigate=yes");
+                    navigationUri = new Uri($"waze://?ll={lat},{lon}&navigate=yes");
+                    //navigationUri = new Uri($"https://waze.com/ul?ll={lat},{lon}&navigate=yes");
                     break;
 
                 case "maps://": // Apple Maps on iOS
