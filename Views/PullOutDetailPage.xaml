@@ -100,7 +100,7 @@
 
             <Grid Grid.Column="1" Padding="15,15,15,15" ColumnDefinitions="Auto, *, Auto">
                 <Label Grid.Column="0" Text="" Style="{StaticResource NavIconStyle}"/>
-                <Label Grid.Column="1" Text="Maps - Pullout Address" Style="{StaticResource NavLabelStyle}"/>
+                <Label Grid.Column="1" Text="{Binding MapActionText}" Style="{StaticResource NavLabelStyle}"/>
                 <Label Grid.Column="2" Text="" FontFamily="FontAwesomeSolid" VerticalOptions="Center"/>
             </Grid>
         </Grid>

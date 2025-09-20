@@ -383,7 +383,7 @@ namespace Mercurio.Driver.ViewModels
                 IsPrimaryActionVisible = value.Name == "Pull-out" || (value.Name == "Pull-in" && IsFirstEvent);
 
                 EventColor = (Color)_colorConverter.Convert(value, typeof(Color), null, System.Globalization.CultureInfo.CurrentCulture);
-                IsOdometerEntered = value.Odometer != null && value.Odometer > 0;
+                IsOdometerEntered = value.Odometer != null && value.Odometer > -1;
             }
             else
             {               

@@ -25,7 +25,7 @@
 	<!-- Configuración para Android -->
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-android'">
 		<!-- Versión mínima recomendada para estabilidad (Android 7.0) -->
-		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Configuración para iOS -->
@@ -108,6 +108,9 @@
 	  <MauiXaml Update="Views\ComingSoonPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\DashboardPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\EventDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -142,6 +145,9 @@
 
 	<ItemGroup>
 	  <None Update="Views\ComingSoonPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Views\DashboardPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="Views\EventDetailPage.xaml">

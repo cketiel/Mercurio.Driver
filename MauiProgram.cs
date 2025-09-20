@@ -32,6 +32,7 @@ namespace Mercurio.Driver
             builder.Services.AddSingleton<IMapService, MapService>();
             builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
             builder.Services.AddSingleton<App>();
+            builder.Services.AddSingleton<IRunService, RunService>();
 
             // ViewModels (Transient because each page should have its own instance)
             builder.Services.AddTransient<LoginViewModel>();
@@ -43,6 +44,7 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<SignatureViewModel>();
             builder.Services.AddTransient<FutureScheduleViewModel>();
             builder.Services.AddTransient<FutureDetailViewModel>();
+            builder.Services.AddTransient<DashboardViewModel>();
 
             // Views/Pages (Transient)
             builder.Services.AddTransient<LoginPage>();
@@ -54,6 +56,7 @@ namespace Mercurio.Driver
             builder.Services.AddTransient<SignaturePage>();
             builder.Services.AddTransient<FutureSchedulePage>();
             builder.Services.AddTransient<FutureDetailPage>();
+            builder.Services.AddSingleton<DashboardPage>();
 
             // We register the GPS service using a factory
             // which gets the static instance of MainActivity

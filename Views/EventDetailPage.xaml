@@ -6,7 +6,7 @@
              x:Class="Mercurio.Driver.Views.EventDetailPage"
              x:DataType="viewmodels:EventDetailPageViewModel"
              xmlns:enums="clr-namespace:Mercurio.Driver.Models"
-             
+             Title="EVENT DETAILS"
              BackgroundColor="#F0F0F0">
   
     <ContentPage.Resources>

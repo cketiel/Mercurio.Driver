@@ -6,6 +6,8 @@
 
     <!-- Raphael Theme-->
 
+    <Color x:Key="AppDarkBackgroundColor">#1C1C1E</Color>
+    
     <!-- Colores primarios en tonalidades de rojo -->
     <Color x:Key="Primary">#D32F2F</Color>
     <!-- Rojo principal -->

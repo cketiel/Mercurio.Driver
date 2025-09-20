@@ -80,7 +80,7 @@
     <!-- DEFINITION OF MENU ITEMS -->
 
     <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
+        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:DashboardPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">

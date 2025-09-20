@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
+             x:Class="Mercurio.Driver.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
+             Title="DASHBOARD"
+             BackgroundColor="{StaticResource AppDarkBackgroundColor}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding InitializeCommand}" />
+    </ContentPage.Behaviors>
+    
+    <ContentPage.Resources>
+        
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+        <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" />
+        <converters:ScheduleDisplayTimeConverter x:Key="ScheduleDisplayTimeConverter" />
+        <converters:TripTypeConverter x:Key="TripTypeConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+
+    <Grid RowDefinitions="*, Auto">
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="10" Padding="10">
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" HorizontalOptions="Center" />
+
+                <VerticalStackLayout Spacing="10" IsVisible="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
+
+                    <!-- ==================================================================== -->
+                    <!-- Card 1: Run Info  -->
+                    <!-- ==================================================================== -->
+                    <Frame Style="{StaticResource CardViewStyle}" Padding="0">
+                        
+                        <Grid ColumnDefinitions="7, *">
+                            
+                            <BoxView Grid.Column="0" Color="#008080" />
+                          
+                            <Grid Grid.Column="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Padding="15">
+                                <Label Text="Run Info" FontSize="Large" FontAttributes="Bold" Grid.Column="0" TextColor="White"/>
+                                <Image Grid.Column="1" HeightRequest="24" WidthRequest="24" Source="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf5e4;', Color=White}"/>
+
+                                <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="5" Margin="0,15,0,0">
+                                    <Grid ColumnDefinitions="Auto, *">
+                                        <Label Text="Driver:" Grid.Column="0" TextColor="LightGray"/>
+                                        <Label Text="{Binding DriverName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto, *">
+                                        <Label Text="Run:" Grid.Column="0" TextColor="LightGray"/>
+                                        <Label Text="{Binding RunName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto, *">
+                                        <Label Text="Vehicle:" Grid.Column="0" TextColor="LightGray"/>
+                                        <Label Text="{Binding VehicleName}" Grid.Column="1" HorizontalOptions="End" TextColor="White" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!-- ==================================================================== -->
+                    <!-- Card 2: Next Event -->
+                    <!-- ==================================================================== -->
+                    <Frame Style="{StaticResource CardViewStyle}" IsVisible="{Binding NextEvent, Converter={StaticResource IsNotNullConverter}}" Padding="0">
+                        <Grid ColumnDefinitions="7, *">
+                            
+                            <BoxView Grid.Column="0" Color="{Binding NextEvent, Converter={StaticResource ScheduleColorConverter}}"/>
+                           
+                            <Grid Grid.Column="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Padding="15">
+                                
+                                <StackLayout Orientation="Horizontal" Spacing="5">
+                                    
+                                    <Label Text="{Binding NextEvent, Converter={StaticResource ScheduleDisplayTimeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                    <Label Text="-" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                   
+                                    <StackLayout Orientation="Horizontal" Spacing="5">
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding NextEvent.Name}" Value="Pull-in">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding NextEvent.Name}" Value="Pull-out">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                        <Label Text="{Binding NextEvent.EventType}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                        <Label Text="{Binding NextEvent.TripType, Converter={StaticResource TripTypeConverter}}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                    </StackLayout>
+
+                                    <!-- Pull-out -->
+                                    <Label Text="Pull Out" FontSize="Large" FontAttributes="Bold" TextColor="White" IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding NextEvent.Name}" Value="Pull-out">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <!-- Pull-in -->
+                                    <Label Text="Pull In" FontSize="Large" FontAttributes="Bold" TextColor="White" IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding NextEvent.Name}" Value="Pull-in">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </StackLayout>
+
+                                <Image Grid.Column="1" HeightRequest="24" WidthRequest="24" Source="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf5e4;', Color=White}"/>
+
+                                <!-- Fila 2: Dirección -->
+                                <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
+                                    <Image HeightRequest="20" WidthRequest="20" VerticalOptions="Start" Source="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf3c5;', Color=White}"/>
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding NextEvent.Address}" TextColor="White"/>
+                                                                                
+                                    </VerticalStackLayout>
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!-- ==================================================================== -->
+                    <!-- Card 3: Today's Events -->
+                    <!-- ==================================================================== -->
+                    <Frame Style="{StaticResource CardViewStyle}" Padding="0">
+                            <Grid ColumnDefinitions="7, *">
+                                <BoxView Grid.Column="0" Color="#8A2BE2" />
+                        
+                            <VerticalStackLayout Grid.Column="1" Padding="15">
+                                <Label Text="Today's Events" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                                <Label Margin="0,5,0,0">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding RemainingEventsCount}" FontAttributes="Bold" TextColor="White"/>
+                                            <Span Text=" Events Remaining" TextColor="LightGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Grid.Row="1"
+            Text="SCHEDULE"
+            Command="{Binding GoToScheduleCommand}"
+            Style="{StaticResource PrimaryButtonStyle}"
+            Margin="15" />
+    </Grid>
+
+        <!--<Grid IsVisible="{Binding IsBusy}" BackgroundColor="#80000000">
+            
+
+            <Border BackgroundColor="{StaticResource AppDarkBackgroundColor}" 
+                    Stroke="LightGray"
+                    StrokeThickness="1"
+                    Padding="30" 
+                    HorizontalOptions="Center" 
+                    VerticalOptions="Center"
+                    StrokeShape="RoundRectangle 10">
+
+                <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+                    <Label Text="Loading..." TextColor="White" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+            </Border>
+        </Grid>-->
+
+
+    </Grid>
+</ContentPage>
