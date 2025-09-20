@@ -266,5 +266,90 @@ namespace Mercurio.Driver.Services
             return new List<ScheduleDto>();
         }
 
+        public async Task<List<ScheduleHistoryDto>> GetScheduleHistoryAsync(string runLogin, DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(runLogin))
+                return new List<ScheduleHistoryDto>();
+
+            var dateString = date.ToString("yyyy-MM-dd");
+            dateString = "2025-09-15"; // esto es para probar
+            var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
+
+            
+            //var response = await _httpClient.GetAsync($"api/schedules/history/{runLogin}/{dateString}");
+
+
+            var requestUri = $"api/schedules/history/{encodedRunLogin}/{dateString}";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var schedules = JsonSerializer.Deserialize<List<ScheduleHistoryDto>>(content, _serializerOptions);
+                    return schedules ?? new List<ScheduleHistoryDto>();
+                }
+                else
+                {
+                    Debug.WriteLine($"Error fetching schedule history: {response.StatusCode} from {requestUri}");
+                    return new List<ScheduleHistoryDto>();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in GetScheduleHistoryAsync: {ex.Message}");
+                throw;
+
+            }
+
+        }
+
+        public async Task<int> GetScheduleHistoryCountAsync(string runLogin, DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(runLogin))
+                return 0;
+
+            var dateString = date.ToString("yyyy-MM-dd");
+            dateString = "2025-09-15"; // esto es para probar
+            var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
+
+            //var response = await _httpClient.GetAsync($"api/schedules/history/count/{runLogin}/{dateString}");
+
+            var requestUri = $"api/schedules/history/count/{encodedRunLogin}/{dateString}";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (int.TryParse(content, out int count))
+                    {
+                        return count;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Could not parse history count response: '{content}'");
+                        return 0; 
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"Error fetching history count: {response.StatusCode} from {requestUri}");
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in GetScheduleHistoryCountAsync: {ex.Message}");
+                throw;
+
+            }
+          
+        }
+
     }
 }

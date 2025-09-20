@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:dto="clr-namespace:Mercurio.Driver.DTOs"
+             xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Mercurio.Driver.Views.HistoryPage"
+             x:DataType="vm:HistoryViewModel"
+             Title="HISTORY"
+             BackgroundColor="#2C2C2E">
+
+    <ContentPage.Resources>
+        <converters:ScheduleHistoryColorConverter x:Key="ScheduleHistoryColorConverter" />
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:TimeSpanTo12HourStringConverter x:Key="TimeSpanConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Barra superior con la fecha -->
+        <Border Grid.Row="0" BackgroundColor="#4A4A4C" Padding="15,10" Margin="10,10,10,0"
+                StrokeShape="RoundRectangle 5" StrokeThickness="0">
+            <Label Text="{Binding HistoryDateText}" TextColor="White" HorizontalOptions="Center" />
+        </Border>
+
+        <!-- Lista de eventos en formato de línea de tiempo -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Events}" Margin="20,0,20,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:ScheduleHistoryDto">
+                    <Grid>
+                        <!-- Vista para eventos CANCELADOS -->
+                        <Grid IsVisible="{Binding IsCanceled}" ColumnDefinitions="Auto, *" ColumnSpacing="15" Margin="0,0,0,-1" Padding="0,10,0,0">
+                            <!-- Columna 0: Línea de tiempo NEGRA -->
+                            <Grid Grid.Column="0" RowDefinitions="*,Auto,*" WidthRequest="40">
+                                <BoxView Grid.Row="0" BackgroundColor="Black" WidthRequest="4" HorizontalOptions="Center" />
+                                <Border Grid.Row="1" WidthRequest="40" HeightRequest="40" BackgroundColor="Black" StrokeShape="RoundRectangle 20" VerticalOptions="Center">
+                                    <Label Text="&#xf00d;" FontFamily="FontAwesomeSolid" FontSize="20" TextColor="Red" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Border>
+                                <BoxView Grid.Row="2" BackgroundColor="Black" WidthRequest="4" HorizontalOptions="Center" />
+                            </Grid>
+                            <!-- Columna 1: Detalles de cancelado -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="8" Padding="0,10,0,30">
+                                <Label FontAttributes="Bold" FontSize="18" TextColor="White">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding ScheduledTime, Converter={StaticResource TimeSpanConverter}}" />
+                                            <Span Text=" - " />
+                                            <Span Text="{Binding EventType}" />
+                                            <Span Text=" " />
+                                            <Span Text="{Binding TripType}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <VerticalStackLayout Spacing="5" Margin="0,5,0,0">
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="&#xf007;" FontFamily="FontAwesomeSolid" TextColor="White" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Patient}" TextColor="White"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="&#xf5a0;" FontFamily="FontAwesomeSolid" TextColor="White" VerticalOptions="Start"/>
+                                        <Label Text="{Binding Address}" TextColor="White"/>
+                                    </StackLayout>
+                                </VerticalStackLayout>
+                                <Button Text="View Details" BackgroundColor="#5A8F4A" TextColor="White" HorizontalOptions="Start" Margin="0,10,0,0"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Vista para eventos COMPLETADOS -->
+                        <Grid IsVisible="{Binding IsCanceled, Converter={StaticResource InvertedBoolConverter}}" ColumnDefinitions="Auto, *" ColumnSpacing="15" Margin="0,0,0,-1" Padding="0,10,0,0">
+                            <!-- Columna 0: La línea de tiempo DE COLOR -->
+                            <Grid Grid.Column="0" RowDefinitions="*,Auto,*" WidthRequest="40">
+                                <BoxView Grid.Row="0" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}" WidthRequest="4" HorizontalOptions="Center" />
+                                <Border Grid.Row="1" WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20" VerticalOptions="Center" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}">
+                                    <Grid>
+                                        <Label Text="&#xf5e4;" FontFamily="FontAwesomeSolid" FontSize="20" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label Text="&#xf00c;" FontFamily="FontAwesomeSolid" FontSize="20" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                                    <Setter Property="IsVisible" Value="False" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                                    <Setter Property="IsVisible" Value="False" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Grid>
+                                </Border>
+                                <BoxView Grid.Row="2" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}" WidthRequest="4" HorizontalOptions="Center" />
+                            </Grid>
+
+                            <!-- Columna 1: Detalles de evento completado -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="8" Padding="0,10,0,30">
+                                <!-- Título para Eventos Pull-in/Pull-out -->
+                                <Label FontAttributes="Bold" FontSize="18" TextColor="White" IsVisible="False">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Perform, Converter={StaticResource TimeSpanConverter}}" />
+                                            <Span Text=" - " />
+                                            <Span Text="{Binding Name}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <!-- Título para Eventos Normales (Completados) -->
+                                <Label FontAttributes="Bold" FontSize="18" TextColor="White" IsVisible="True">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Perform, Converter={StaticResource TimeSpanConverter}}" />
+                                            <Span Text=" - " />
+                                            <Span Text="{Binding EventType}" />
+                                            <Span Text=" " />
+                                            <Span Text="{Binding TripType}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                                <!-- Información de Paciente y Dirección (Oculta para Pull-in/out) -->
+                                <VerticalStackLayout Spacing="5" Margin="0,5,0,0" IsVisible="True">
+                                    <VerticalStackLayout.Triggers>
+                                        <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding Name}" Value="Pull-in">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding Name}" Value="Pull-out">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </VerticalStackLayout.Triggers>
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="&#xf007;" FontFamily="FontAwesomeSolid" TextColor="White" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Patient}" TextColor="White"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="&#xf5a0;" FontFamily="FontAwesomeSolid" TextColor="White" VerticalOptions="Start"/>
+                                        <Label Text="{Binding Address}" TextColor="White"/>
+                                    </StackLayout>
+                                </VerticalStackLayout>
+                                <!-- Dirección para Pull-in/out -->
+                                <StackLayout Orientation="Horizontal" Spacing="10" Margin="0,5,0,0" IsVisible="False">
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding Name}" Value="Pull-in">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding Name}" Value="Pull-out">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                    <Label Text="&#xf5a0;" FontFamily="FontAwesomeSolid" TextColor="White" VerticalOptions="Start"/>
+                                    <Label Text="{Binding Address}" TextColor="White"/>
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -15,6 +15,9 @@ namespace Mercurio.Driver.ViewModels
         private readonly ISessionManagerService _sessionManager;
 
         [ObservableProperty]
+        private bool _isHistoryAvailable;
+
+        [ObservableProperty]
         private ObservableCollection<ScheduleDto> _events;
 
         [ObservableProperty]
@@ -63,6 +66,10 @@ namespace Mercurio.Driver.ViewModels
 
                 //SessionManagerService _sessionManager = new SessionManagerService(new GpsService());
                 //await _sessionManager.CheckAndResumeGpsTrackingAsync(Events);
+
+                var historyCount = await _scheduleService.GetScheduleHistoryCountAsync(RunLogin, DateTime.Today);
+                IsHistoryAvailable = historyCount > 0;
+
             }
             catch (Exception ex)
             {
@@ -112,6 +119,17 @@ namespace Mercurio.Driver.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task GoToHistory()
+        {
+            if (string.IsNullOrWhiteSpace(RunLogin)) return;
+
+            // Navegamos a la HistoryPage, pasando el RunLogin como parámetro
+            await Shell.Current.GoToAsync(nameof(HistoryPage), new Dictionary<string, object>
+    {
+        { "runLogin", RunLogin }
+    });
+        }
         // Automatic loading when RunLogin is set
         partial void OnRunLoginChanged(string value)
         {
