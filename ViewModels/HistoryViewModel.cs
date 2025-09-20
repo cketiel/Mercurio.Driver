@@ -5,8 +5,7 @@ using Mercurio.Driver.Services;
 using System.Collections.ObjectModel;
 
 namespace Mercurio.Driver.ViewModels
-{
-    // Recibirá el 'runLogin' desde la página anterior
+{   
     [QueryProperty(nameof(RunLogin), "runLogin")]
     public partial class HistoryViewModel : ObservableObject
     {

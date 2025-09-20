@@ -17,20 +17,20 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *">
-        <!-- Barra superior con la fecha -->
+        <!-- Top bar with date -->
         <Border Grid.Row="0" BackgroundColor="#4A4A4C" Padding="15,10" Margin="10,10,10,0"
                 StrokeShape="RoundRectangle 5" StrokeThickness="0">
             <Label Text="{Binding HistoryDateText}" TextColor="White" HorizontalOptions="Center" />
         </Border>
 
-        <!-- Lista de eventos en formato de línea de tiempo -->
+        <!-- List of events in timeline format -->
         <CollectionView Grid.Row="1" ItemsSource="{Binding Events}" Margin="20,0,20,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="dto:ScheduleHistoryDto">
                     <Grid>
-                        <!-- Vista para eventos CANCELADOS -->
+                        <!-- View for CANCELED events -->
                         <Grid IsVisible="{Binding IsCanceled}" ColumnDefinitions="Auto, *" ColumnSpacing="15" Margin="0,0,0,-1" Padding="0,10,0,0">
-                            <!-- Columna 0: Línea de tiempo NEGRA -->
+                            <!-- Column 0: BLACK timeline -->
                             <Grid Grid.Column="0" RowDefinitions="*,Auto,*" WidthRequest="40">
                                 <BoxView Grid.Row="0" BackgroundColor="Black" WidthRequest="4" HorizontalOptions="Center" />
                                 <Border Grid.Row="1" WidthRequest="40" HeightRequest="40" BackgroundColor="Black" StrokeShape="RoundRectangle 20" VerticalOptions="Center">
@@ -38,7 +38,7 @@
                                 </Border>
                                 <BoxView Grid.Row="2" BackgroundColor="Black" WidthRequest="4" HorizontalOptions="Center" />
                             </Grid>
-                            <!-- Columna 1: Detalles de cancelado -->
+                            <!-- Column 1: Canceled details -->
                             <VerticalStackLayout Grid.Column="1" Spacing="8" Padding="0,10,0,30">
                                 <Label FontAttributes="Bold" FontSize="18" TextColor="White">
                                     <Label.FormattedText>
@@ -65,9 +65,9 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <!-- Vista para eventos COMPLETADOS -->
+                        <!-- View for COMPLETED events -->
                         <Grid IsVisible="{Binding IsCanceled, Converter={StaticResource InvertedBoolConverter}}" ColumnDefinitions="Auto, *" ColumnSpacing="15" Margin="0,0,0,-1" Padding="0,10,0,0">
-                            <!-- Columna 0: La línea de tiempo DE COLOR -->
+                            <!-- Column 0: The COLOR timeline -->
                             <Grid Grid.Column="0" RowDefinitions="*,Auto,*" WidthRequest="40">
                                 <BoxView Grid.Row="0" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}" WidthRequest="4" HorizontalOptions="Center" />
                                 <Border Grid.Row="1" WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20" VerticalOptions="Center" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}">
@@ -97,9 +97,9 @@
                                 <BoxView Grid.Row="2" BackgroundColor="{Binding ., Converter={StaticResource ScheduleHistoryColorConverter}}" WidthRequest="4" HorizontalOptions="Center" />
                             </Grid>
 
-                            <!-- Columna 1: Detalles de evento completado -->
+                            <!-- Column 1: Completed event details -->
                             <VerticalStackLayout Grid.Column="1" Spacing="8" Padding="0,10,0,30">
-                                <!-- Título para Eventos Pull-in/Pull-out -->
+                                <!-- Title for Pull-in/Pull-out Events -->
                                 <Label FontAttributes="Bold" FontSize="18" TextColor="White" IsVisible="False">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
@@ -118,7 +118,7 @@
                                     </Label.FormattedText>
                                 </Label>
 
-                                <!-- Título para Eventos Normales (Completados) -->
+                                <!-- Title for Normal Events (Completed) -->
                                 <Label FontAttributes="Bold" FontSize="18" TextColor="White" IsVisible="True">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
@@ -139,7 +139,7 @@
                                     </Label.FormattedText>
                                 </Label>
 
-                                <!-- Información de Paciente y Dirección (Oculta para Pull-in/out) -->
+                                <!-- Patient and Address Information (Hidden for Pull-in/out) -->
                                 <VerticalStackLayout Spacing="5" Margin="0,5,0,0" IsVisible="True">
                                     <VerticalStackLayout.Triggers>
                                         <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding Name}" Value="Pull-in">
@@ -158,7 +158,7 @@
                                         <Label Text="{Binding Address}" TextColor="White"/>
                                     </StackLayout>
                                 </VerticalStackLayout>
-                                <!-- Dirección para Pull-in/out -->
+                                <!-- Direction for Pull-in/out -->
                                 <StackLayout Orientation="Horizontal" Spacing="10" Margin="0,5,0,0" IsVisible="False">
                                     <StackLayout.Triggers>
                                         <DataTrigger TargetType="StackLayout" Binding="{Binding Name}" Value="Pull-in">

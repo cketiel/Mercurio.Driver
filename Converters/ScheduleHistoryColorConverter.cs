@@ -7,27 +7,25 @@ namespace Mercurio.Driver.Converters
     public class ScheduleHistoryColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // ¡CAMBIO CLAVE! Ahora trabajamos con ScheduleHistoryDto
+        {           
             if (value is not ScheduleHistoryDto schedule)
                 return Colors.Gray;
-
-            // Para eventos cancelados, el diseño es diferente (negro), lo manejamos en el XAML.
-            // Para eventos completados:
+        
+            // For completed events:
             if (schedule.Name == "Pull-out" || schedule.Name == "Pull-in")
-                return Colors.White; // La línea de tiempo para Pull-out en la imagen es blanca.
+                return Colors.White; // The timeline for Pull-out in the image is white.
 
             if (schedule.EventType == ScheduleEventType.Pickup && schedule.TripType == "Appointment")
-                return Color.FromArgb("#2E7D32"); // Verde
+                return Color.FromArgb("#2E7D32"); // Green
 
             if (schedule.EventType == ScheduleEventType.Dropoff && schedule.TripType == "Appointment")
-                return Color.FromArgb("#C62828"); // Rojo
+                return Color.FromArgb("#C62828"); // Red
 
             if (schedule.EventType == ScheduleEventType.Pickup && schedule.TripType == "Return")
-                return Color.FromArgb("#1565C0"); // Azul
+                return Color.FromArgb("#1565C0"); // Blue
 
             if (schedule.EventType == ScheduleEventType.Dropoff && schedule.TripType == "Return")
-                return Color.FromArgb("#6A1B9A"); // Púrpura
+                return Color.FromArgb("#6A1B9A"); // Purple
 
             return Colors.Gray;
         }
