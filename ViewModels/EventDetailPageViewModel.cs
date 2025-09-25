@@ -150,7 +150,7 @@ namespace Mercurio.Driver.ViewModels
 
             // Common actions (Call, Map, etc.) are always added at the end.
             Actions.Add(new EventAction { Text = "Call Customer", IconGlyph = "", Command = CallCustomerCommand });
-            Actions.Add(new EventAction { Text = "Text Customer", IconGlyph = "", Command = TextCustomerCommand });
+            //Actions.Add(new EventAction { Text = "Text Customer", IconGlyph = "", Command = TextCustomerCommand });
 
             string mapActionText = Event.TripType == "Appointment"
                 ? "Maps - Appointment Address"
@@ -159,7 +159,8 @@ namespace Mercurio.Driver.ViewModels
             Actions.Add(new EventAction { Text = mapActionText, IconGlyph = "", Command = MapsCommand });
             //Actions.Add(new EventAction { Text = "Maps - Appointment Address", IconGlyph = "", Command = MapsCommand });
 
-            Actions.Add(new EventAction { Text = "Send Dispatch Message", IconGlyph = "", Command = SendDispatchMessageCommand });
+            Actions.Add(new EventAction { Text = "Call Dispatch", IconGlyph = "", Command = CallDispatchCommand });
+            //Actions.Add(new EventAction { Text = "Send Dispatch Message", IconGlyph = "", Command = SendDispatchMessageCommand });
         }
 
         [RelayCommand]
@@ -430,6 +431,7 @@ namespace Mercurio.Driver.ViewModels
         }
 
         [RelayCommand] private void SendDispatchMessage() => Debug.WriteLine("Send Dispatch Tapped");
+        [RelayCommand] private void CallDispatch() => Debug.WriteLine("Call Dispatch Tapped");
 
         [RelayCommand]
         private async Task CopyAddress()
