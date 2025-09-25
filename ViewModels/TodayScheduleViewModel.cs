@@ -100,8 +100,7 @@ namespace Mercurio.Driver.ViewModels
             bool isFirstEvent = Events.FirstOrDefault() == selectedEvent;
             
             if (selectedEvent.Name == "Pull-in" || selectedEvent.Name == "Pull-out")
-            {
-                // Navegamos pasando el objeto como parámetro
+            {               
                 await Shell.Current.GoToAsync(nameof(PullOutDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },
@@ -123,8 +122,7 @@ namespace Mercurio.Driver.ViewModels
         private async Task GoToHistory()
         {
             if (string.IsNullOrWhiteSpace(RunLogin)) return;
-
-            // Navegamos a la HistoryPage, pasando el RunLogin como parámetro
+          
             await Shell.Current.GoToAsync(nameof(HistoryPage), new Dictionary<string, object>
             {
                 { "runLogin", RunLogin }
