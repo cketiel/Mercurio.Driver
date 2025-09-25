@@ -40,5 +40,9 @@ namespace Mercurio.Driver.DTOs
         public string? Vehicle { get; set; }
         public int VehicleRouteId { get; set; }
         public byte[]? PassengerSignature { get; set; }
+
+        // To update the member's phone number
+        public int? CustomerId { get; set; }
+        public string? CustomerPhone { get; set; }
     }
 }

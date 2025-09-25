@@ -351,5 +351,32 @@ namespace Mercurio.Driver.Services
           
         }
 
+        public async Task<bool> UpdateContactPhoneNumberAsync(int tripId, string newPhoneNumber)
+        {
+            var requestUri = $"api/Schedules/trip/{tripId}/contact-phone";
+            
+            var updatePayload = new { PhoneNumber = newPhoneNumber };
+            var jsonContent = JsonSerializer.Serialize(updatePayload);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PutAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Error updating phone number: {response.StatusCode}. Body: {errorBody}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception in UpdateContactPhoneNumberAsync: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

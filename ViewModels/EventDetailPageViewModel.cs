@@ -126,6 +126,7 @@ namespace Mercurio.Driver.ViewModels
                     if (isSignatureRequired)
                     {
                         // CASE A: It is a Pickup and needs a signature.
+                        Actions.Add(new EventAction { Text = "Update Contact Phone Number", IconGlyph = "", Command = UpdatePhoneCommand });
                         Actions.Add(new EventAction { Text = "Passenger Signature", IconGlyph = "", Command = GoToSignaturePageCommand });
                         Actions.Add(new EventAction { Text = "Cancel Trip", IconGlyph = "", Command = CancelTripCommand });
                     }
@@ -155,6 +156,61 @@ namespace Mercurio.Driver.ViewModels
             //Actions.Add(new EventAction { Text = "Maps - Appointment Address", IconGlyph = "", Command = MapsCommand });
 
             Actions.Add(new EventAction { Text = "Send Dispatch Message", IconGlyph = "", Command = SendDispatchMessageCommand });
+        }
+
+        [RelayCommand]
+        private async Task UpdatePhone()
+        {            
+            if (Event?.TripId == null || Event.CustomerId == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Contact information is not available for this event.", "OK");
+                return;
+            }
+           
+            string newPhone = await Shell.Current.DisplayPromptAsync(
+                "Update Phone Number",
+                "Enter the new contact phone number for the customer:",
+                "Save",
+                "Cancel",
+                placeholder: "e.g., 555-123-4567",
+                initialValue: Event.CustomerPhone, 
+                keyboard: Keyboard.Telephone);
+
+            // The user canceled or left the field empty.
+            if (string.IsNullOrWhiteSpace(newPhone))
+            {
+                return;
+            }
+
+            IsBusy = true;
+            try
+            {
+                bool success = await _scheduleService.UpdateContactPhoneNumberAsync(Event.TripId.Value, newPhone);
+
+                if (success)
+                {
+                    
+                    Event.Phone = newPhone;
+                    Event.CustomerPhone = newPhone;
+                   
+                    OnPropertyChanged(nameof(Event));
+
+                    await Shell.Current.DisplayAlert("Success", "The phone number has been updated.", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Failed to update the phone number. Please check your connection and try again.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error updating phone number: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred while updating the phone number.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         [RelayCommand]
