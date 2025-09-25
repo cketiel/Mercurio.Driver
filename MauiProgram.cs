@@ -34,6 +34,8 @@ namespace Mercurio.Driver
             builder.Services.AddSingleton<App>();
             builder.Services.AddSingleton<IRunService, RunService>();
 
+            builder.Services.AddSingleton<IPhoneDialer>(PhoneDialer.Default);
+
             // ViewModels (Transient because each page should have its own instance)
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ScheduleViewModel>();

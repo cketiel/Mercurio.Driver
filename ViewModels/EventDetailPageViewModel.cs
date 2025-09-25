@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Android.Telecom;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.Converters;
 using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Models;
 using Mercurio.Driver.Services;
 using Mercurio.Driver.Views;
+using Microsoft.Maui.ApplicationModel.Communication;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -18,6 +20,7 @@ namespace Mercurio.Driver.ViewModels
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
         private readonly IMapService _mapService;
+        private readonly IPhoneDialer _phoneDialer;
 
         [ObservableProperty]
         private bool _isFirstEvent;
@@ -48,11 +51,12 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _signatureSaved;
 
-        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService)
+        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService, IPhoneDialer phoneDialer)
         {
             _scheduleService = scheduleService;
             _gpsService = gpsService;   
             _mapService = mapService;
+            _phoneDialer = phoneDialer;
         }
 
         // Called automatically when the 'Event' property receives a value
@@ -359,7 +363,49 @@ namespace Mercurio.Driver.ViewModels
             }
             // If the user presses "Cancel" or anything else, nothing is done.
         }
-        [RelayCommand] private void CallCustomer() => Debug.WriteLine("Call Customer Tapped");
+        [RelayCommand]
+        private async Task CallCustomer()
+        {                   
+            if (Event == null || string.IsNullOrWhiteSpace(Event.CustomerPhone))
+            {
+                await Shell.Current.DisplayAlert("Not available", "There is no contact phone number for this event.", "OK");
+                return;
+            }
+
+            try
+            {
+                // Ask the user if they want to make the call.
+                bool wantsToCall = await Shell.Current.DisplayAlert(
+                    "Confirm call", //"Confirmar llamada",
+                    $"Do you want to call this number?\n{Event.CustomerPhone}", // $"¿Deseas llamar a este número?\n{Event.CustomerPhone}",
+                    "Call", // "Llamar",
+                    "Cancel"); // "Cancelar");
+
+                if (wantsToCall)
+                {
+                    // Check if the device supports making calls.
+                    if (_phoneDialer.IsSupported)
+                    {
+                        // Open phone dialer with number.
+                        _phoneDialer.Open(Event.CustomerPhone);
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Not supported", "This device cannot make calls.", "OK");
+                    }
+                }
+            }
+            // Handle possible exceptions
+            catch (FeatureNotSupportedException)
+            {
+                await Shell.Current.DisplayAlert("Not supported", "Calling functionality is not supported on this device.", "OK");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error when trying to call: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred while trying to make the call.", "OK");
+            }
+        }
         [RelayCommand] private void TextCustomer() => Debug.WriteLine("Text Customer Tapped");
 
         [RelayCommand]
