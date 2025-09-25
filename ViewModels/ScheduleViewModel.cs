@@ -11,8 +11,8 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private string _runLogin;
 
-        [ObservableProperty]
-        private string _vehicleLogin;
+        //[ObservableProperty]
+        //private string _vehicleLogin;
 
         [ObservableProperty]
         private bool _isBusy;

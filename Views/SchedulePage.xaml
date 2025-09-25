@@ -47,7 +47,7 @@
                        FontSize="16"/>
             </Border>
          
-            <Border StrokeShape="RoundRectangle 10"
+            <!--<Border StrokeShape="RoundRectangle 10"
                     StrokeThickness="1" 
                     Stroke="#CCCCCC" 
                     BackgroundColor="White" 
@@ -57,7 +57,7 @@
                        Text="{Binding VehicleLogin}"
                        VerticalTextAlignment="Center"
                        FontSize="16"/>
-            </Border>
+            </Border>-->
 
             <!-- Button Today's Schedule (Green) -->
             <Button Text="TODAY'S SCHEDULE"

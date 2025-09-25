@@ -126,10 +126,17 @@ namespace Mercurio.Driver.ViewModels
 
             // Navegamos a la HistoryPage, pasando el RunLogin como parámetro
             await Shell.Current.GoToAsync(nameof(HistoryPage), new Dictionary<string, object>
-    {
-        { "runLogin", RunLogin }
-    });
+            {
+                { "runLogin", RunLogin }
+            });
         }
+
+        [RelayCommand]
+        private async Task ChangeRoute()
+        {          
+            await Shell.Current.GoToAsync("//SchedulePage");
+        }
+
         // Automatic loading when RunLogin is set
         partial void OnRunLoginChanged(string value)
         {

@@ -37,7 +37,7 @@
           
             <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="10" Padding="10,10">
                 <Button Text="VIEW HISTORY" BackgroundColor="#1976D2" TextColor="White" Command="{Binding GoToHistoryCommand}" IsEnabled="{Binding IsHistoryAvailable}"/>
-                <Button Grid.Column="1" Text="CHANGE ROUTE" BackgroundColor="#4CAF50" TextColor="White" />
+                <Button Grid.Column="1" Text="CHANGE ROUTE" BackgroundColor="#4CAF50" TextColor="White" Command="{Binding ChangeRouteCommand}"/>
             </Grid>
            
             <Grid Grid.Row="1">
