@@ -1,5 +1,4 @@
-﻿using Android.Telecom;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mercurio.Driver.Converters;
 using Mercurio.Driver.DTOs;

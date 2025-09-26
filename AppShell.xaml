@@ -95,8 +95,10 @@
         <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="CONTACTS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
-        <ShellContent Route="ContactsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
+    <FlyoutItem Title="CONTACT" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+        <ShellContent
+        Route="ContactPage"
+        ContentTemplate="{DataTemplate views:ContactPage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
