@@ -495,10 +495,13 @@ namespace Mercurio.Driver.ViewModels
         }
 
         private async Task FinalizeArrival(double distanceInMiles, string gpsArrive)
-        {          
+        {
+            TimeSpan? oldEta = Event.ETA;
+
             Event.Arrive = DateTime.Now.TimeOfDay;
             Event.ArriveDist = distanceInMiles;
             Event.GPSArrive = gpsArrive;
+            Event.ETA = Event.Arrive;
            
             var success = await _scheduleService.UpdateScheduleAsync(Event);
 
@@ -513,16 +516,20 @@ namespace Mercurio.Driver.ViewModels
                 Event.Arrive = null;
                 Event.ArriveDist = null;
                 Event.GPSArrive = null;
+                Event.ETA = oldEta;
                 await Shell.Current.DisplayAlert("Error", "Could not save arrival time. Please try again.", "OK");
             }
         }
 
         private async Task FinalizePerform(double distanceInMiles)
-        {            
+        {
+            TimeSpan? oldEta = Event.ETA;
+
             Event.Perform = DateTime.Now.TimeOfDay; 
             Event.PerformDist = distanceInMiles;    
-            Event.Performed = true;                 
-           
+            Event.Performed = true;
+            Event.ETA = Event.Perform;
+
             var success = await _scheduleService.UpdateScheduleAsync(Event);
 
             if (success)
@@ -536,6 +543,7 @@ namespace Mercurio.Driver.ViewModels
                 Event.Perform = null;
                 Event.PerformDist = null;
                 Event.Performed = false;
+                Event.ETA = oldEta;
                 await Shell.Current.DisplayAlert("Error", "Could not save perform data. Please try again.", "OK");
             }
         }

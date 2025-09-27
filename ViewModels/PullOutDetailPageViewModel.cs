@@ -186,9 +186,12 @@ namespace Mercurio.Driver.ViewModels
                         return; // We leave the method
                     }
                 }
-                
 
+                TimeSpan? oldEta = Event.ETA;
+                Event.Perform = DateTime.Now.TimeOfDay;
                 Event.Performed = true;
+                Event.ETA = Event.Perform;
+
                 bool success = await _scheduleService.UpdateScheduleAsync(Event);
 
                 if (success)
@@ -205,7 +208,9 @@ namespace Mercurio.Driver.ViewModels
                 }
                 else
                 {
+                    Event.Perform = null;
                     Event.Performed = false;
+                    Event.ETA = oldEta;
                     await Shell.Current.DisplayAlert("Error", "The action could not be performed. Please check your connection and try again.", "OK");
                 }
             }
