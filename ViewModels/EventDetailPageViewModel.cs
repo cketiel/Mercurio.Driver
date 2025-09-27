@@ -20,6 +20,7 @@ namespace Mercurio.Driver.ViewModels
         private readonly IGpsService _gpsService;
         private readonly IMapService _mapService;
         private readonly IPhoneDialer _phoneDialer;
+        private readonly IProviderService _providerService;
 
         [ObservableProperty]
         private bool _isFirstEvent;
@@ -50,12 +51,13 @@ namespace Mercurio.Driver.ViewModels
         [ObservableProperty]
         private bool _signatureSaved;
 
-        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService, IPhoneDialer phoneDialer)
+        public EventDetailPageViewModel(IScheduleService scheduleService, IGpsService gpsService, IMapService mapService, IPhoneDialer phoneDialer, IProviderService providerService)
         {
             _scheduleService = scheduleService;
             _gpsService = gpsService;   
             _mapService = mapService;
             _phoneDialer = phoneDialer;
+            _providerService = providerService;
         }
 
         // Called automatically when the 'Event' property receives a value
@@ -430,7 +432,47 @@ namespace Mercurio.Driver.ViewModels
         }
 
         [RelayCommand] private void SendDispatchMessage() => Debug.WriteLine("Send Dispatch Tapped");
-        [RelayCommand] private void CallDispatch() => Debug.WriteLine("Call Dispatch Tapped");
+        
+        [RelayCommand]
+        private async Task CallDispatch()
+        {
+            if (IsBusy) return;
+
+            IsBusy = true;
+            try
+            {
+                
+                var provider = await _providerService.GetContactProviderAsync();
+
+                if (provider == null || string.IsNullOrWhiteSpace(provider.Phone))
+                {
+                    await Shell.Current.DisplayAlert("Not available", "The office phone number is not configured.", "OK");
+                    return;
+                }
+             
+                if (await Shell.Current.DisplayAlert("Confirm call", $"Do you want to call the office?\n{provider.Phone}", "Call", "Cancel"))
+                {
+                    
+                    if (_phoneDialer.IsSupported)
+                    {
+                        _phoneDialer.Open(provider.Phone);
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Not supported", "This device cannot make calls.", "OK");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error when trying to call the office: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "An unexpected error occurred while trying to make the call.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
 
         [RelayCommand]
         private async Task CopyAddress()
