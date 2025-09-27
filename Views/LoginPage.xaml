@@ -17,27 +17,23 @@
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             
             <Color x:Key="PageBackgroundColorStart">#E94560</Color>
-            <!-- Rosa/Rojo claro -->
+            
             <Color x:Key="PageBackgroundColorEnd">#B82E49</Color>
-            <!-- Rojo más oscuro/Magenta -->
-
+            
             <Color x:Key="FormContainerColor">#6A0000</Color>
-            <!-- Rojo oscuro base para el contenedor -->
+
             <Color x:Key="FormContainerBackgroundColor">#A06A0000</Color>
-            <!-- Rojo oscuro semitransparente (Alpha 0xA0) -->
 
             <Color x:Key="EntryBackgroundColor">#80400000</Color>
-            <!-- Rojo aún más oscuro semitransparente para campos -->
+
             <Color x:Key="LoginButtonColor">#A52A2A</Color>
-            <!-- Un rojo sólido para el botón Login, similar al contenedor -->
 
             <Color x:Key="PrimaryTextColor">White</Color>
             <Color x:Key="SecondaryTextColor">#FFE0E0</Color>
-            <!-- Un blanco rosado muy claro -->
+            
             <Color x:Key="PlaceholderColor">#FFC0C0</Color>
-            <!-- Un rosado claro para placeholders -->
+
             <Color x:Key="AccentColorRed">#FF6B6B</Color>
-            <!-- Para el botón Sign Up o links -->
 
             <Style TargetType="Label" x:Key="IconLabelStyle">
                 <Setter Property="FontFamily" Value="FontAwesomeSolid" />
@@ -92,12 +88,19 @@
                    WidthRequest="200"
                    HeightRequest="200"/>
 
+                <Label Text="RAPHAEL"
+                    TextColor="{StaticResource FormContainerColor}"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    Margin="0,-50,0,20"/>
+                
                 <Label Text="by Milanes Service LLC"
                     TextColor="{StaticResource PrimaryTextColor}"
                     FontSize="12"
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
-                    Margin="0,-40,0,20"/>
+                    Margin="0,-20,0,20"/>
 
                 <Border BackgroundColor="{StaticResource FormContainerBackgroundColor}"
                         StrokeThickness="0"
@@ -181,7 +184,7 @@
                 </Border>
 
                 <HorizontalStackLayout Spacing="5" HorizontalOptions="Center" Margin="0,25,0,25">
-                    <Label Text="MERCURIO by" 
+                    <Label Text="RAPHAEL by" 
                            TextColor="{StaticResource SecondaryTextColor}" 
                            VerticalTextAlignment="Center"/>
                     <Button Text="MILANES System"
