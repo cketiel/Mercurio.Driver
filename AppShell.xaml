@@ -72,41 +72,41 @@
 
     <!-- Flyout header with logo -->
     <Shell.FlyoutHeader>
-        <Grid Padding="20, 40" BackgroundColor="White">
+        <Grid Padding="20, 40" BackgroundColor="{StaticResource CardBackgroundColor}">
             <Image Source="logo.png" Aspect="AspectFit" HeightRequest="80" />
         </Grid>
     </Shell.FlyoutHeader>
 
     <!-- DEFINITION OF MENU ITEMS -->
 
-    <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:DashboardPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
-  
-    <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+
+    <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="CONTACT" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <FlyoutItem Title="CONTACT" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent
         Route="ContactPage"
         ContentTemplate="{DataTemplate views:ContactPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}" />
     </FlyoutItem>
 
     <!-- Logout Item (MenuItem) -->
-    <MenuItem Text="SIGNOUT" IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color=Black}">
+    <MenuItem Text="SIGNOUT" IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <MenuItem.Command>
             <Binding Path="BindingContext.SignOutCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
         </MenuItem.Command>

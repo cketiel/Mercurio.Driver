@@ -1,14 +1,13 @@
 ﻿using Mercurio.Driver.Models;
+using Mercurio.Driver.Resources.Styles;
 using Microsoft.Extensions.Configuration;
 
-using Microsoft.Extensions.Configuration;
-using Mercurio.Driver.Models;
 
 namespace Mercurio.Driver
 {
     public partial class App : Application
     {
-        private readonly ResourceDictionary _darkThemeDictionary;
+        private readonly DarkTheme _darkThemeDictionary;
         public App()
         {
             //AppConfig.Init();
@@ -19,7 +18,7 @@ namespace Mercurio.Driver
             // Go directly to LoginPage on startup
             //Shell.Current.GoToAsync("//LoginPage");
 
-            _darkThemeDictionary = new ResourceDictionary { Source = new Uri("Resources/Styles/DarkTheme.xaml", UriKind.Relative) };
+            _darkThemeDictionary = new DarkTheme();
 
             // Suscribirse al evento de cambio de tema del sistema operativo.
             Current.RequestedThemeChanged += OnRequestedThemeChanged;
@@ -40,7 +39,6 @@ namespace Mercurio.Driver
 
         private void OnRequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
         {
-            // El sistema operativo nos notificó un cambio, cargamos el tema solicitado.
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 LoadTheme(e.RequestedTheme);
@@ -49,19 +47,16 @@ namespace Mercurio.Driver
 
         private void LoadTheme(AppTheme theme)
         {
-            // Obtenemos la colección de diccionarios fusionados de la aplicación.
             var mergedDictionaries = Current.Resources.MergedDictionaries;
 
-            // Primero, siempre nos aseguramos de que el diccionario oscuro no esté presente.
-            // Esto es importante para cuando se cambia de oscuro a claro.
             if (mergedDictionaries.Contains(_darkThemeDictionary))
             {
                 mergedDictionaries.Remove(_darkThemeDictionary);
             }
 
-            // Si el tema solicitado es Oscuro, añadimos nuestro diccionario de tema oscuro.
             if (theme == AppTheme.Dark)
             {
+                // Como _darkThemeDictionary ya es una instancia completa, simplemente la añadimos.
                 mergedDictionaries.Add(_darkThemeDictionary);
             }
         }
