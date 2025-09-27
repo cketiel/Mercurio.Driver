@@ -47,9 +47,9 @@
                                 IsVisible="{Binding HasEvents}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="dto:ScheduleDto">
-                            
-                            <Border StrokeThickness="1" Stroke="#DDDDDD" Margin="10,0,10,10"
-                                    StrokeShape="RoundRectangle 5" Padding="0" BackgroundColor="White">
+
+                            <Border StrokeThickness="1" Stroke="{StaticResource SeparatorColor}" Margin="10,0,10,10"
+                                    StrokeShape="RoundRectangle 5" Padding="0" BackgroundColor="{StaticResource CardBackgroundColor}">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TodayScheduleViewModel}}, Path=SelectEventCommand}"
@@ -78,11 +78,11 @@
                                                         <Setter Property="IsVisible" Value="False" />
                                                     </MultiTrigger>
                                                 </Grid.Triggers>
-                                                <Label Text="{Binding SpaceType}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start" />
-                                                <Label Text="{Binding FundingSource}" TextColor="White" FontAttributes="Bold" HorizontalOptions="End" />
+                                                <Label Text="{Binding SpaceType}" TextColor="{StaticResource PrimaryTextColor}" FontAttributes="Bold" HorizontalOptions="Start" />
+                                                <Label Text="{Binding FundingSource}" TextColor="{StaticResource PrimaryTextColor}" FontAttributes="Bold" HorizontalOptions="End" />
                                             </Grid>
                                             <!-- Panel for "Pull-in" case -->
-                                            <Label Text="Perform Pull In" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                            <Label Text="Perform Pull In" IsVisible="False" TextColor="{StaticResource PrimaryTextColor}" FontAttributes="Bold" HorizontalOptions="Start">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-in">
                                                         <Setter Property="IsVisible" Value="True" />
@@ -90,7 +90,7 @@
                                                 </Label.Triggers>
                                             </Label>
                                             <!-- Panel for "Pull-out" case -->
-                                            <Label Text="Perform Pull Out" IsVisible="False" TextColor="White" FontAttributes="Bold" HorizontalOptions="Start">
+                                            <Label Text="Perform Pull Out" IsVisible="False" TextColor="{StaticResource PrimaryTextColor}" FontAttributes="Bold" HorizontalOptions="Start">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Name}" Value="Pull-out">
                                                         <Setter Property="IsVisible" Value="True" />

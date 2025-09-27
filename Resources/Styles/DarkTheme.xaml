@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             >
+
+    <!-- COLORES PARA EL TEMA OSCURO (DARK THEME) -->
+    <!-- Estos colores sobrescriben a los de Colors.xaml cuando se activa -->
+
+    <!-- Colores de Fondo -->
+    <Color x:Key="PageBackgroundColor">#121212</Color>
+    <!-- Negro casi puro -->
+    <Color x:Key="CardBackgroundColor">#1E1E1E</Color>
+    <!-- Gris oscuro para tarjetas -->
+
+    <!-- Colores de Texto -->
+    <Color x:Key="PrimaryTextColor">White</Color>
+    <Color x:Key="SecondaryTextColor">#A9A9A9</Color>
+    <!-- Gris claro -->
+    <!-- TertiaryTextColor y ButtonTextColor no necesitan cambio si funcionan bien -->
+
+    <!-- Colores de Separadores y Bordes -->
+    <Color x:Key="SeparatorColor">#2E2E2E</Color>
+    <Color x:Key="BorderColor">#444444</Color>
+    
+
+</ResourceDictionary>

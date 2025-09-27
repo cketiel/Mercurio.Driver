@@ -37,13 +37,15 @@
            
             <Border StrokeShape="RoundRectangle 10" 
                     StrokeThickness="1" 
-                    Stroke="#CCCCCC" 
-                    BackgroundColor="White" 
+                    Stroke="{StaticResource BorderColor}" 
+                    BackgroundColor="{StaticResource CardBackgroundColor}" 
                     Padding="15,0" 
                     HeightRequest="50">
                 <Entry Placeholder="Run Login"
                        Text="{Binding RunLogin}"
                        VerticalTextAlignment="Center"
+                       TextColor="{StaticResource PrimaryTextColor}"
+                        PlaceholderColor="{StaticResource SecondaryTextColor}"
                        FontSize="16"/>
             </Border>
          

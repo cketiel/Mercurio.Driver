@@ -8,6 +8,7 @@ namespace Mercurio.Driver
 {
     public partial class App : Application
     {
+        private readonly ResourceDictionary _darkThemeDictionary;
         public App()
         {
             //AppConfig.Init();
@@ -17,6 +18,15 @@ namespace Mercurio.Driver
             MainPage = new AppShell();
             // Go directly to LoginPage on startup
             //Shell.Current.GoToAsync("//LoginPage");
+
+            _darkThemeDictionary = new ResourceDictionary { Source = new Uri("Resources/Styles/DarkTheme.xaml", UriKind.Relative) };
+
+            // Suscribirse al evento de cambio de tema del sistema operativo.
+            Current.RequestedThemeChanged += OnRequestedThemeChanged;
+
+            // Establecer el tema correcto cuando la aplicación se inicia por primera vez.
+            LoadTheme(Current.RequestedTheme);
+
         }
 
         /// <summary>
@@ -26,6 +36,34 @@ namespace Mercurio.Driver
         protected override void OnStart()
         {           
             Shell.Current.GoToAsync("///LoginPage");
+        }
+
+        private void OnRequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
+        {
+            // El sistema operativo nos notificó un cambio, cargamos el tema solicitado.
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadTheme(e.RequestedTheme);
+            });
+        }
+
+        private void LoadTheme(AppTheme theme)
+        {
+            // Obtenemos la colección de diccionarios fusionados de la aplicación.
+            var mergedDictionaries = Current.Resources.MergedDictionaries;
+
+            // Primero, siempre nos aseguramos de que el diccionario oscuro no esté presente.
+            // Esto es importante para cuando se cambia de oscuro a claro.
+            if (mergedDictionaries.Contains(_darkThemeDictionary))
+            {
+                mergedDictionaries.Remove(_darkThemeDictionary);
+            }
+
+            // Si el tema solicitado es Oscuro, añadimos nuestro diccionario de tema oscuro.
+            if (theme == AppTheme.Dark)
+            {
+                mergedDictionaries.Add(_darkThemeDictionary);
+            }
         }
     }
 

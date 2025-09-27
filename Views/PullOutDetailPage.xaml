@@ -6,7 +6,7 @@
              x:DataType="viewmodels:PullOutDetailPageViewModel"
              xmlns:converters="clr-namespace:Mercurio.Driver.Converters" 
              Title="{Binding PageTitle}"
-             BackgroundColor="#F0F0F0">
+             BackgroundColor="{StaticResource PageBackgroundColor}">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />
@@ -18,10 +18,11 @@
         <!-- <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" /> -->
 
         <Style TargetType="Grid" x:Key="NavRowStyle">
-            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="BackgroundColor" Value="{StaticResource CardBackgroundColor}"/>
         </Style>
         
         <Style TargetType="Label" x:Key="NavLabelStyle">
+            <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="VerticalOptions" Value="Center"/>
         </Style>
@@ -34,17 +35,17 @@
         </Style>
         <Style TargetType="Label" x:Key="DetailHeaderLabel">
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="TextColor" Value="Gray"/>
+            <Setter Property="TextColor" Value="{StaticResource SecondaryTextColor}"/>
         </Style>
         <Style TargetType="Label" x:Key="DetailValueLabel">
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="TextColor" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="FontAttributes" Value="Bold"/>
         </Style>
         <!-- Style for dividers inside the details card -->
         <Style TargetType="BoxView" x:Key="DetailSeparatorStyle">
             <Setter Property="HeightRequest" Value="1" />
-            <Setter Property="Color" Value="#F0F0F0" />
+            <Setter Property="Color" Value="{StaticResource SeparatorColor}" />
             <Setter Property="HorizontalOptions" Value="Fill" />
         </Style>
     </ContentPage.Resources>
@@ -108,7 +109,7 @@
         <!-- Details Section -->
         <Label Text="DETAILS" Margin="15,20,15,5" FontSize="14" TextColor="Gray" HorizontalOptions="Center" FontAttributes="Bold"/>
 
-        <Border StrokeThickness="0" BackgroundColor="White" Padding="15" Margin="10,0"
+            <Border StrokeThickness="0" BackgroundColor="{StaticResource CardBackgroundColor}" Padding="15" Margin="10,0"
                 StrokeShape="RoundRectangle 5">
             <VerticalStackLayout Spacing="0">
                 <!-- Address -->
