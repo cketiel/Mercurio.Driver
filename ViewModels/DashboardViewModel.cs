@@ -60,7 +60,7 @@ namespace Mercurio.Driver.ViewModels
                     // If it cannot be converted or is 0, we do not continue.
                     return;
                 }
-                userId = 6;
+                //userId = 6; // para probar
                 if (userId == 0) return;
 
                 // Get the active route

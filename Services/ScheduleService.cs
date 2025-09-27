@@ -35,7 +35,7 @@ namespace Mercurio.Driver.Services
                 return new List<ScheduleDto>(); 
 
             var dateString = date.ToString("yyyy-MM-dd");
-            dateString = "2025-09-15"; // esto es para probar
+            //dateString = "2025-09-15"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
 
             var requestUri = $"api/Schedules/by-run-login?runLogin={encodedRunLogin}&date={dateString}";
@@ -69,7 +69,7 @@ namespace Mercurio.Driver.Services
                 return new List<ScheduleDto>();
 
             var dateString = date.ToString("yyyy-MM-dd");
-            dateString = "2025-09-15"; // esto es para probar
+            //dateString = "2025-09-15"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
           
             var requestUri = $"api/Schedules/driver/pending?runLogin={encodedRunLogin}&date={dateString}";
@@ -272,7 +272,7 @@ namespace Mercurio.Driver.Services
                 return new List<ScheduleHistoryDto>();
 
             var dateString = date.ToString("yyyy-MM-dd");
-            dateString = "2025-09-15"; // esto es para probar
+            //dateString = "2025-09-15"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
 
             
@@ -312,7 +312,7 @@ namespace Mercurio.Driver.Services
                 return 0;
 
             var dateString = date.ToString("yyyy-MM-dd");
-            dateString = "2025-09-15"; // esto es para probar
+            //dateString = "2025-09-15"; // esto es para probar
             var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
 
             //var response = await _httpClient.GetAsync($"api/schedules/history/count/{runLogin}/{dateString}");
