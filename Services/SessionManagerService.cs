@@ -85,7 +85,8 @@ namespace Mercurio.Driver.Services
                 {
                     
                     Debug.WriteLine($"SessionManager: Conditions met. Starting GPS tracking for VehicleRouteId: {pullOutEvent.VehicleRouteId}");
-                    _gpsService.StartTracking(pullOutEvent.VehicleRouteId);
+                    if(!_gpsService.IsTracking)
+                        _gpsService.StartTracking(pullOutEvent.VehicleRouteId);
                 }
                 else
                 {

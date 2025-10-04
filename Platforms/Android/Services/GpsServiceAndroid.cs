@@ -58,7 +58,7 @@ namespace Mercurio.Driver.Services
             _idVehicleRoute = idVehicleRoute;
             PromoteToForegroundService();
 
-            _timer = new System.Timers.Timer(60000); // 1 minuto
+            _timer = new System.Timers.Timer(5000); // 5 segundos
             _timer.Elapsed += async (s, e) => await SendLocationAsync();
             _timer.Start();
 

@@ -509,6 +509,8 @@ namespace Mercurio.Driver.ViewModels
             {               
                 HasArrived = true;
                 BuildActionsList(); // Update the UI
+                if (!_gpsService.IsTracking)
+                    _gpsService.StartTracking(Event.VehicleRouteId);
             }
             else
             {
@@ -534,6 +536,8 @@ namespace Mercurio.Driver.ViewModels
 
             if (success)
             {
+                if (!_gpsService.IsTracking)
+                    _gpsService.StartTracking(Event.VehicleRouteId);
                 // ".." is the shell syntax to go to the previous page (TodaySchedulePage)
                 await Shell.Current.GoToAsync("..");
             }
