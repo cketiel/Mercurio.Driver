@@ -58,7 +58,7 @@ namespace Mercurio.Driver.Services
             _idVehicleRoute = idVehicleRoute;
             PromoteToForegroundService();
 
-            _timer = new System.Timers.Timer(1000); // 5 segundos
+            _timer = new System.Timers.Timer(5000); // 5 segundos
             _timer.Elapsed += async (s, e) => await SendLocationAsync();
             _timer.Start();
 
@@ -111,7 +111,9 @@ namespace Mercurio.Driver.Services
             {
                 var location = await GetCurrentLocationAsync();
                 if (location == null) return;
-               
+
+                string fullAddress = await GetReadableAddressAsync(location.Latitude, location.Longitude);
+
                 var gpsData = new GpsDataDto
                 {
                     IdVehicleRoute = _idVehicleRoute,
@@ -119,7 +121,8 @@ namespace Mercurio.Driver.Services
                     Speed = location.Speed ?? 0,
                     Latitude = location.Latitude,
                     Longitude = location.Longitude,
-                    Direction = GetCardinalDirection(location.Course)
+                    Direction = GetCardinalDirection(location.Course),
+                    Address = fullAddress
                 };               
 
                 var response = await _httpClient.PostAsJsonAsync("api/Gps", gpsData);
@@ -156,6 +159,42 @@ namespace Mercurio.Driver.Services
             if (!bearing.HasValue) return "N/A";
             string[] directions = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
             return directions[(int)Math.Round(bearing.Value % 360 / 45)];
+        }
+
+        private async Task<string> GetReadableAddressAsync(double latitude, double longitude)
+        {
+            try
+            {
+                // Gets the possible directions for those coordinates
+                var placemarks = await Geocoding.Default.GetPlacemarksAsync(latitude, longitude);
+                var place = placemarks?.FirstOrDefault();
+
+                if (place != null)
+                {
+                    // Expected format in the report: "6010 Pointe West Blvd, Bradenton, FL 34209, United States"
+                    // Property mapping:
+                    // SubThoroughfare = Número (6010)
+                    // Thoroughfare = Calle (Pointe West Blvd)
+                    // Locality = Ciudad (Bradenton)
+                    // AdminArea = Estado (FL)
+                    // PostalCode = CP (34209)
+                    // CountryName = País (United States)
+
+                    string street = $"{place.SubThoroughfare} {place.Thoroughfare}".Trim();
+
+                    // If there is no street detected, sometimes FeatureName has the name of the place
+                    if (string.IsNullOrEmpty(street))
+                        street = place.FeatureName;
+
+                    return $"{street}, {place.Locality}, {place.AdminArea} {place.PostalCode}, {place.CountryName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error getting address: {ex.Message}");
+            }
+
+            return "Address not available";
         }
     }
 
