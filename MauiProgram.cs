@@ -36,6 +36,7 @@ namespace Mercurio.Driver
 
             builder.Services.AddSingleton<IPhoneDialer>(PhoneDialer.Default);
             builder.Services.AddSingleton<IProviderService, ProviderService>();
+            builder.Services.AddSingleton<GoogleMapsService>();
 
 
             // ViewModels (Transient because each page should have its own instance)

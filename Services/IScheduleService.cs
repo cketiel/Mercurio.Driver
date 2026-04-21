@@ -18,5 +18,7 @@ namespace Mercurio.Driver.Services
         Task<int> GetScheduleHistoryCountAsync(string runLogin, DateTime date);
         Task<bool> UpdateContactPhoneNumberAsync(int tripId, string newPhoneNumber);
 
+        Task UpdateNextSchedulesETAsAsync(List<ScheduleDto> allPendingEvents, int currentEventId, TimeSpan actualPerformTime);
+        Task<bool> UpdateETAAsync(ScheduleDto schedule);
     }
 }

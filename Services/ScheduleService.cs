@@ -14,6 +14,7 @@ namespace Mercurio.Driver.Services
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializerOptions;
+        private readonly GoogleMapsService _googleMapsService;
         public ScheduleService()
         {
             // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
@@ -374,6 +375,82 @@ namespace Mercurio.Driver.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Exception in UpdateContactPhoneNumberAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task UpdateNextSchedulesETAsAsync(List<ScheduleDto> allPendingEvents, int currentEventId, TimeSpan actualPerformTime)
+        {
+            // Find the index of the current event
+            int currentIndex = allPendingEvents.FindIndex(e => e.Id == currentEventId);
+            if (currentIndex == -1) return;
+
+            TimeSpan lastArrivalTime = actualPerformTime;
+            double lastLat = allPendingEvents[currentIndex].ScheduleLatitude;
+            double lastLng = allPendingEvents[currentIndex].ScheduleLongitude;
+
+            // Iterate over the next 2 events (if they exist)
+            for (int i = currentIndex + 1; i <= currentIndex + 2 && i < allPendingEvents.Count; i++)
+            {
+                var nextEvent = allPendingEvents[i];
+
+                // Get travel time from previous point to current point
+                var routeDetail = await _googleMapsService.GetRouteFullDetails(
+                    lastLat, lastLng,
+                    nextEvent.ScheduleLatitude, nextEvent.ScheduleLongitude);
+
+                if (routeDetail != null)
+                {
+                    // Calculate new ETA: Previous departure time + Travel time
+                    TimeSpan travelTime = TimeSpan.FromSeconds(routeDetail.DurationInTrafficSeconds);
+                    TimeSpan newEta = lastArrivalTime.Add(travelTime);
+
+                    // Update object locally
+                    nextEvent.ETA = newEta;
+                    nextEvent.Travel = travelTime;
+                    //nextEvent.Distance = routeDetail.DistanceMiles;
+
+                    // Send update to Backend
+                    await UpdateETAAsync(nextEvent);
+
+                    // For the following calculation (i+2), the starting point is this event
+                    lastArrivalTime = newEta;
+                    lastLat = nextEvent.ScheduleLatitude;
+                    lastLng = nextEvent.ScheduleLongitude;
+                }
+            }
+        }
+        public async Task<bool> UpdateETAAsync(ScheduleDto schedule)
+        {
+            if (schedule == null) return false;
+
+            // We create an anonymous object with the structure expected by the backend
+            var updateDto = new
+            {
+                ETA = schedule.ETA,
+                Travel = schedule.Travel
+            };
+
+            var jsonContent = JsonSerializer.Serialize(updateDto, _serializerOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+           
+            var requestUri = $"api/Schedules/{schedule.Id}/update-eta";
+
+            try
+            {               
+                var response = await _httpClient.PatchAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Error updating ETA: {response.StatusCode}. Body: {errorBody}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception in UpdateETAAsync: {ex.Message}");
                 return false;
             }
         }

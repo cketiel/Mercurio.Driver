@@ -108,7 +108,8 @@ namespace Mercurio.Driver.ViewModels
                 await Shell.Current.GoToAsync(nameof(PullOutDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },
-                    { "IsFirstEvent", isFirstEvent }
+                    { "IsFirstEvent", isFirstEvent },
+                    { "Events", Events }
                 });
             }
             else
@@ -117,7 +118,8 @@ namespace Mercurio.Driver.ViewModels
                 await Shell.Current.GoToAsync(nameof(EventDetailPage), new Dictionary<string, object>
                 {
                     { "EventDetail", selectedEvent },
-                    { "IsFirstEvent", isFirstEvent }
+                    { "IsFirstEvent", isFirstEvent },
+                    { "Events", Events }
                 });
             }
         }

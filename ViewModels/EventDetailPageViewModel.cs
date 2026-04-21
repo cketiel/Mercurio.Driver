@@ -6,6 +6,7 @@ using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Models;
 using Mercurio.Driver.Services;
 using Mercurio.Driver.Views;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.ApplicationModel.Communication;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ namespace Mercurio.Driver.ViewModels
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(SignatureSaved), "SignatureSaved")] // Receive the result of the signature page
     [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
+    [QueryProperty(nameof(Events), "Events")]
     public partial class EventDetailPageViewModel : ObservableObject
     {
         private readonly IScheduleService _scheduleService;
@@ -22,6 +24,9 @@ namespace Mercurio.Driver.ViewModels
         private readonly IMapService _mapService;
         private readonly IPhoneDialer _phoneDialer;
         private readonly IProviderService _providerService;
+
+        [ObservableProperty]
+        private List<ScheduleDto> _events;
 
         [ObservableProperty]
         private bool _isFirstEvent;
@@ -573,6 +578,8 @@ namespace Mercurio.Driver.ViewModels
 
         private async Task FinalizePerform(double distanceInMiles)
         {
+            //var pendingEvents = await _scheduleService.GetPendingSchedulesByRunAsync(RunLogin, Event.Date.Value.Date);
+
             TimeSpan? oldEta = Event.ETA;
 
             Event.Perform = DateTime.Now.TimeOfDay; 
@@ -584,6 +591,9 @@ namespace Mercurio.Driver.ViewModels
 
             if (success)
             {
+                var pendingEvents = Events;
+                await _scheduleService.UpdateNextSchedulesETAsAsync(pendingEvents, Event.Id, Event.Perform.Value);
+
                 if (!_gpsService.IsTracking)
                     _gpsService.StartTracking(Event.VehicleRouteId);
                 // ".." is the shell syntax to go to the previous page (TodaySchedulePage)

@@ -1,21 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.DTOs;
-using System.Diagnostics;
 using Mercurio.Driver.Converters;
+using Mercurio.Driver.DTOs;
 using Mercurio.Driver.Services;
 using Mercurio.Driver.Views;
+using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Mercurio.Driver.ViewModels
 {
     // We use QueryProperty to receive the ScheduleDto object during navigation
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(IsFirstEvent), "IsFirstEvent")]
+    [QueryProperty(nameof(Events), "Events")]
     public partial class PullOutDetailPageViewModel : ObservableObject, IDisposable, IQueryAttributable
     {
         private readonly IScheduleService _scheduleService;
         private readonly IGpsService _gpsService;
         private readonly IMapService _mapService;
+
+        [ObservableProperty]
+        private List<ScheduleDto> _events;
 
         [ObservableProperty]
         private ScheduleDto _event;
@@ -308,6 +314,9 @@ namespace Mercurio.Driver.ViewModels
                 {
                     if (Event.Name == "Pull-out")
                     {
+                        var pendingEvents = Events;
+                        await _scheduleService.UpdateNextSchedulesETAsAsync(pendingEvents, Event.Id, Event.Perform.Value);
+
                         _gpsService.StartTracking(Event.VehicleRouteId);
                     }
                     else if (Event.Name == "Pull-in")
