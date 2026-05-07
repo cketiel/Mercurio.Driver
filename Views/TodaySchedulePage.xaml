@@ -21,6 +21,8 @@
         <converters:ScheduleArrowConverter x:Key="ScheduleArrowConverter" />
         <converters:TripTypeConverter x:Key="TripTypeConverter" />
 
+        <converters:TimeSpanToDateTimeConverter x:Key="TimeSpanToDateTimeConverter" />
+
         <Style TargetType="Label" x:Key="IconLabel">
             <Setter Property="FontFamily" Value="FontAwesomeSolid" />
             <Setter Property="FontSize" Value="16" />
@@ -102,7 +104,7 @@
                                         <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="8">
                                             <Grid ColumnDefinitions="*, Auto">
                                                 <StackLayout Orientation="Horizontal" Spacing="5">
-                                                    <Label Text="{Binding ETA, StringFormat='{0:hh\\:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
+                                                    <Label Text="{Binding ETA, Converter={StaticResource TimeSpanToDateTimeConverter}, StringFormat='{0:hh:mm tt}'}" FontSize="20" FontAttributes="Bold" VerticalOptions="End"/>
                                                     <Label Text="ETA" TextColor="Gray" FontSize="12" VerticalOptions="End" Margin="0,0,0,2"/>
                                                 </StackLayout>
                                                 <!-- RIGHT PANEL WITH CONDITIONAL LOGIC -->

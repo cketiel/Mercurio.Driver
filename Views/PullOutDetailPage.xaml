@@ -13,7 +13,8 @@
     </Shell.BackButtonBehavior>
 
     <ContentPage.Resources>
-        
+
+        <converters:TimeSpanToDateTimeConverter x:Key="TimeSpanToDateTimeConverter" />
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <!-- <converters:ScheduleColorConverter x:Key="ScheduleColorConverter" /> -->
 
@@ -173,7 +174,7 @@
                 <!-- Scheduled Time -->
                 <VerticalStackLayout Padding="0,10">
                     <Label Text="SCHEDULED TIME" Style="{StaticResource DetailHeaderLabel}"/>
-                    <Label Text="{Binding Event.Pickup, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
+                    <Label Text="{Binding Event.Pickup, Converter={StaticResource TimeSpanToDateTimeConverter}, StringFormat='{0:hh:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
 
                 <BoxView Style="{StaticResource DetailSeparatorStyle}" />
@@ -181,7 +182,7 @@
                 <!-- ETA -->
                 <VerticalStackLayout Padding="0,10">
                     <Label Text="ETA" Style="{StaticResource DetailHeaderLabel}"/>
-                    <Label Text="{Binding Event.ETA, StringFormat='{0:hh\\:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
+                    <Label Text="{Binding Event.ETA, Converter={StaticResource TimeSpanToDateTimeConverter}, StringFormat='{0:hh:mm tt}'}" Style="{StaticResource DetailValueLabel}"/>
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

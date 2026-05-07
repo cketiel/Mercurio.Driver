@@ -21,7 +21,7 @@ namespace Mercurio.Driver.ViewModels
         private readonly IMapService _mapService;
 
         [ObservableProperty]
-        private List<ScheduleDto> _events;
+        private ObservableCollection<ScheduleDto> _events;
 
         [ObservableProperty]
         private ScheduleDto _event;
@@ -314,7 +314,7 @@ namespace Mercurio.Driver.ViewModels
                 {
                     if (Event.Name == "Pull-out")
                     {
-                        var pendingEvents = Events;
+                        var pendingEvents = Events.ToList();
                         await _scheduleService.UpdateNextSchedulesETAsAsync(pendingEvents, Event.Id, Event.Perform.Value);
 
                         _gpsService.StartTracking(Event.VehicleRouteId);

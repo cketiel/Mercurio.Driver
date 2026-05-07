@@ -28,6 +28,7 @@ namespace Mercurio.Driver.Services
             {
                 PropertyNameCaseInsensitive = true // Important to match property names
             };
+            _googleMapsService = new GoogleMapsService();
         }
 
         public async Task<List<ScheduleDto>> GetSchedulesByRunAsync(string runLogin, DateTime date)

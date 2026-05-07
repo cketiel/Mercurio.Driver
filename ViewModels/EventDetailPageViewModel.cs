@@ -26,7 +26,7 @@ namespace Mercurio.Driver.ViewModels
         private readonly IProviderService _providerService;
 
         [ObservableProperty]
-        private List<ScheduleDto> _events;
+        private ObservableCollection<ScheduleDto> _events;
 
         [ObservableProperty]
         private bool _isFirstEvent;
@@ -591,7 +591,7 @@ namespace Mercurio.Driver.ViewModels
 
             if (success)
             {
-                var pendingEvents = Events;
+                var pendingEvents = Events.ToList();
                 await _scheduleService.UpdateNextSchedulesETAsAsync(pendingEvents, Event.Id, Event.Perform.Value);
 
                 if (!_gpsService.IsTracking)
