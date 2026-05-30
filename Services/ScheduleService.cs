@@ -15,7 +15,7 @@ namespace Mercurio.Driver.Services
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializerOptions;
         private readonly GoogleMapsService _googleMapsService;
-        public ScheduleService()
+        public ScheduleService(HttpClient httpClient)
         {
             // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
             // https://krasnovbw-001-site1.rtempurl.com/
@@ -23,7 +23,8 @@ namespace Mercurio.Driver.Services
             var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
             baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
 
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            //_httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _httpClient = httpClient; // This httpClient already includes the BaseAddress and the Token
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true // Important to match property names

@@ -8,12 +8,13 @@ namespace Mercurio.Driver.Services
     {
         private readonly HttpClient _httpClient;
 
-        public RunService()
+        public RunService(HttpClient httpClient)
         {
-            var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
-            baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
+            //var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
+            //baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
+            //_httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
 
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _httpClient = httpClient;            
         }
 
         public async Task<VehicleRoute> GetActiveRunByDriverIdAsync(int driverId)

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace Mercurio.Driver.Services
 {
+    // The problem with GPS services (especially on Android) is that they are instantiated by the operating system and not directly by the MAUI dependency container in the traditional way.
+    // For this to work correctly with the JWT interceptor, we will use a "Named HttpClient" in MauiProgram.cs and then retrieve it within each service.
     public class GpsService : IGpsService
     {
         private System.Timers.Timer _timer;
@@ -21,9 +23,12 @@ namespace Mercurio.Driver.Services
 
         public GpsService()
         {
-            _httpClient = new HttpClient();           
+            var factory = IPlatformApplication.Current.Services.GetRequiredService<IHttpClientFactory>();
+            _httpClient = factory.CreateClient("GpsClient");
+
+            /*_httpClient = new HttpClient();           
             //_httpClient.BaseAddress = new Uri("http://10.0.2.2:5000/"); // Example for Android Emulator
-            _httpClient.BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/");
+            _httpClient.BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/");*/
         }
 
         public void StartTracking(int idVehicleRoute)

@@ -3,6 +3,7 @@ using Mercurio.Driver.Models;
 using Mercurio.Driver.Services;
 using Mercurio.Driver.ViewModels;
 using Mercurio.Driver.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -24,11 +25,47 @@ namespace Mercurio.Driver
                     fonts.AddFont("fa-solid-900.ttf", "FontAwesomeSolid");
                 });
 
+            // --- API BASE URL ---
+            var baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
+
             // --- DEPENDENCY INJECTION ---
 
+            // Register the Interceptor (Token Handler)
+            builder.Services.AddTransient<AuthHeaderHandler>();
+
+            // Register Services with HttpClient injected
+
+            // AuthService: Does not have an interceptor because the Login is public
+            builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            });
+
+            // Services that DO require JWT Token (the interceptor is added)
+            builder.Services.AddHttpClient<IScheduleService, ScheduleService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+            builder.Services.AddHttpClient<IRunService, RunService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+            builder.Services.AddHttpClient<IProviderService, ProviderService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+            // Other services that are not API or have special logic
+            builder.Services.AddSingleton<IMapService, MapService>();
+            builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
+            builder.Services.AddSingleton<App>();
+            builder.Services.AddSingleton<IPhoneDialer>(PhoneDialer.Default);
+            builder.Services.AddSingleton<GoogleMapsService>();
+
             // Services (Singleton because they do not save state and can be shared)
-            builder.Services.AddSingleton<IScheduleService, ScheduleService>();
-            //builder.Services.AddSingleton<IGpsService, GpsService>();
+            /*builder.Services.AddSingleton<IScheduleService, ScheduleService>();          
             builder.Services.AddSingleton<IMapService, MapService>();
             builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
             builder.Services.AddSingleton<App>();
@@ -36,7 +73,7 @@ namespace Mercurio.Driver
 
             builder.Services.AddSingleton<IPhoneDialer>(PhoneDialer.Default);
             builder.Services.AddSingleton<IProviderService, ProviderService>();
-            builder.Services.AddSingleton<GoogleMapsService>();
+            builder.Services.AddSingleton<GoogleMapsService>();*/
 
 
             // ViewModels (Transient because each page should have its own instance)
@@ -66,6 +103,13 @@ namespace Mercurio.Driver
             builder.Services.AddSingleton<DashboardPage>();
             builder.Services.AddTransient<HistoryPage>();
             builder.Services.AddTransient<ContactPage>();
+
+            // Register a GPS-specific client that uses the Token interceptor
+            builder.Services.AddHttpClient("GpsClient", client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
             // We register the GPS service using a factory
             // which gets the static instance of MainActivity

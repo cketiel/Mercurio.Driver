@@ -22,10 +22,14 @@ namespace Mercurio.Driver.Services
 
         public GpsServiceIos()
         {
-            _httpClient = new HttpClient
+            // We get the client configured with the interceptor
+            var factory = IPlatformApplication.Current.Services.GetRequiredService<IHttpClientFactory>();
+            _httpClient = factory.CreateClient("GpsClient");
+
+            /*_httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/")
-            };
+            };*/
         }
 
         private void InitializeLocationManager()

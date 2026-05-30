@@ -27,8 +27,12 @@ namespace Mercurio.Driver.Services
 
         public GpsServiceAndroid()
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/");
+            // On Android, we resolve the client from the MAUI container
+            var factory = IPlatformApplication.Current.Services.GetRequiredService<IHttpClientFactory>();
+            _httpClient = factory.CreateClient("GpsClient");
+
+            //_httpClient = new HttpClient();
+            //_httpClient.BaseAddress = new Uri("https://krasnovbw-001-site1.rtempurl.com/");
         }
 
         public override IBinder OnBind(Intent intent)

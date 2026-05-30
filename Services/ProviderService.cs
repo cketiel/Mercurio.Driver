@@ -11,10 +11,11 @@ namespace Mercurio.Driver.Services
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializerOptions;
 
-        public ProviderService()
-        {           
-            var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+        public ProviderService(HttpClient httpClient)
+        {
+            //var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
+            //_httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _httpClient = httpClient;
             _serializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
