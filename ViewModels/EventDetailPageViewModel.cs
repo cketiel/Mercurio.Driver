@@ -587,7 +587,8 @@ namespace Mercurio.Driver.ViewModels
             Event.Performed = true;
             Event.ETA = Event.Perform;
 
-            var success = await _scheduleService.UpdateScheduleAsync(Event);
+            var success = await _scheduleService.PerformScheduleUpdateAsync(Event);
+            //var success = await _scheduleService.UpdateScheduleAsync(Event);
 
             if (success)
             {

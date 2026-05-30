@@ -20,8 +20,8 @@ namespace Mercurio.Driver.Services
             // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
             // https://krasnovbw-001-site1.rtempurl.com/
             // https://localhost:7244/
-            var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
-            baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";
+            /*var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
+            baseUrl = "https://krasnovbw-001-site1.rtempurl.com/";*/
 
             //_httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
             _httpClient = httpClient; // This httpClient already includes the BaseAddress and the Token
@@ -127,6 +127,35 @@ namespace Mercurio.Driver.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Exception in UpdateScheduleAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> PerformScheduleUpdateAsync(ScheduleDto scheduleToUpdate)
+        {
+            if (scheduleToUpdate == null)
+                return false;
+          
+            var jsonContent = JsonSerializer.Serialize(scheduleToUpdate, _serializerOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+           
+            var requestUri = $"api/Schedules/{scheduleToUpdate.Id}/perform";
+
+            try
+            {               
+                var response = await _httpClient.PutAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Error in PerformScheduleUpdateAsync: {response.StatusCode}. Body: {errorBody}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception in PerformScheduleUpdateAsync: {ex.Message}");
                 return false;
             }
         }
