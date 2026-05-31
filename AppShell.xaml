@@ -91,9 +91,17 @@
         <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+    <!--<FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
-    </FlyoutItem>
+    </FlyoutItem>-->
+
+    <MenuItem 
+        Text="MESSAGES" 
+        IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+        <MenuItem.Command>
+            <Binding Path="BindingContext.SendSmsCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+        </MenuItem.Command>
+    </MenuItem>
 
     <FlyoutItem Title="CONTACT" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent
