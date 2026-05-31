@@ -83,9 +83,17 @@
         <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:DashboardPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+    <!--<FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
-    </FlyoutItem>
+    </FlyoutItem>-->
+
+    <MenuItem 
+        Text="INSPECTIONS" 
+        IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+        <MenuItem.Command>
+            <Binding Path="BindingContext.OpenInspectionsCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+        </MenuItem.Command>
+    </MenuItem>
 
     <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />

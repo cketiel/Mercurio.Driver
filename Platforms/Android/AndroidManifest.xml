@@ -40,6 +40,8 @@
 		</intent>
 		<package android:name="com.waze" />
 		<package android:name="com.google.android.apps.maps" />
+		<!-- Permission to detect the Samsara app -->
+		<package android:name="com.samsara.driver" />
 	</queries>
 
 </manifest>
