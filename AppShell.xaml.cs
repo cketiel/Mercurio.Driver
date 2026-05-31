@@ -8,8 +8,8 @@ namespace Mercurio.Driver
         public AppShell()
         {
             InitializeComponent();
-            //BindingContext = new AppShellViewModel();
-            BindingContext = Handler.MauiContext.Services.GetService<AppShellViewModel>();
+            BindingContext = new AppShellViewModel();
+            //BindingContext = Handler.MauiContext.Services.GetService<AppShellViewModel>()            
 
             //Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             //Routing.RegisterRoute(nameof(SchedulePage), typeof(SchedulePage));

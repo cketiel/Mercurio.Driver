@@ -12,7 +12,7 @@ namespace Mercurio.Driver
         {
             //AppConfig.Init();
             InitializeComponent();
-            Preferences.Set("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/"); 
+            Preferences.Set("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
             //Preferences.Set("ApiBaseUrl", "https://localhost:7244/");
             MainPage = new AppShell();
             // Go directly to LoginPage on startup

@@ -7,66 +7,68 @@ namespace Mercurio.Driver.ViewModels
 {
     public partial class AppShellViewModel : ObservableObject
     {
-        private readonly IProviderService _providerService;
+        private IProviderService ProviderService => ServiceHelper.GetService<IProviderService>();
+        private IAuthService AuthService => ServiceHelper.GetService<IAuthService>();
 
-        public AppShellViewModel(IProviderService providerService)
-        {
-            _providerService = providerService;
+        public AppShellViewModel()
+        {           
+            
         }
 
         [RelayCommand]
-        private async Task OpenInspectionsCommand()
+        private async Task OpenInspections()
         {
-            string appId = string.Empty;
-            string storeUrl = string.Empty;
-
-            if (DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                appId = "com.samsara.driver"; // Package ID en Android
-                storeUrl = "https://play.google.com/store/apps/details?id=com.samsara.driver";
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                appId = "samsara://"; // URL Scheme en iOS
-                storeUrl = "https://apps.apple.com/us/app/samsara-driver/id1122606567";
-            }
+            bool opened = false;
 
             try
             {
-                // Try to open the application
-                // On Android, MAUI will try to launch it by its Package ID. 
-                // On iOS, it will try to launch it by its URL Scheme.
-                bool opened = await Launcher.Default.TryOpenAsync(appId);
-
-                if (!opened)
+#if ANDROID
+                // LÓGICA NATIVA PARA ANDROID: Es la más segura para abrir por nombre de paquete
+                var context = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
+                var intent = context.PackageManager.GetLaunchIntentForPackage("com.samsara.driver");
+                if (intent != null)
                 {
-                    // If it could not be opened, ask to download
-                    bool download = await Shell.Current.DisplayAlert(
-                        "App Not Found",
-                        "The Samsara Driver app is not installed. Would you like to go to the store to download it?",
-                        "Download",
-                        "Cancel");
-
-                    if (download)
-                    {
-                        await Browser.Default.OpenAsync(storeUrl, BrowserLaunchMode.SystemPreferred);
-                    }
+                    context.StartActivity(intent);
+                    opened = true;
                 }
+#elif IOS
+                // LÓGICA PARA iOS: Usa el esquema URL
+                opened = await Launcher.Default.TryOpenAsync("samsara://");
+#endif
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", "Could not complete the action.", "OK");
-                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error opening Inspections: {ex.Message}");
+                opened = false;
+            }
+
+            // Si no se pudo abrir (porque no está instalada o error)
+            if (!opened)
+            {
+                string storeUrl = DeviceInfo.Platform == DevicePlatform.Android
+                    ? "https://play.google.com/store/apps/details?id=com.samsara.driver"
+                    : "https://apps.apple.com/us/app/samsara-driver/id1122606567";
+
+                bool download = await Shell.Current.DisplayAlert(
+                    "App Not Found",
+                    "The Samsara Driver app is not installed. Would you like to download it from the store?",
+                    "Download",
+                    "Cancel");
+
+                if (download)
+                {
+                    await Browser.Default.OpenAsync(storeUrl, BrowserLaunchMode.SystemPreferred);
+                }
             }
         }
 
         [RelayCommand]
-        private async Task SendSmsCommand()
+        private async Task SendSms()
         {
             try
             {
                 // Get contact details from backend
-                var provider = await _providerService.GetContactProviderAsync();
+                var provider = await ProviderService.GetContactProviderAsync();
 
                 if (provider != null && !string.IsNullOrEmpty(provider.Phone))
                 {
@@ -91,6 +93,12 @@ namespace Mercurio.Driver.ViewModels
                 await Shell.Current.DisplayAlert("Error", $"Could not open messages: {ex.Message}", "OK");
             }
         }
+        /*[RelayCommand]
+        async Task SignOut()
+        {
+            // Usar el servicio inyectado
+            _authService.Logout();
+        }*/
 
         [RelayCommand]
         async Task SignOut()
