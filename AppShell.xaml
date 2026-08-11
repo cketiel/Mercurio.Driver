@@ -8,6 +8,7 @@
     Title="Raphael.Driver">
 
     <Shell.Resources>
+
         <!-- Global style for the top navigation bar (Navbar) -->
         <Style TargetType="Shell" ApplyToDerivedTypes="True">
             <Setter Property="Shell.BackgroundColor" Value="#B82E49" />
@@ -15,120 +16,141 @@
             <Setter Property="Shell.TitleColor" Value="White" />
         </Style>
 
-        <!-- STYLE AND TEMPLATE FOR MENU ITEMS (FORMA CORRECTA) -->
-        <Style TargetType="FlyoutItem" ApplyToDerivedTypes="True">
-            <Setter Property="Shell.ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <Grid HeightRequest="50" ColumnSpacing="20" Padding="25,10">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroupList>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal" />
-                                        <VisualState x:Name="Selected">
-                                            <VisualState.Setters>
-                                                <!-- Change the background to red -->
-                                                <Setter Property="BackgroundColor" Value="#B82E49" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateGroupList>
-                            </VisualStateManager.VisualStateGroups>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+       
+        
+        
 
-                            <!-- Menu icon -->
-                            <Image Source="{Binding FlyoutIcon}" HeightRequest="25" VerticalOptions="Center">
-                                <Image.Behaviors>
-                                    <mct:IconTintColorBehavior TintColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                </Image.Behaviors>
-                            </Image>
-
-                            <!-- Menu text -->
-                            <Label Grid.Column="1" Text="{Binding Title}" FontSize="16" VerticalTextAlignment="Center">
-                                <Label.Style>
-                                    <Style TargetType="Label">
-                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
-                                        <Style.Triggers>
-                                            <!-- When the item is selected, the text turns white -->
-                                            <DataTrigger TargetType="Label"
-                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=BackgroundColor}"
-                                                         Value="#B82E49">
-                                                <Setter Property="TextColor" Value="White" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                            </Label>
-                        </Grid>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Shell.Resources>
 
-    <!-- Flyout header with logo -->
+   
+    <!-- Flyout header with logo and application version -->
     <Shell.FlyoutHeader>
-        <Grid Padding="20, 40" BackgroundColor="{StaticResource CardBackgroundColor}">
-            <Image Source="logo.png" Aspect="AspectFit" HeightRequest="80" />
+
+        <Grid Padding="20,30"
+              BackgroundColor="{StaticResource CardBackgroundColor}"
+              RowDefinitions="Auto,Auto,Auto">
+
+            <Image Grid.Row="0"
+                   Source="logo.png"
+                   Aspect="AspectFit"
+                   HeightRequest="80" />
+
+            <Label Grid.Row="1"
+                   Text="RAPHAEL DRIVER"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10,0,0" />
+
+            <Label Grid.Row="2"
+                   Text="{Binding Source={RelativeSource AncestorType={x:Type Shell}}, Path=Version}"
+                   TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+                   FontSize="11"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,3,0,0" />
+
         </Grid>
+
     </Shell.FlyoutHeader>
+
 
     <!-- DEFINITION OF MENU ITEMS -->
 
-    <FlyoutItem Title="DASHBOARD" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
-        <ShellContent Route="DashboardPage" ContentTemplate="{DataTemplate views:DashboardPage}" />
+    <FlyoutItem Title="DASHBOARD"
+                Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
+        <ShellContent Route="DashboardPage"
+                      ContentTemplate="{DataTemplate views:DashboardPage}" />
+
     </FlyoutItem>
+
 
     <!--<FlyoutItem Title="INSPECTIONS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="InspectionsPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>-->
 
-    <MenuItem 
-        Text="INSPECTIONS" 
+
+    <MenuItem
+        Text="INSPECTIONS"
         IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
         <MenuItem.Command>
-            <Binding Path="BindingContext.OpenInspectionsCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+            <Binding Path="BindingContext.OpenInspectionsCommand"
+                     Source="{RelativeSource AncestorType={x:Type Shell}}" />
         </MenuItem.Command>
+
     </MenuItem>
 
-    <FlyoutItem Title="SCHEDULE" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
-        <ShellContent Route="SchedulePage" ContentTemplate="{DataTemplate views:SchedulePage}" />
+
+    <FlyoutItem Title="SCHEDULE"
+                Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
+        <ShellContent Route="SchedulePage"
+                      ContentTemplate="{DataTemplate views:SchedulePage}" />
+
     </FlyoutItem>
+
 
     <!--<FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>-->
 
-    <MenuItem 
-        Text="MESSAGES" 
+
+    <MenuItem
+        Text="MESSAGES"
         IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
         <MenuItem.Command>
-            <Binding Path="BindingContext.SendSmsCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+            <Binding Path="BindingContext.SendSmsCommand"
+                     Source="{RelativeSource AncestorType={x:Type Shell}}" />
         </MenuItem.Command>
+
     </MenuItem>
 
-    <FlyoutItem Title="CONTACT" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
+    <FlyoutItem Title="CONTACT"
+                Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
         <ShellContent
-        Route="ContactPage"
-        ContentTemplate="{DataTemplate views:ContactPage}" />
+            Route="ContactPage"
+            ContentTemplate="{DataTemplate views:ContactPage}" />
+
     </FlyoutItem>
 
-    <FlyoutItem Title="SETTINGS" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
-        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}" />
+
+    <FlyoutItem Title="SETTINGS"
+                Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
+        <ShellContent Route="SettingsPage"
+                      ContentTemplate="{DataTemplate views:SettingsPage}" />
+
     </FlyoutItem>
+
 
     <!-- Logout Item (MenuItem) -->
-    <MenuItem Text="SIGNOUT" IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
+    <MenuItem
+        Text="SIGNOUT"
+        IconImageSource="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
+
         <MenuItem.Command>
-            <Binding Path="BindingContext.SignOutCommand" Source="{RelativeSource AncestorType={x:Type Shell}}" />
+            <Binding Path="BindingContext.SignOutCommand"
+                     Source="{RelativeSource AncestorType={x:Type Shell}}" />
         </MenuItem.Command>
+
     </MenuItem>
 
-    <!-- Pages that do not appear in the menu but are navigable -->    
-    <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" FlyoutItemIsVisible="False" IsEnabled="False"/>
+
+    <!-- Pages that do not appear in the menu but are navigable -->
+
+    <ShellContent
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        FlyoutItemIsVisible="False"
+        IsEnabled="False" />
 
 </Shell>

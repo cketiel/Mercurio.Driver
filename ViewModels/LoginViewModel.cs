@@ -10,8 +10,10 @@ using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using Raphael.Driver.Exceptions;
 using Raphael.Driver.Views;         // For RelayCommand
+using Raphael.Driver.Helpers;
 
 namespace Raphael.Driver.ViewModels;
+
 public partial class LoginViewModel : ObservableObject
 {
     private readonly AuthService _authService;
@@ -35,6 +37,9 @@ public partial class LoginViewModel : ObservableObject
 
     [ObservableProperty]
     bool _rememberMe;
+
+    // Application version displayed on the Login page
+    public string Version => AppVersion.Display;
 
     // For show/hide password icon
     public string PasswordToggleIcon => IsPasswordMasked ? "\uf070" : "\uf06e"; // eye-slash / eye
@@ -115,7 +120,7 @@ public partial class LoginViewModel : ObservableObject
             {
                 ErrorMessage = $"Application error: {apiEx.Message}";
             }
-            
+
             await Application.Current.MainPage.DisplayAlert("API error", ErrorMessage, "OK");
         }
         catch (Exception ex) // For any other unexpected exception
@@ -143,7 +148,7 @@ public partial class LoginViewModel : ObservableObject
     {
         try
         {
-            Uri uri = new Uri("https://milanestransport.com/"); 
+            Uri uri = new Uri("https://milanestransport.com/");
             await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
         }
         catch (Exception ex)
@@ -159,10 +164,12 @@ public partial class LoginViewModel : ObservableObject
     public void OnAppearing()
     {
         RememberMe = Preferences.Get("RememberMe", false);
+
         if (RememberMe)
         {
             Username = Preferences.Get("LastUsername", string.Empty);
         }
+
         ErrorMessage = string.Empty; // Clear errors from previous sessions
     }
 }
