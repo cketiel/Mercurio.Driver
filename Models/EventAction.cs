@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
-namespace Mercurio.Driver.Models
+namespace Raphael.Driver.Models
 {
     public class EventAction
     {

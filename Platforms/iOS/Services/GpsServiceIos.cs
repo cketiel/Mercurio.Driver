@@ -1,13 +1,13 @@
 ﻿using CoreLocation;
 using Foundation;
-using Mercurio.Driver.DTOs;
+using Raphael.Driver.DTOs;
 using System.Diagnostics;
 using System.Net.Http.Json;
 
 // Alias ​​to avoid ambiguity with Microsoft.Maui.Devices.Sensors.Location
 using IosLocation = CoreLocation.CLLocation;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class GpsServiceIos : NSObject, IGpsService, ICLLocationManagerDelegate
     {

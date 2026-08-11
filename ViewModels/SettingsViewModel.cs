@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Models;
-using Mercurio.Driver.Services;
+using Raphael.Driver.Models;
+using Raphael.Driver.Services;
 using System.Collections.ObjectModel;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     public partial class SettingsViewModel : ObservableObject
     {

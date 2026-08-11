@@ -1,14 +1,14 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Mercurio.Driver.DTOs;
+using Raphael.Driver.DTOs;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using Debug = System.Diagnostics.Debug;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
-    [Service(Name = "com.mercurio.driver.Services.GpsServiceAndroid",
+    [Service(Name = "com.Raphael.Driver.Services.GpsServiceAndroid",
          ForegroundServiceType = Android.Content.PM.ForegroundService.TypeLocation)]
     public class GpsServiceAndroid : Service, IGpsService
     {
@@ -18,7 +18,7 @@ namespace Mercurio.Driver.Services
         private GpsServiceBinder _binder;
 
         private const int SERVICE_RUNNING_NOTIFICATION_ID = 10000;
-        private const string NOTIFICATION_CHANNEL_ID = "com.mercurio.driver.gps";
+        private const string NOTIFICATION_CHANNEL_ID = "com.Raphael.Driver.gps";
         private const string NOTIFICATION_CHANNEL_NAME = "Gps Service";
 
         public bool IsTracking => _timer?.Enabled ?? false;
@@ -93,9 +93,9 @@ namespace Mercurio.Driver.Services
             }
 
             var notification = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .SetContentTitle("Mercurio Driver")
+                .SetContentTitle("Raphael Driver")
                 .SetContentText("Route tracking is active..")
-                .SetSmallIcon(global::Mercurio.Driver.Resource.Drawable.dotnet_bot)
+                .SetSmallIcon(global::Raphael.Driver.Resource.Drawable.dotnet_bot)
                 .SetOngoing(true)
                 .Build();
 

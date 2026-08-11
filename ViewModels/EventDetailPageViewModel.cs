@@ -1,17 +1,17 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Converters;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Models;
-using Mercurio.Driver.Services;
-using Mercurio.Driver.Views;
+using Raphael.Driver.Converters;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Models;
+using Raphael.Driver.Services;
+using Raphael.Driver.Views;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.ApplicationModel.Communication;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     [QueryProperty(nameof(Event), "EventDetail")]
     [QueryProperty(nameof(SignatureSaved), "SignatureSaved")] // Receive the result of the signature page

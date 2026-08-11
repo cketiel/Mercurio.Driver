@@ -2,7 +2,7 @@ using System;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     internal class Program : MauiApplication
     {

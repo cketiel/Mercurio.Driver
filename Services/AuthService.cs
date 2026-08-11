@@ -6,11 +6,11 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Mercurio.Driver.Exceptions;
-using Mercurio.Driver.Models;
-using Mercurio.Driver.Views;
+using Raphael.Driver.Exceptions;
+using Raphael.Driver.Models;
+using Raphael.Driver.Views;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class AuthService : IAuthService
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Mercurio.Driver.DTOs
+namespace Raphael.Driver.DTOs
 {
     public class ProviderDto
     {

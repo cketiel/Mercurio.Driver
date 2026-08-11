@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     [Application]
     public class MainApplication : MauiApplication

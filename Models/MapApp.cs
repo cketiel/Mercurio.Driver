@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Models
+namespace Raphael.Driver.Models
 {
     public partial class MapApp : ObservableObject
     {

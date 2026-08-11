@@ -1,7 +1,7 @@
 ﻿
-using Mercurio.Driver.Models;
+using Raphael.Driver.Models;
 
-namespace Mercurio.Driver.DTOs
+namespace Raphael.Driver.DTOs
 {
     public class ScheduleDto
     {

@@ -2,11 +2,11 @@
 using CommunityToolkit.Maui.Views;   
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Services;
+using Raphael.Driver.Services;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     [QueryProperty(nameof(ScheduleId), "ScheduleId")]
     [QueryProperty(nameof(IsDriverSignature), "IsDriverSignature")]

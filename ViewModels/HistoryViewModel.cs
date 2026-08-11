@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Services;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Services;
 using System.Collections.ObjectModel;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {   
     [QueryProperty(nameof(RunLogin), "runLogin")]
     public partial class HistoryViewModel : ObservableObject

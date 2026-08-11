@@ -1,6 +1,6 @@
-﻿# 🚗 Mercurio.Driver
+﻿# 🚗 Raphael.Driver
 
-**Mercurio.Driver** is a mobile application built with **.NET MAUI**, designed for non-emergency medical transportation drivers. The app is currently targeted for **Android**, with future support for **iOS**.
+**Raphael.Driver** is a mobile application built with **.NET MAUI**, designed for non-emergency medical transportation drivers. The app is currently targeted for **Android**, with future support for **iOS**.
 
 ---
 
@@ -27,12 +27,12 @@
 ### Clone the repository:
 
 bash
-git clone https://github.com/your-username/Mercurio.Driver.git
-cd Mercurio.Driver
+git clone https://github.com/your-username/Raphael.Driver.git
+cd Raphael.Driver
 
 
 ### Open in Visual Studio:
-1. Open the Mercurio.Driver.sln solution file.
+1. Open the Raphael.Driver.sln solution file.
 2. Run the project using an Android emulator or a physical device.
 
 ## 📦 Build APK

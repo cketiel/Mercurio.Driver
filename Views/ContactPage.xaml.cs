@@ -1,4 +1,4 @@
-namespace Mercurio.Driver.Views
+namespace Raphael.Driver.Views
 {
     public partial class ContactPage : ContentPage
     {

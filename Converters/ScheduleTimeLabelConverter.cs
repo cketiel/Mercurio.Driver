@@ -1,10 +1,10 @@
 ﻿
 
 using System.Globalization;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Models;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Models;
 
-namespace Mercurio.Driver.Converters
+namespace Raphael.Driver.Converters
 {
     // Convert time label (SCH TIME or APT TIME)
     public class ScheduleTimeLabelConverter : IValueConverter

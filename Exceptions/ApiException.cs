@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Exceptions
+namespace Raphael.Driver.Exceptions
 {
     public class ApiException : Exception
     {

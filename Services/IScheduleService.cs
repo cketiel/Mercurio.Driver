@@ -1,7 +1,7 @@
 ﻿
-using Mercurio.Driver.DTOs;
+using Raphael.Driver.DTOs;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public interface IScheduleService
     {

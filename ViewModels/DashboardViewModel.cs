@@ -1,14 +1,14 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Services;
-using Mercurio.Driver.Views;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Services;
+using Raphael.Driver.Views;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     public partial class DashboardViewModel : ObservableObject
     {

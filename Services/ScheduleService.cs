@@ -5,10 +5,10 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Web;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Models;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Models;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class ScheduleService : IScheduleService
     {

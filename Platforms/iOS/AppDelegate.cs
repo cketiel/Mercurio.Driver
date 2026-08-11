@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

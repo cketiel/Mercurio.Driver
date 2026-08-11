@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Views; 
+using Raphael.Driver.Views; 
 using System.Diagnostics;
 using System.Web; 
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     public partial class ScheduleViewModel : ObservableObject
     {

@@ -1,10 +1,10 @@
-﻿using Mercurio.Driver.DTOs;
+﻿using Raphael.Driver.DTOs;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class ProviderService : IProviderService
     {

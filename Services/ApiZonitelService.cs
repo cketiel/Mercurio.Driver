@@ -1,4 +1,4 @@
-﻿using Mercurio.Driver.Models.Zonitel;
+﻿using Raphael.Driver.Models.Zonitel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class ApiZonitelService
     {

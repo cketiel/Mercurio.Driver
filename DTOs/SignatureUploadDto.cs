@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.DTOs
+namespace Raphael.Driver.DTOs
 {
     public class SignatureUploadDto
     {

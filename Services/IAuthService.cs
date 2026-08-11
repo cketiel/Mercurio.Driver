@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mercurio.Driver.Models;
+using Raphael.Driver.Models;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public interface IAuthService
     {

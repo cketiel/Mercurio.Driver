@@ -1,7 +1,7 @@
-﻿using Mercurio.Driver.DTOs; 
+﻿using Raphael.Driver.DTOs; 
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public interface IProviderService
     {

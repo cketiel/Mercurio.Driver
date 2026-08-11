@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.Services;
-using Mercurio.Driver.Views;
+using Raphael.Driver.Services;
+using Raphael.Driver.Views;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     public partial class AppShellViewModel : ObservableObject
     {

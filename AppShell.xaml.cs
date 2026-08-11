@@ -1,7 +1,7 @@
-﻿using Mercurio.Driver.ViewModels;
-using Mercurio.Driver.Views;
+﻿using Raphael.Driver.ViewModels;
+using Raphael.Driver.Views;
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     public partial class AppShell : Shell
     {       

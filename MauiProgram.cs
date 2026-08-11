@@ -1,13 +1,13 @@
 ﻿ using CommunityToolkit.Maui;
-using Mercurio.Driver.Models;
-using Mercurio.Driver.Services;
-using Mercurio.Driver.ViewModels;
-using Mercurio.Driver.Views;
+using Raphael.Driver.Models;
+using Raphael.Driver.Services;
+using Raphael.Driver.ViewModels;
+using Raphael.Driver.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     public static class MauiProgram
     {
@@ -117,9 +117,9 @@ namespace Mercurio.Driver
             {
 #if ANDROID
                 
-                return MainActivity.GpsService ?? new Mercurio.Driver.Services.GpsServiceAndroid();
+                return MainActivity.GpsService ?? new Raphael.Driver.Services.GpsServiceAndroid();
 #elif IOS
-    return new Mercurio.Driver.Services.GpsServiceIos();
+    return new Raphael.Driver.Services.GpsServiceIos();
 #else
     // Implementación por defecto para otras plataformas (Windows, etc.)
     return new GpsService(); 

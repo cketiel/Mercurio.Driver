@@ -1,9 +1,9 @@
-﻿using Mercurio.Driver.Models;
-using Mercurio.Driver.Resources.Styles;
+﻿using Raphael.Driver.Models;
+using Raphael.Driver.Resources.Styles;
 using Microsoft.Extensions.Configuration;
 
 
-namespace Mercurio.Driver
+namespace Raphael.Driver
 {
     public partial class App : Application
     {

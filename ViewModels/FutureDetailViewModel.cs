@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Models;
-using Mercurio.Driver.Services;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Models;
+using Raphael.Driver.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     [QueryProperty(nameof(Event), "EventDetail")]
     public partial class FutureDetailViewModel : ObservableObject

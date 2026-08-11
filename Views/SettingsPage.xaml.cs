@@ -1,6 +1,6 @@
-using Mercurio.Driver.ViewModels;
+using Raphael.Driver.ViewModels;
 
-namespace Mercurio.Driver.Views;
+namespace Raphael.Driver.Views;
 
 public partial class SettingsPage : ContentPage
 {

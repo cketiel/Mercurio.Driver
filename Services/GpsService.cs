@@ -1,4 +1,4 @@
-﻿using Mercurio.Driver.DTOs;
+﻿using Raphael.Driver.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     // The problem with GPS services (especially on Android) is that they are instantiated by the operating system and not directly by the MAUI dependency container in the traditional way.
     // For this to work correctly with the JWT interceptor, we will use a "Named HttpClient" in MauiProgram.cs and then retrieve it within each service.

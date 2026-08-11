@@ -4,7 +4,7 @@
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
-		<RootNamespace>Mercurio.Driver</RootNamespace>
+		<RootNamespace>Raphael.Driver</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -12,8 +12,8 @@
 		<NullabilityInfoContextSupport>true</NullabilityInfoContextSupport>
 		
 		<!-- Propiedades Generales -->
-		<ApplicationTitle>Mercurio.Driver</ApplicationTitle>
-		<ApplicationId>com.mercurio.driver</ApplicationId>
+		<ApplicationTitle>Raphael.Driver</ApplicationTitle>
+		<ApplicationId>com.raphael.driver</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 		<AssemblyVersion>1.0.3</AssemblyVersion>

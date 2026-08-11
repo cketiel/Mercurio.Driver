@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using Mercurio.Driver.DTOs;
-using Mercurio.Driver.Services;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Services;
 using Microsoft.Maui.ApplicationModel.Communication;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.ViewModels
+namespace Raphael.Driver.ViewModels
 {
     public partial class ContactViewModel : ObservableObject
     {

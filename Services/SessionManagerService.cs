@@ -1,4 +1,4 @@
-﻿using Mercurio.Driver.DTOs;
+﻿using Raphael.Driver.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Services
+namespace Raphael.Driver.Services
 {
     public class SessionManagerService : ISessionManagerService
     {

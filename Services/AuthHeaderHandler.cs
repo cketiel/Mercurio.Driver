@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net;
 
-namespace Mercurio.Driver.Services;
+namespace Raphael.Driver.Services;
 
 public class AuthHeaderHandler : DelegatingHandler
 {

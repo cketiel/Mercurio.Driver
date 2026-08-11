@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
-using Mercurio.Driver.Services;
-using Mercurio.Driver.Models;
+using Raphael.Driver.Services;
+using Raphael.Driver.Models;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,10 +8,10 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel; // For ObservableObject y ObservableProperty
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
-using Mercurio.Driver.Exceptions;
-using Mercurio.Driver.Views;         // For RelayCommand
+using Raphael.Driver.Exceptions;
+using Raphael.Driver.Views;         // For RelayCommand
 
-namespace Mercurio.Driver.ViewModels;
+namespace Raphael.Driver.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly AuthService _authService;

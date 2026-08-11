@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
-             xmlns:models="clr-namespace:Mercurio.Driver.Models"
-             x:Class="Mercurio.Driver.Views.FutureDetailPage"
+             xmlns:viewmodels="clr-namespace:Raphael.Driver.ViewModels"
+             xmlns:models="clr-namespace:Raphael.Driver.Models"
+             x:Class="Raphael.Driver.Views.FutureDetailPage"
              x:DataType="viewmodels:FutureDetailViewModel"
-             xmlns:enums="clr-namespace:Mercurio.Driver.Models"
+             xmlns:enums="clr-namespace:Raphael.Driver.Models"
              Title="Future Event Details">
 
     <ContentPage.Resources>

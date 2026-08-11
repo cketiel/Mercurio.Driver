@@ -1,6 +1,6 @@
 ﻿
 
-namespace Mercurio.Driver.Models
+namespace Raphael.Driver.Models
 {
     public enum ScheduleEventType
     {

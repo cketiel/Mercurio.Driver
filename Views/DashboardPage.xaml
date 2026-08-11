@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:Mercurio.Driver.ViewModels"
+             xmlns:vm="clr-namespace:Raphael.Driver.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:converters="clr-namespace:Mercurio.Driver.Converters"
-             x:Class="Mercurio.Driver.Views.DashboardPage"
+             xmlns:converters="clr-namespace:Raphael.Driver.Converters"
+             x:Class="Raphael.Driver.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="DASHBOARD"
              BackgroundColor="{StaticResource AppDarkBackgroundColor}">

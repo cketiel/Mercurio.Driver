@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:Mercurio.Driver.ViewModels"
-             x:Class="Mercurio.Driver.Views.PullOutDetailPage"
+             xmlns:viewmodels="clr-namespace:Raphael.Driver.ViewModels"
+             x:Class="Raphael.Driver.Views.PullOutDetailPage"
              x:DataType="viewmodels:PullOutDetailPageViewModel"
-             xmlns:converters="clr-namespace:Mercurio.Driver.Converters" 
+             xmlns:converters="clr-namespace:Raphael.Driver.Converters" 
              Title="{Binding PageTitle}"
              BackgroundColor="{StaticResource PageBackgroundColor}">
 

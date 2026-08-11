@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mercurio.Driver.Resources.Styles
+namespace Raphael.Driver.Resources.Styles
 {
     public partial class DarkTheme : ResourceDictionary
     {
