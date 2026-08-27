@@ -5,9 +5,14 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:converters="clr-namespace:Raphael.Driver.Converters"
              x:Class="Raphael.Driver.Views.DashboardPage"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              x:DataType="vm:DashboardViewModel"
              Title="DASHBOARD"
              BackgroundColor="{StaticResource AppDarkBackgroundColor}">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="DASHBOARD" />
+    </Shell.TitleView>
 
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior

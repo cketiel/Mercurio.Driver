@@ -95,6 +95,15 @@
     </FlyoutItem>
 
 
+    <FlyoutItem Title="NOTIFICATIONS"
+                Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='&#xf0f3;', Color={StaticResource PrimaryTextColor}}">
+
+        <ShellContent Route="NotificationsPage"
+                      ContentTemplate="{DataTemplate views:NotificationsPage}" />
+
+    </FlyoutItem>
+
+
     <!--<FlyoutItem Title="MESSAGES" Icon="{FontImageSource FontFamily=FontAwesomeSolid, Glyph='', Color={StaticResource PrimaryTextColor}}">
         <ShellContent Route="MessagesPage" ContentTemplate="{DataTemplate views:ComingSoonPage}" />
     </FlyoutItem>-->

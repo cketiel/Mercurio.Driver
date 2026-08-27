@@ -1,0 +1,150 @@
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Raphael.Driver.DTOs;
+using System.Diagnostics;
+
+namespace Raphael.Driver.Services
+{
+    /// <summary>
+    /// Keeps the app subscribed to <c>/hubs/notifications</c> while there is a session.
+    /// </summary>
+    /// <remarks>
+    /// The hub decides on connect whether this internal user is a driver or a dispatcher,
+    /// reading the role from the token — the client cannot ask to be treated as either. Drivers
+    /// are addressed by their own connection rather than by a group, so nothing meant for the
+    /// dispatch office arrives here.
+    ///
+    /// <para>
+    /// The token travels in the query string because a WebSocket handshake carries no
+    /// Authorization header. The API accepts it that way only for this path.
+    /// </para>
+    /// </remarks>
+    public class NotificationHubService : INotificationHubService
+    {
+        private readonly NotificationStore _store;
+        private readonly RouteSignalCoordinator _signals;
+
+        private HubConnection? _connection;
+
+        public NotificationHubService(
+            NotificationStore store,
+            RouteSignalCoordinator signals)
+        {
+            _store = store;
+            _signals = signals;
+        }
+
+        public bool IsConnected =>
+            _connection?.State == HubConnectionState.Connected;
+
+        public async Task StartAsync(CancellationToken cancellationToken = default)
+        {
+            var token = Preferences.Get("AuthToken", string.Empty);
+
+            if (string.IsNullOrWhiteSpace(token))
+                return;
+
+            if (_connection is not null)
+            {
+                // Already up, or on its way back after a drop.
+                if (_connection.State != HubConnectionState.Disconnected)
+                    return;
+
+                await DisposeConnectionAsync();
+            }
+
+            var baseUrl = Preferences.Get("ApiBaseUrl", "https://krasnovbw-001-site1.rtempurl.com/");
+            var hubUrl = $"{baseUrl.TrimEnd('/')}/hubs/notifications?access_token={Uri.EscapeDataString(token)}";
+
+            try
+            {
+                _connection = new HubConnectionBuilder()
+                    .WithUrl(hubUrl)
+                    .WithAutomaticReconnect()
+                    .Build();
+
+                _connection.On<NotificationDto>("ReceiveNotification", async notification =>
+                {
+                    // Everything comes down the same wire. A signal is for the app to act on
+                    // and never belongs in the inbox; a notice is the other way round.
+                    if (notification?.IsSignal == true)
+                    {
+                        await _signals.ReceiveAsync(notification);
+                        return;
+                    }
+
+                    _store.Receive(notification!);
+                });
+
+                // The server sends this after any change it made on the driver's behalf, and
+                // after a reconnection there may have been changes nobody told us about.
+                _connection.On("RefreshNotifications", async () =>
+                {
+                    await _store.RefreshAsync();
+                });
+
+                _connection.On<Guid>("NotificationViewed", async _ =>
+                {
+                    await _store.RefreshAsync();
+                });
+
+                _connection.On<Guid>("NotificationAcknowledged", async _ =>
+                {
+                    await _store.RefreshAsync();
+                });
+
+                _connection.Reconnected += async _ =>
+                {
+                    // Whatever arrived while the socket was down is only in the database.
+                    await _store.RefreshAsync();
+                    await _signals.SyncAsync();
+                };
+
+                await _connection.StartAsync(cancellationToken);
+
+                Debug.WriteLine("NotificationHubService: connected.");
+            }
+            catch (Exception ex)
+            {
+                // No live channel is a degraded state, not a broken app: the inbox still loads
+                // over HTTP and the push still arrives through Firebase.
+                Debug.WriteLine($"NotificationHubService: could not connect. {ex.Message}");
+            }
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken = default)
+        {
+            if (_connection is null)
+                return;
+
+            try
+            {
+                await _connection.StopAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"NotificationHubService: error while stopping. {ex.Message}");
+            }
+            finally
+            {
+                await DisposeConnectionAsync();
+            }
+        }
+
+        private async Task DisposeConnectionAsync()
+        {
+            if (_connection is null)
+                return;
+
+            try
+            {
+                await _connection.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"NotificationHubService: error while disposing. {ex.Message}");
+            }
+
+            _connection = null;
+        }
+    }
+}

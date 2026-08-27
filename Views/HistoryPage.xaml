@@ -6,9 +6,15 @@
              xmlns:converters="clr-namespace:Raphael.Driver.Converters"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Raphael.Driver.Views.HistoryPage"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              x:DataType="vm:HistoryViewModel"
              Title="HISTORY"
              BackgroundColor="#2C2C2E">
+
+    <!-- No bell: on a page reached from somewhere else it competes with the back arrow. -->
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="HISTORY" ShowBell="False" />
+    </Shell.TitleView>
 
     <ContentPage.Resources>
         <converters:ScheduleHistoryColorConverter x:Key="ScheduleHistoryColorConverter" />

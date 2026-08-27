@@ -87,6 +87,12 @@ public partial class LoginViewModel : ObservableObject
                 //aqui no puede ser pq no se sabe la linea
                 //await _sessionManager.CheckAndResumeGpsTrackingAsync();
 
+                // Notifications on: hidden list for this driver, inbox, live hub and the push
+                // token. It runs after the token is in Preferences because every one of those
+                // needs it. A failure here must not block the sign in — the driver still has a
+                // schedule to run — so the service swallows its own errors.
+                await StartNotificationsAsync();
+
                 // Navigate to HomePage 
                 //await Shell.Current.GoToAsync("//HomePage");
                 // Navigate to SchedulePage
@@ -135,6 +141,27 @@ public partial class LoginViewModel : ObservableObject
             IsBusy = false; // Stop charging indicator
         }
 
+    }
+
+    /// <summary>
+    /// Brings up notifications for the driver who just signed in.
+    /// </summary>
+    private static async Task StartNotificationsAsync()
+    {
+        try
+        {
+            var session = ServiceHelper.GetService<NotificationSessionService>();
+
+            if (session is not null)
+                await session.StartAsync();
+
+            // A push may have launched the app before there was a session to navigate with.
+            await NotificationRouter.TryConsumeAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"LoginViewModel: could not start notifications. {ex.Message}");
+        }
     }
 
     [RelayCommand]

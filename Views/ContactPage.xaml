@@ -5,8 +5,13 @@
              x:Class="Raphael.Driver.Views.ContactPage"
              x:DataType="viewmodels:ContactViewModel"
              xmlns:converters="clr-namespace:Raphael.Driver.Converters"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              Title="CONTACT"
              BackgroundColor="#F0F0F0">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="CONTACT" />
+    </Shell.TitleView>
 
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />

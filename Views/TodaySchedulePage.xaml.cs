@@ -1,12 +1,22 @@
+using Raphael.Driver.Controls;
+using Raphael.Driver.DTOs;
+using Raphael.Driver.Services;
 using Raphael.Driver.ViewModels;
 
 namespace Raphael.Driver.Views;
 
-public partial class TodaySchedulePage : ContentPage
+public partial class TodaySchedulePage : ContentPage, IRouteSignalHandler
 {
-    public TodaySchedulePage(TodayScheduleViewModel viewModel)
+    private readonly TodayScheduleViewModel _viewModel;
+    private readonly RouteSignalCoordinator _signals;
+
+    public TodaySchedulePage(TodayScheduleViewModel viewModel, RouteSignalCoordinator signals)
     {
         InitializeComponent();
+
+        _viewModel = viewModel;
+        _signals = signals;
+
         BindingContext = viewModel;
     }
 
@@ -19,21 +29,49 @@ public partial class TodaySchedulePage : ContentPage
         {
             vm.LoadEventsCommand.Execute(null);
         }
+
+        _signals.Register(this);
     }
 
-    /*private readonly TodayScheduleViewModel _viewModel;
-
-    public TodaySchedulePage(TodayScheduleViewModel viewModel)
+    protected override void OnDisappearing()
     {
-        InitializeComponent();
-        _viewModel = viewModel;
-        BindingContext = _viewModel;
+        base.OnDisappearing();
+
+        _signals.Unregister(this);
     }
 
-    protected override async void OnAppearing()
+    /// <summary>
+    /// The route changed while the driver was looking at today's schedule.
+    /// </summary>
+    /// <remarks>
+    /// The two cases are matched differently, and they have to be. A trip that was
+    /// <b>removed</b> is still in the list — that is exactly why the list is wrong — so it is
+    /// matched by its identifier, and a removal for a trip the driver never had is left alone
+    /// rather than interrupting them over somebody else's route.
+    ///
+    /// <para>
+    /// A trip that was <b>added</b> cannot be matched that way: it is not in the list yet, and
+    /// its absence is the problem. It is matched by date instead.
+    /// </para>
+    /// </remarks>
+    public async Task<RouteSignalOutcome> HandleRouteSignalAsync(NotificationDto signal)
     {
-        base.OnAppearing();
-        // Load events when page appears
+        var concernsThisScreen = signal.IsTripAddedToRoute
+            ? signal.TripDate is null || signal.TripDate == DateTime.Today
+            : signal.TripId is { } tripId &&
+              _viewModel.Events.Any(e => e.TripId == tripId);
+
+        if (!concernsThisScreen)
+            return RouteSignalOutcome.NotRelevant;
+
+        await RouteSignalPopup.ShowAsync(
+            "Route updated",
+            signal.Message,
+            "Refresh now");
+
+        // Through the generated command, which is the public face of the private loader.
         await _viewModel.LoadEventsCommand.ExecuteAsync(null);
-    }*/
+
+        return RouteSignalOutcome.Handled;
+    }
 }

@@ -493,9 +493,15 @@ namespace Raphael.Driver.ViewModels
         [RelayCommand]
         private async Task CopyPhone()
         {
-            if (Event != null && !string.IsNullOrWhiteSpace(Event.Phone))
+            // Copied the address, not the phone. The alert said "phone number", so the driver
+            // pasted a street into a dialler and had no reason to suspect it.
+            var phone = !string.IsNullOrWhiteSpace(Event?.CustomerPhone)
+                ? Event.CustomerPhone
+                : Event?.Phone;
+
+            if (!string.IsNullOrWhiteSpace(phone))
             {
-                await Clipboard.SetTextAsync(Event.Address);
+                await Clipboard.SetTextAsync(phone);
                 await Shell.Current.DisplayAlert("Copied", "The phone number has been copied to the clipboard.", "OK");
             }
         }

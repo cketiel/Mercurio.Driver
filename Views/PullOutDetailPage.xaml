@@ -4,9 +4,14 @@
              xmlns:viewmodels="clr-namespace:Raphael.Driver.ViewModels"
              x:Class="Raphael.Driver.Views.PullOutDetailPage"
              x:DataType="viewmodels:PullOutDetailPageViewModel"
-             xmlns:converters="clr-namespace:Raphael.Driver.Converters" 
+             xmlns:converters="clr-namespace:Raphael.Driver.Converters"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              Title="{Binding PageTitle}"
              BackgroundColor="{StaticResource PageBackgroundColor}">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="{Binding PageTitle}" ShowBell="False" />
+    </Shell.TitleView>
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding GoBackCommand}" />
