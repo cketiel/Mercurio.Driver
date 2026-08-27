@@ -14,10 +14,10 @@
 		<!-- Propiedades Generales -->
 		<ApplicationTitle>Raphael.Driver</ApplicationTitle>
 		<ApplicationId>com.raphael.driver</ApplicationId>
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
-		<AssemblyVersion>1.0.3</AssemblyVersion>
-		<FileVersion>1.0.3</FileVersion>
+		<ApplicationDisplayVersion>1.2.0</ApplicationDisplayVersion>
+		<ApplicationVersion>6</ApplicationVersion>
+		<AssemblyVersion>1.2.0</AssemblyVersion>
+		<FileVersion>1.2.0</FileVersion>
 	</PropertyGroup>
 
 	<!-- =================================================================== -->
@@ -68,9 +68,14 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidSigningV2Enabled>True</AndroidSigningV2Enabled>
 		<AndroidSigningV3Enabled>True</AndroidSigningV3Enabled>
-		<ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
-		
+		<!-- ⚠️ This is the PropertyGroup that governs the distributed APK. It and the general
+		     one are bumped together, or the tag says one thing and the app shows another.
+		     ApplicationVersion is the Android versionCode: Google Play refuses an upload whose
+		     versionCode is not strictly greater than the last one, so it only ever goes up,
+		     never back, and never repeats — even for a build that is thrown away. -->
+		<ApplicationDisplayVersion>1.2.0</ApplicationDisplayVersion>
+		<ApplicationVersion>6</ApplicationVersion>
+
 		<!-- Aquí irán las propiedades de firma que el asistente de publicación añade automáticamente -->
 		<!-- Ejemplo: -->
 		<!-- <AndroidSigningKeyStore>mi-keystore.keystore</AndroidSigningKeyStore> -->
@@ -79,8 +84,10 @@
 		<!-- <AndroidSigningStorePass>mi_password</AndroidSigningStorePass> -->
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-	  <ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>5</ApplicationVersion>
+	  <!-- Kept in step with Release so a phone under test reports the version it is actually
+	       running. It never reaches a store, so its versionCode has nothing to collide with. -->
+	  <ApplicationDisplayVersion>1.2.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>6</ApplicationVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
@@ -134,12 +141,42 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<!-- Live in-app notifications: the /hubs/notifications SignalR hub -->
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.11" />
+	</ItemGroup>
+
+	<!-- =================================================================== -->
+	<!-- NOTIFICACIONES PUSH (Android) -->
+	<!-- Firebase nativo en lugar de Plugin.Firebase: la app se distribuye -->
+	<!-- como APK Android y el montaje de iOS/APNs hoy no existe. -->
+	<!-- google-services.json sale del proyecto Firebase "raphael-nemt", -->
+	<!-- el mismo que firma el backend. Sin él, el push no se entrega. -->
+	<!-- =================================================================== -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
+		<!-- ⚠️ Pinned to the 123.1.x line on purpose. From 123.2 onwards Firebase pulls the
+		     AndroidX generation that merged the .ktx artifacts into their parents (Collection
+		     1.4, Lifecycle 2.8), while .NET MAUI 8 still pins the split ones. Both ship
+		     androidx/collection/ArrayMapKt.class and androidx/lifecycle/ViewModelKt.class, and
+		     D8 stops with "type is defined multiple times". Raising this version means raising
+		     AndroidX underneath MAUI, which is a much bigger bet than a newer FCM client. -->
+		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.1.2.2" />
+
+		<GoogleServicesJson Include="Platforms\Android\google-services.json" Condition="Exists('Platforms\Android\google-services.json')" />
 	</ItemGroup>
 
 	<!-- Se eliminaron los ItemGroup duplicados e innecesarios para MauiFont y MauiImage -->
 
 	<ItemGroup>
 	  <MauiXaml Update="Resources\Styles\DarkTheme.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\PageTitleBar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\RouteSignalPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\NotificationsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ComingSoonPage.xaml">

@@ -57,6 +57,21 @@ namespace Raphael.Driver
                 client.BaseAddress = new Uri(baseUrl);
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
+            builder.Services.AddHttpClient<INotificationApiService, NotificationApiService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+            // --- NOTIFICATIONS ---
+            // Singletons: the bell in the navigation bar and the notifications page read the
+            // same list and the same counter, so they cannot show different numbers.
+            builder.Services.AddSingleton<HiddenNotificationStore>();
+            builder.Services.AddSingleton<IPushTokenProvider, PushTokenProvider>();
+            builder.Services.AddSingleton<NotificationStore>();
+            builder.Services.AddSingleton<RouteSignalCoordinator>();
+            builder.Services.AddSingleton<INotificationHubService, NotificationHubService>();
+            builder.Services.AddSingleton<NotificationSessionService>();
+
             // Other services that are not API or have special logic
             builder.Services.AddSingleton<IMapService, MapService>();
             builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
@@ -90,6 +105,11 @@ namespace Raphael.Driver
             builder.Services.AddTransient<HistoryViewModel>();
             builder.Services.AddTransient<ContactViewModel>();
 
+            // Singleton, unlike the rest: it subscribes to the notification store, which lives
+            // for the whole session. A transient one would leave a dead subscription behind
+            // every time the page was opened.
+            builder.Services.AddSingleton<NotificationsViewModel>();
+
             // Views/Pages (Transient)
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<SchedulePage>();
@@ -103,6 +123,7 @@ namespace Raphael.Driver
             builder.Services.AddSingleton<DashboardPage>();
             builder.Services.AddTransient<HistoryPage>();
             builder.Services.AddTransient<ContactPage>();
+            builder.Services.AddTransient<NotificationsPage>();
 
             // Register a GPS-specific client that uses the Token interceptor
             builder.Services.AddHttpClient("GpsClient", client =>

@@ -3,12 +3,15 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using Raphael.Driver.Services; 
+using Raphael.Driver.Platforms.Android.Services;
+using Raphael.Driver.Services;
 
 namespace Raphael.Driver
 {
     [Preserve(AllMembers = true)]
-    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
+    // LaunchMode SingleTop so tapping a push reuses the running activity and its extras reach
+    // OnNewIntent, instead of Android stacking a second copy of the app on top of the first.
+    [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
         private GpsServiceConnection _gpsServiceConnection;
@@ -21,6 +24,35 @@ namespace Raphael.Driver
             base.OnCreate(savedInstanceState);
             // Start and bind the service
             StartAndBindGpsService();
+
+            // The app may have been launched by a push. The request is parked here and taken
+            // up once there is a Shell and a session.
+            HandleNotificationIntent(Intent);
+        }
+
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+
+            // The app was already running: this is the tap on the push.
+            Intent = intent;
+
+            HandleNotificationIntent(intent);
+        }
+
+        /// <summary>
+        /// Reads what the push left in the intent and asks for the notifications page.
+        /// </summary>
+        private static void HandleNotificationIntent(Intent intent)
+        {
+            if (intent?.GetBooleanExtra(RaphaelFirebaseMessagingService.ExtraOpenNotifications, false) != true)
+                return;
+
+            // Consumed once: without this the page reopens on every rotation, because the
+            // activity is recreated with the same intent still attached.
+            intent.RemoveExtra(RaphaelFirebaseMessagingService.ExtraOpenNotifications);
+
+            NotificationRouter.RequestOpen();
         }
 
         private void StartAndBindGpsService()

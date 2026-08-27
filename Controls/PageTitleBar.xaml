@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Raphael.Driver.Controls.PageTitleBar"
+             x:Name="Root">
+
+    <!--
+        Shell.TitleView for every page: centred title, with the notification bell on the right
+        where the page wants one. Android left-aligns the Shell title and offers no setting to
+        change it, so the whole title area is replaced instead.
+
+        The bell sits on top of the title rather than beside it, so the title is centred on the
+        same axis whether or not a page shows one — otherwise the text would shift sideways
+        from page to page.
+    -->
+    <Grid VerticalOptions="Fill">
+
+        <Label Text="{Binding Source={x:Reference Root}, Path=Title}"
+               TextColor="White"
+               FontSize="18"
+               FontAttributes="Bold"
+               LineBreakMode="TailTruncation"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Center"
+               Margin="46,0" />
+
+        <Grid x:Name="BellArea"
+              WidthRequest="46"
+              HeightRequest="46"
+              HorizontalOptions="End"
+              VerticalOptions="Center"
+              Margin="0,0,4,0">
+
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBellTapped" />
+            </Grid.GestureRecognizers>
+
+            <Label Text="&#xf0f3;"
+                   FontFamily="FontAwesomeSolid"
+                   FontSize="22"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+
+            <!-- Hidden at zero: a badge showing "0" reads as something to attend to. -->
+            <Border x:Name="BadgeBorder"
+                    BackgroundColor="#E53935"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 9"
+                    MinimumWidthRequest="18"
+                    HeightRequest="18"
+                    Padding="5,0"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    IsVisible="False">
+
+                <Label x:Name="BadgeLabel"
+                       Text="0"
+                       TextColor="White"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+        </Grid>
+    </Grid>
+</ContentView>

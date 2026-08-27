@@ -434,7 +434,9 @@ namespace Raphael.Driver.Services
                 {
                     // Calculate new ETA: Previous departure time + Travel time
                     TimeSpan travelTime = TimeSpan.FromSeconds(routeDetail.DurationInTrafficSeconds);
-                    TimeSpan newEta = lastArrivalTime.Add(travelTime);
+                    TimeSpan newEta = ApplyEarlyArrivalLimit(
+                        lastArrivalTime.Add(travelTime),
+                        nextEvent);
 
                     // Update object locally
                     nextEvent.ETA = newEta;
@@ -444,13 +446,57 @@ namespace Raphael.Driver.Services
                     // Send update to Backend
                     await UpdateETAAsync(nextEvent);
 
-                    // For the following calculation (i+2), the starting point is this event
+                    // For the following calculation (i+2), the starting point is this event.
+                    // The capped time, not the raw one: chaining from a moment the driver will
+                    // not actually leave puts every ETA after it ahead of reality.
                     lastArrivalTime = newEta;
                     lastLat = nextEvent.ScheduleLatitude;
                     lastLng = nextEvent.ScheduleLongitude;
                 }
             }
         }
+        /// <summary>
+        /// How early a driver is allowed to be told to arrive at a pickup.
+        /// </summary>
+        /// <remarks>
+        /// Business rule: a driver must not reach the pickup more than fifteen minutes before
+        /// the start of the pick-up window. Arriving earlier means a vehicle idling at a
+        /// patient's door, and a patient who feels rushed out of a home or a clinic.
+        /// Raphael.Desktop enforces the same limit when it routes a trip
+        /// (<c>SchedulesViewModel</c>, the <c>pViolationLimit</c> block).
+        /// </remarks>
+        private static readonly TimeSpan EarlyArrivalLimit = TimeSpan.FromMinutes(15);
+
+        /// <summary>
+        /// Caps an ETA that would put the driver at a pickup too early.
+        /// </summary>
+        /// <remarks>
+        /// ⚠️ Pickups only. A dropoff has no such limit — the patient is already in the vehicle,
+        /// and arriving early there is simply arriving early. Pull-out and Pull-in are excluded
+        /// too: their <see cref="ScheduleDto.Pickup"/> is a sentinel (00:00 and 23:00), not a
+        /// real window, and clamping against it would push every ETA of the day to 23:45.
+        /// They have no <see cref="ScheduleDto.EventType"/>, which is what keeps them out.
+        ///
+        /// <para>
+        /// What is capped is the arrival time, not <see cref="ScheduleDto.Travel"/>: the drive
+        /// still takes what it takes. The difference is the driver waiting, which is the point.
+        /// </para>
+        /// </remarks>
+        private static TimeSpan ApplyEarlyArrivalLimit(TimeSpan calculatedEta, ScheduleDto nextEvent)
+        {
+            if (nextEvent.EventType != ScheduleEventType.Pickup)
+                return calculatedEta;
+
+            if (nextEvent.Pickup is not { } windowStart)
+                return calculatedEta;
+
+            var earliestAllowed = windowStart - EarlyArrivalLimit;
+
+            return calculatedEta < earliestAllowed
+                ? earliestAllowed
+                : calculatedEta;
+        }
+
         public async Task<bool> UpdateETAAsync(ScheduleDto schedule)
         {
             if (schedule == null) return false;

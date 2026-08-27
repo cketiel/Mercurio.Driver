@@ -365,3 +365,20 @@ FodyWeavers.xsd
 # Private settings
 # file for VS Code, containing potentially sensitive information like API keys, database connection strings, etc.
 PrivateSettings.cs
+
+# ---------------------------------------------------------------------------
+# Firebase (RE-002)
+# ---------------------------------------------------------------------------
+# Configuration of the Firebase project raphael-nemt. Kept out of the repository
+# as a temporary measure until the pending security review is done.
+#
+# It is not a secret in the usual sense: the file ships inside every APK and its
+# api_key is a client key meant to be public. What keeps it out of here is that
+# this repository is public and the ecosystem already has credentials exposed.
+#
+# ⚠️ CONSEQUENCE: without this file the Android build produces an app that cannot
+# receive push notifications. Anyone building Raphael.Driver has to download it
+# from the Firebase console (project raphael-nemt, app com.raphael.driver) and
+# drop it here. Never edit it by hand: it is generated, and the mobilesdk_app_id
+# it carries can only come from Firebase.
+Platforms/Android/google-services.json

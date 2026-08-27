@@ -6,8 +6,13 @@
              xmlns:dto="clr-namespace:Raphael.Driver.DTOs"
              xmlns:converters="clr-namespace:Raphael.Driver.Converters"
              x:Class="Raphael.Driver.Views.FutureSchedulePage"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              x:DataType="viewmodels:FutureScheduleViewModel"
              Title="Future Schedule">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="FUTURE SCHEDULE" ShowBell="False" />
+    </Shell.TitleView>
 
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Raphael.Driver.ViewModels"
+             xmlns:dto="clr-namespace:Raphael.Driver.DTOs"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
+             x:Class="Raphael.Driver.Views.NotificationsPage"
+             x:Name="Page"
+             x:DataType="vm:NotificationsViewModel"
+             Title="NOTIFICATIONS"
+             BackgroundColor="#2C2C2E">
+
+    <!-- No bell here: it would only lead back to this page. -->
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="NOTIFICATIONS" ShowBell="False" />
+    </Shell.TitleView>
+
+    <ContentPage.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Mark all read"
+                     Command="{Binding MarkAllReadCommand}"
+                     Order="Secondary" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Why the list is short. Twelve hours is one shift; see NOTIFICATIONS_RETENTION.md -->
+        <Border Grid.Row="0"
+                BackgroundColor="#4A4A4C"
+                Padding="15,10"
+                Margin="10,10,10,0"
+                StrokeShape="RoundRectangle 5"
+                StrokeThickness="0">
+            <Label Text="Notifications from the last 12 hours"
+                   TextColor="White"
+                   FontSize="13"
+                   HorizontalOptions="Center" />
+        </Border>
+
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     Margin="0,10,0,0">
+
+            <CollectionView ItemsSource="{Binding Notifications}"
+                            Margin="10,0,10,0">
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="30,60"
+                                         Spacing="12"
+                                         HorizontalOptions="Center">
+                        <Label Text="&#xf0f3;"
+                               FontFamily="FontAwesomeSolid"
+                               FontSize="46"
+                               TextColor="#5A5A5C"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding Source={x:Reference Page}, Path=BindingContext.EmptyTitle}"
+                               TextColor="White"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding Source={x:Reference Page}, Path=BindingContext.EmptyDetail}"
+                               TextColor="#B0B0B2"
+                               FontSize="13"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="dto:NotificationDto">
+
+                        <SwipeView Margin="0,0,0,10">
+
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Execute">
+                                    <!-- Hides it on this phone only. The record stays on the
+                                         server until the retention policy removes it. -->
+                                    <SwipeItem Text="Hide"
+                                               BackgroundColor="#8E8E93"
+                                               Command="{Binding Source={x:Reference Page}, Path=BindingContext.HideCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border BackgroundColor="#3A3A3C"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="14">
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      ColumnSpacing="12">
+
+                                    <!-- Unread marker. A colour change alone would be lost on
+                                         a phone in the sun on a windscreen mount. -->
+                                    <Ellipse Grid.Column="0"
+                                             WidthRequest="10"
+                                             HeightRequest="10"
+                                             Fill="#E53935"
+                                             VerticalOptions="Start"
+                                             Margin="0,6,0,0"
+                                             IsVisible="{Binding IsUnread}" />
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+
+                                        <Label Text="{Binding Title}"
+                                               TextColor="White"
+                                               FontSize="16"
+                                               FontAttributes="Bold" />
+
+                                        <Label Text="{Binding Message}"
+                                               TextColor="#D0D0D2"
+                                               FontSize="14" />
+
+                                        <Label Text="{Binding CreatedAtLocal, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}"
+                                               TextColor="#8E8E93"
+                                               FontSize="12"
+                                               Margin="0,4,0,0" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Read/unread toggle, one tap, no menu to find. -->
+                                    <Label Grid.Column="2"
+                                           Text="&#xf0e0;"
+                                           FontFamily="FontAwesomeSolid"
+                                           FontSize="18"
+                                           TextColor="#8E8E93"
+                                           VerticalOptions="Start"
+                                           IsVisible="{Binding IsUnread, Converter={StaticResource InvertedBoolConverter}}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={x:Reference Page}, Path=BindingContext.MarkUnreadCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

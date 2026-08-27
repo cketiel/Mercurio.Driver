@@ -6,7 +6,12 @@
              x:Class="Raphael.Driver.Views.FutureDetailPage"
              x:DataType="viewmodels:FutureDetailViewModel"
              xmlns:enums="clr-namespace:Raphael.Driver.Models"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              Title="Future Event Details">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="FUTURE EVENT DETAILS" ShowBell="False" />
+    </Shell.TitleView>
 
     <ContentPage.Resources>
         <Style TargetType="Grid" x:Key="NavRowStyle">

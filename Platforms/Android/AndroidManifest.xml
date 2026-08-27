@@ -17,12 +17,35 @@
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 	<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 		
-	<application 
-		android:allowBackup="true" 
-		android:icon="@mipmap/appicon" 
-		android:supportsRtl="true" 
+	<application
+		android:allowBackup="true"
+		android:icon="@mipmap/appicon"
+		android:supportsRtl="true"
 		android:usesCleartextTraffic="true"
-		android:label="Raphael.Driver">						
+		android:label="Raphael.Driver">
+
+		<!-- Channel a push lands on when it does not name one. Must match the id created in
+		     RaphaelFirebaseMessagingService, or Android drops the notice on a channel the
+		     user has never seen and cannot configure. -->
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_channel_id"
+			android:value="raphael_driver_notifications" />
+
+		<!-- ⚠️ This is the icon that actually matters most of the time. When a push carries a
+		     notification block and the app is in the background, the Firebase SDK draws the
+		     notification itself and never calls OnMessageReceived, so whatever the code sets
+		     is irrelevant. Without this line Android falls back to the launcher icon, and
+		     because it renders the small icon from its alpha channel alone, a full colour
+		     launcher icon comes out as a solid white square. ic_stat_notification is the
+		     white-on-transparent silhouette. -->
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_icon"
+			android:resource="@drawable/ic_stat_notification" />
+
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_color"
+			android:resource="@color/raphael_notification_color" />
+
 	</application>
 	
 	<queries>

@@ -48,6 +48,12 @@ namespace Raphael.Driver.Services
 
         public void Logout()
         {
+            // ⚠️ Notifications go down BEFORE the session is wiped: both the call that forgets
+            // this device on the server and the hub connection need the token that is about to
+            // disappear. Phones are handed over between shifts, and a device left registered
+            // keeps receiving the previous driver's notifications — trips that are not theirs.
+            StopNotifications();
+
             Preferences.Clear();
 
             // Stop GPS tracking
@@ -57,7 +63,37 @@ namespace Raphael.Driver.Services
                 _gpsService.StopTracking();
             }
 
+            // The flyout does not close on its own when the route changes, so signing out
+            // left the menu hanging open over the login page.
+            Shell.Current.FlyoutIsPresented = false;
+
             Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        }
+
+        private static void StopNotifications()
+        {
+            try
+            {
+                NotificationRouter.Clear();
+
+                var session = ServiceHelper.GetService<NotificationSessionService>();
+
+                if (session is null)
+                    return;
+
+                // Waited on rather than fired and forgotten: Preferences.Clear() runs right
+                // after this and the API call still needs the token. Task.Run keeps the
+                // continuations off the UI thread — blocking on them there deadlocks — and the
+                // timeout means a phone with no signal cannot leave a driver unable to sign out.
+                Task.Run(async () => await session.StopAsync())
+                    .Wait(TimeSpan.FromSeconds(5));
+            }
+            catch (Exception ex)
+            {
+                // Signing out must always succeed. A device left registered on the server is
+                // a problem; a driver who cannot sign out is a worse one.
+                Debug.WriteLine($"AuthService: could not stop notifications. {ex.Message}");
+            }
         }
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {

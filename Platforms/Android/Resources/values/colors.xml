@@ -3,7 +3,10 @@
     <color name="colorPrimary">#D32F2F</color>
     <color name="colorPrimaryDark">#9A0007</color>
     <color name="colorAccent">#C62828</color>
-	
+
+    <!-- Tint of the push notification icon. Same red as the Shell navigation bar. -->
+    <color name="raphael_notification_color">#B82E49</color>
+
     <!--<color name="colorPrimary">#512BD4</color>
     <color name="colorPrimaryDark">#2B0B98</color>
     <color name="colorAccent">#2B0B98</color>-->

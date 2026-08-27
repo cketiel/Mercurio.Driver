@@ -6,8 +6,13 @@
              xmlns:dto="clr-namespace:Raphael.Driver.DTOs"
              xmlns:converters="clr-namespace:Raphael.Driver.Converters"
              x:Class="Raphael.Driver.Views.TodaySchedulePage"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              x:DataType="viewmodels:TodayScheduleViewModel"
              Title="TODAY' SCHEDULE">
+
+    <Shell.TitleView>
+        <controls:PageTitleBar Title="TODAY'S SCHEDULE" ShowBell="False" />
+    </Shell.TitleView>
 
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="#B82E49" StatusBarStyle="LightContent" />
