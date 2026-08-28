@@ -4,19 +4,18 @@
              xmlns:viewmodels="clr-namespace:Raphael.Driver.ViewModels"
              xmlns:models="clr-namespace:Raphael.Driver.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:Raphael.Driver.Controls"
              x:Class="Raphael.Driver.Views.SettingsPage"
              x:DataType="viewmodels:SettingsViewModel"
              BackgroundColor="#1C1C1E">
 
+    <!--
+        The same bar as every other page. It used to build its own: a title of a different
+        size, the cog in dark red on the right where every other page has the bell, and no
+        bell at all. A screen that dresses differently reads as a different application.
+    -->
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, Auto" VerticalOptions="FillAndExpand">
-            <Label Text="SETTINGS" TextColor="White" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-            <Image Grid.Column="1" HeightRequest="25" WidthRequest="25" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,10,0">
-                <Image.Source>
-                    <FontImageSource FontFamily="FontAwesomeSolid" Glyph="" Color="#9A0007" />
-                </Image.Source>
-            </Image>
-        </Grid>
+        <controls:PageTitleBar Title="SETTINGS" Icon="&#xf013;" />
     </Shell.TitleView>
 
     <ContentPage.Behaviors>

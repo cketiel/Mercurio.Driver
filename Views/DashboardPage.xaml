@@ -11,7 +11,7 @@
              BackgroundColor="{StaticResource AppDarkBackgroundColor}">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="DASHBOARD" />
+        <controls:PageTitleBar Title="DASHBOARD" Icon="&#xf00a;" />
     </Shell.TitleView>
 
     <ContentPage.Behaviors>

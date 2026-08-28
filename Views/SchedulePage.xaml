@@ -9,7 +9,7 @@
              Title="SCHEDULE">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="SCHEDULE" />
+        <controls:PageTitleBar Title="SCHEDULE" Icon="&#xf073;" />
     </Shell.TitleView>
 
     <ContentPage.BindingContext>

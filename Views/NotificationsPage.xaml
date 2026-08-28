@@ -13,7 +13,7 @@
 
     <!-- No bell here: it would only lead back to this page. -->
     <Shell.TitleView>
-        <controls:PageTitleBar Title="NOTIFICATIONS" ShowBell="False" />
+        <controls:PageTitleBar Title="NOTIFICATIONS" Icon="&#xf0f3;" ShowBell="False" />
     </Shell.TitleView>
 
     <ContentPage.Resources>
