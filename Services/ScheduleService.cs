@@ -14,7 +14,6 @@ namespace Raphael.Driver.Services
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _serializerOptions;
-        private readonly GoogleMapsService _googleMapsService;
         public ScheduleService(HttpClient httpClient)
         {
             // The base URL of your API. It should be in a centralized place, like Preferences or a config file.
@@ -29,7 +28,6 @@ namespace Raphael.Driver.Services
             {
                 PropertyNameCaseInsensitive = true // Important to match property names
             };
-            _googleMapsService = new GoogleMapsService();
         }
 
         public async Task<List<ScheduleDto>> GetSchedulesByRunAsync(string runLogin, DateTime date)
@@ -429,43 +427,110 @@ namespace Raphael.Driver.Services
             int currentIndex = allPendingEvents.FindIndex(e => e.Id == currentEventId);
             if (currentIndex == -1) return;
 
-            TimeSpan lastArrivalTime = actualPerformTime;
+            // The next two stops, and the legs that reach them. Both legs are asked for in one
+            // request: they used to be two round trips to Google, made one after the other while
+            // the driver's screen waited, on every event confirmed all day.
+            var upcoming = new List<ScheduleDto>();
+            var legs = new List<RouteLegRequestItemDto>();
+
             double lastLat = allPendingEvents[currentIndex].ScheduleLatitude;
             double lastLng = allPendingEvents[currentIndex].ScheduleLongitude;
+            TimeSpan departure = actualPerformTime;
 
-            // Iterate over the next 2 events (if they exist)
             for (int i = currentIndex + 1; i <= currentIndex + 2 && i < allPendingEvents.Count; i++)
             {
                 var nextEvent = allPendingEvents[i];
 
-                // Get travel time from previous point to current point
-                var routeDetail = await _googleMapsService.GetRouteFullDetails(
-                    lastLat, lastLng,
-                    nextEvent.ScheduleLatitude, nextEvent.ScheduleLongitude);
+                upcoming.Add(nextEvent);
 
-                if (routeDetail != null)
+                legs.Add(new RouteLegRequestItemDto
                 {
-                    // Calculate new ETA: Previous departure time + Travel time
-                    TimeSpan travelTime = TimeSpan.FromSeconds(routeDetail.DurationInTrafficSeconds);
-                    TimeSpan newEta = ApplyEarlyArrivalLimit(
-                        lastArrivalTime.Add(travelTime),
-                        nextEvent);
+                    OriginLat = lastLat,
+                    OriginLng = lastLng,
+                    DestLat = nextEvent.ScheduleLatitude,
+                    DestLng = nextEvent.ScheduleLongitude,
+                    Date = nextEvent.Date ?? DateTime.Today,
 
-                    // Update object locally
-                    nextEvent.ETA = newEta;
-                    nextEvent.Travel = travelTime;
-                    //nextEvent.Distance = routeDetail.DistanceMiles;
+                    // The hour the vehicle leaves for this leg. Exact for the first — the driver
+                    // just performed the stop — and the scheduled hour for the second, which is
+                    // close enough for an hour-wide traffic bucket.
+                    DepartureTime = i == currentIndex + 1 ? actualPerformTime : nextEvent.Pickup
+                });
 
-                    // Send update to Backend
-                    await UpdateETAAsync(nextEvent);
+                lastLat = nextEvent.ScheduleLatitude;
+                lastLng = nextEvent.ScheduleLongitude;
+            }
 
-                    // For the following calculation (i+2), the starting point is this event.
-                    // The capped time, not the raw one: chaining from a moment the driver will
-                    // not actually leave puts every ETA after it ahead of reality.
-                    lastArrivalTime = newEta;
-                    lastLat = nextEvent.ScheduleLatitude;
-                    lastLng = nextEvent.ScheduleLongitude;
+            if (upcoming.Count == 0) return;
+
+            var results = await GetRouteLegsAsync(legs);
+
+            for (int i = 0; i < upcoming.Count; i++)
+            {
+                var leg = i < results.Count ? results[i] : null;
+
+                // ⚠️ A leg nobody could price leaves the ETA as it was. It also breaks the chain:
+                // the stop after it would otherwise be timed from an arrival that was never
+                // calculated.
+                if (leg == null || !leg.IsUsable) break;
+
+                var nextEvent = upcoming[i];
+
+                TimeSpan travelTime = leg.TravelTime;
+
+                // Calculate new ETA: Previous departure time + Travel time
+                TimeSpan newEta = ApplyEarlyArrivalLimit(departure.Add(travelTime), nextEvent);
+
+                // Update object locally
+                nextEvent.ETA = newEta;
+                nextEvent.Travel = travelTime;
+
+                // Send update to Backend
+                await UpdateETAAsync(nextEvent);
+
+                // For the following stop, the starting point is this one. The capped time, not
+                // the raw one: chaining from a moment the driver will not actually leave puts
+                // every ETA after it ahead of reality.
+                departure = newEta;
+            }
+        }
+
+        /// <summary>
+        /// Prices legs through Raphael.Api, which answers from a cache shared with the dispatch
+        /// office and buys from Google only what nobody has asked for yet.
+        /// </summary>
+        /// <remarks>
+        /// The driver app no longer holds a Google key. It used to carry one hardcoded in
+        /// <c>PrivateSettings</c>, which meant it travelled inside every distributed APK.
+        /// </remarks>
+        private async Task<List<RouteLegResultDto>> GetRouteLegsAsync(List<RouteLegRequestItemDto> legs)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(
+                    "api/routing/legs",
+                    new RouteLegsRequestDto { Legs = legs });
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"Routing request failed: {response.StatusCode}");
+
+                    return new List<RouteLegResultDto>();
                 }
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                var payload = JsonSerializer.Deserialize<RouteLegsResponseDto>(content, _serializerOptions);
+
+                return payload?.Legs ?? new List<RouteLegResultDto>();
+            }
+            catch (Exception ex)
+            {
+                // A driver in a dead spot keeps the ETAs already on screen. Throwing here would
+                // take down the confirmation of an event that already happened.
+                Debug.WriteLine($"Exception in GetRouteLegsAsync: {ex.Message}");
+
+                return new List<RouteLegResultDto>();
             }
         }
         /// <summary>

@@ -78,7 +78,10 @@ namespace Raphael.Driver
             builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
             builder.Services.AddSingleton<App>();
             builder.Services.AddSingleton<IPhoneDialer>(PhoneDialer.Default);
-            builder.Services.AddSingleton<GoogleMapsService>();
+
+            // GoogleMapsService was registered here. The app no longer talks to Google: travel
+            // times come from api/routing/legs, which every service already reaches with the
+            // driver's own token.
 
             // Services (Singleton because they do not save state and can be shared)
             /*builder.Services.AddSingleton<IScheduleService, ScheduleService>();          
