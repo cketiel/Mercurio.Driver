@@ -64,15 +64,16 @@ namespace Raphael.Driver.Services
 
                 _connection.On<NotificationDto>("ReceiveNotification", async notification =>
                 {
-                    // Everything comes down the same wire. A signal is for the app to act on
-                    // and never belongs in the inbox; a notice is the other way round.
-                    if (notification?.IsSignal == true)
-                    {
-                        await _signals.ReceiveAsync(notification);
+                    if (notification is null)
                         return;
-                    }
 
-                    _store.Receive(notification!);
+                    // Everything comes down the same wire, and a signal goes both ways: into
+                    // the bell like any other row, and to the coordinator, which decides
+                    // whether the screen the driver is on has to be interrupted over it.
+                    _store.Receive(notification);
+
+                    if (notification.IsSignal)
+                        await _signals.ReceiveAsync(notification);
                 });
 
                 // The server sends this after any change it made on the driver's behalf, and
