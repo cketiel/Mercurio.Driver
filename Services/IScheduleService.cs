@@ -14,7 +14,7 @@ namespace Raphael.Driver.Services
         Task<bool> CancelTripByDriverAsync(int tripId, string reason);
 
         Task<List<ScheduleDto>> GetPendingSchedulesByRunAsync(string runLogin, DateTime date);
-        Task<List<ScheduleDto>> GetFutureSchedulesByRunAsync(string runLogin);
+        Task<List<ScheduleDto>> GetNextDaySchedulesByRunAsync(string runLogin);
         Task<List<ScheduleHistoryDto>> GetScheduleHistoryAsync(string runLogin, DateTime date);
         Task<int> GetScheduleHistoryCountAsync(string runLogin, DateTime date);
         Task<bool> UpdateContactPhoneNumberAsync(int tripId, string newPhoneNumber);

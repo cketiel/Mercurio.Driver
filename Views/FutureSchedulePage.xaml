@@ -11,7 +11,7 @@
              Title="Future Schedule">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="FUTURE SCHEDULE" ShowBell="False" />
+        <controls:PageTitleBar Title="FUTURE SCHEDULE" Icon="&#xf784;" />
     </Shell.TitleView>
 
     <ContentPage.Behaviors>
@@ -47,9 +47,16 @@
                         <DataTemplate x:DataType="dto:ScheduleDto">
                             <Border StrokeThickness="1" Stroke="#DDDDDD" Margin="10,0,10,10"
         StrokeShape="RoundRectangle 5" Padding="0" BackgroundColor="White">
+                                <!--
+                                    ⚠️ The ancestor is this page's view model, not the one
+                                    today's schedule uses. It pointed at TodayScheduleViewModel,
+                                    which is not in this page's binding chain, so the command
+                                    resolved to nothing and the whole list read as if it had
+                                    been made deliberately untappable.
+                                -->
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer 
-            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TodayScheduleViewModel}}, Path=SelectEventCommand}"
+            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FutureScheduleViewModel}}, Path=SelectEventCommand}"
             CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="7, *">
@@ -187,10 +194,17 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <Label Text="There are no future trips to show."
+                <!--
+                    HorizontalOptions centres the label; a label as wide as the screen is
+                    already centred and its text is not. On a narrow phone this sentence fills
+                    the width, wraps, and lands hard against the left edge.
+                -->
+                <Label Text="There are no trips scheduled for tomorrow."
                        IsVisible="{Binding ShowNoEventsMessage}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="40,0"
                        TextColor="Gray"
                        FontSize="18"/>
             </Grid>

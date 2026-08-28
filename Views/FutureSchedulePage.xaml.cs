@@ -9,12 +9,21 @@ public partial class FutureSchedulePage : ContentPage
 		InitializeComponent();
         BindingContext = viewModel;
     }
+
+    /// <summary>
+    /// Reloads on the way in, so a trip added to tomorrow while the driver was elsewhere is
+    /// there when they come back.
+    /// </summary>
+    /// <remarks>
+    /// ⚠️ The type checked here is this page's view model. It read TodayScheduleViewModel, a
+    /// type this page never binds to, so the reload never ran: what the driver saw was
+    /// whatever had been loaded the first time the page was opened.
+    /// </remarks>
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        // We check if the BindingContext is of the correct type and call the command to reload.
-        if (BindingContext is TodayScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
+        if (BindingContext is FutureScheduleViewModel vm && vm.LoadEventsCommand.CanExecute(null))
         {
             vm.LoadEventsCommand.Execute(null);
         }

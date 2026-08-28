@@ -9,6 +9,15 @@ using System.Diagnostics;
 
 namespace Raphael.Driver.ViewModels
 {
+    /// <summary>
+    /// Tomorrow's schedule for this run. Tomorrow only, whatever the button is called.
+    /// </summary>
+    /// <remarks>
+    /// It used to list every day ahead. A driver with a week planned got one list holding
+    /// several Pull-outs and several Pull-ins, with nothing to tell them which day a row
+    /// belonged to — and the only thing a driver acts on before finishing a shift is the next
+    /// day's work.
+    /// </remarks>
     [QueryProperty(nameof(RunLogin), "runLogin")]
     public partial class FutureScheduleViewModel : ObservableObject
     {
@@ -51,18 +60,18 @@ namespace Raphael.Driver.ViewModels
                 IsBusy = true;
                 UpdateUiState();
                 
-                var futureEvents = await _scheduleService.GetFutureSchedulesByRunAsync(RunLogin);
+                var nextDayEvents = await _scheduleService.GetNextDaySchedulesByRunAsync(RunLogin);
 
                 Events.Clear();
-                foreach (var ev in futureEvents)
+                foreach (var ev in nextDayEvents)
                 {
                     Events.Add(ev);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error loading future events: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", "Could not load the future schedule.", "OK");
+                Debug.WriteLine($"Error loading next day events: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error", "Could not load tomorrow's schedule.", "OK");
             }
             finally
             {

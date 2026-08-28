@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Raphael.Driver.Converters;
 using Raphael.Driver.DTOs;
 using Raphael.Driver.Models;
 using Raphael.Driver.Services;
@@ -8,20 +9,33 @@ using System.Diagnostics;
 
 namespace Raphael.Driver.ViewModels
 {
+    /// <summary>
+    /// One event of tomorrow's schedule, seen the day before.
+    /// </summary>
+    /// <remarks>
+    /// Read only, with two exceptions. A driver looking at tomorrow can call and text the
+    /// patient — confirming a pickup the night before is half of what prevents a no-show — and
+    /// nothing else. Arriving, performing and signing belong to the day the trip runs: offered
+    /// here they would either fail or, worse, work, and mark an event performed a day early.
+    /// </remarks>
     [QueryProperty(nameof(Event), "EventDetail")]
     public partial class FutureDetailViewModel : ObservableObject
     {
-        private readonly IMapService _mapService;
         private readonly IPhoneDialer _phoneDialer;
+
+        private readonly ScheduleColorConverter _colorConverter = new();
 
         [ObservableProperty]
         private ScheduleDto _event;
 
+        /// <summary>Colour of the stripe down the left of each action row, by event type.</summary>
+        [ObservableProperty]
+        private Color _eventColor = Colors.Gray;
+
         public ObservableCollection<EventAction> Actions { get; } = new();
 
-        public FutureDetailViewModel(IMapService mapService, IPhoneDialer phoneDialer)
+        public FutureDetailViewModel(IPhoneDialer phoneDialer)
         {
-            _mapService = mapService;
             _phoneDialer = phoneDialer;
         }
 
@@ -29,19 +43,35 @@ namespace Raphael.Driver.ViewModels
         {
             if (value != null)
             {
+                EventColor = (Color)_colorConverter.Convert(
+                    value,
+                    typeof(Color),
+                    null,
+                    System.Globalization.CultureInfo.CurrentCulture);
+
                 BuildActionsList();
+            }
+            else
+            {
+                EventColor = Colors.Gray;
             }
         }
 
+        /// <summary>
+        /// The two actions a future event offers: call the patient, and text them.
+        /// </summary>
+        /// <remarks>
+        /// Maps and Send Dispatch Message used to be here too. Navigating to an address the
+        /// driver is not going to today is an invitation to drive there a day early, and the
+        /// dispatch message was never implemented: it wrote a line to the debug log and looked
+        /// to the driver like a message that had been sent.
+        /// </remarks>
         private void BuildActionsList()
         {
             Actions.Clear();
            
             Actions.Add(new EventAction { Text = "Call Customer", IconGlyph = "", Command = CallCustomerCommand });
             Actions.Add(new EventAction { Text = "Text Customer", IconGlyph = "", Command = TextCustomerCommand });
-            string mapActionText = Event.TripType == "Appointment" ? "Maps - Appointment Address" : "Maps - Return Address";
-            Actions.Add(new EventAction { Text = mapActionText, IconGlyph = "", Command = MapsCommand });
-            Actions.Add(new EventAction { Text = "Send Dispatch Message", IconGlyph = "", Command = SendDispatchMessageCommand });
         }
 
         /// <summary>
@@ -158,14 +188,6 @@ namespace Raphael.Driver.ViewModels
             return string.IsNullOrWhiteSpace(Event.Phone)
                 ? null
                 : Event.Phone;
-        }
-
-        [RelayCommand] private void SendDispatchMessage() => Debug.WriteLine("Send Dispatch Tapped");
-
-        [RelayCommand]
-        private async Task Maps()
-        {
-            await _mapService.LaunchNavigationAsync(Event.ScheduleLatitude, Event.ScheduleLongitude, Event.Address);
         }
 
         [RelayCommand]

@@ -10,7 +10,7 @@
              Title="Future Event Details">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="FUTURE EVENT DETAILS" ShowBell="False" />
+        <controls:PageTitleBar Title="FUTURE EVENT DETAILS" Icon="&#xf05a;" ShowBell="False" />
     </Shell.TitleView>
 
     <ContentPage.Resources>
@@ -59,8 +59,11 @@
                                 </Grid.GestureRecognizers>
 
                                 <!-- The color bar in Column 0 -->
+                                <!-- The ancestor is this page's view model: EventDetailPageViewModel
+                                     is not in this page's binding chain, so the stripe came up
+                                     with no colour at all. -->
                                 <BoxView Grid.Column="0" 
-                        Color="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:EventDetailPageViewModel}}, Path=EventColor}"/>
+                        Color="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FutureDetailViewModel}}, Path=EventColor}"/>
 
                                 <!-- The content (icon, text, arrow) in Column 1 -->
                                 <Grid Grid.Column="1" Padding="15" ColumnDefinitions="Auto, *, Auto">

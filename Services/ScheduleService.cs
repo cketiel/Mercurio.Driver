@@ -280,12 +280,25 @@ namespace Raphael.Driver.Services
             }
         }
 
-        public async Task<List<ScheduleDto>> GetFutureSchedulesByRunAsync(string runLogin)
+        /// <summary>
+        /// Tomorrow's events for this run. What the Future Schedule button shows.
+        /// </summary>
+        /// <remarks>
+        /// The button keeps the name the driver has always pressed; what it shows is the next
+        /// day. Everything ahead came back as one list with several Pull-outs and several
+        /// Pull-ins in it, and nothing told the driver which day a row belonged to.
+        ///
+        /// <para>
+        /// The API still serves <c>driver/future</c> under that name, because that is what it
+        /// does. This asks for <c>driver/next-day</c>.
+        /// </para>
+        /// </remarks>
+        public async Task<List<ScheduleDto>> GetNextDaySchedulesByRunAsync(string runLogin)
         {
             try
             {
                 var encodedRunLogin = HttpUtility.UrlEncode(runLogin);
-                var response = await _httpClient.GetAsync($"api/Schedules/driver/future?runLogin={encodedRunLogin}");
+                var response = await _httpClient.GetAsync($"api/Schedules/driver/next-day?runLogin={encodedRunLogin}");
                 if (response.IsSuccessStatusCode)
                 {
                     return await response.Content.ReadFromJsonAsync<List<ScheduleDto>>();
@@ -293,7 +306,7 @@ namespace Raphael.Driver.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error fetching future schedules: {ex.Message}");
+                Debug.WriteLine($"Error fetching next day schedules: {ex.Message}");
             }
             return new List<ScheduleDto>();
         }
