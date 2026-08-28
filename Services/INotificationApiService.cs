@@ -29,15 +29,22 @@ namespace Raphael.Driver.Services
         Task<int> GetUnreadCountAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Route signals waiting to be acted on. Never notices: the server keeps the two apart.
+        /// Route signals on their own, without the notices around them.
         /// </summary>
         /// <remarks>
         /// Signals arrive live over the hub. This drains the ones that arrived while the app
-        /// was closed or its socket was down.
+        /// was closed or its socket was down. The full inbox returns them too — they show in
+        /// the bell — but the coordinator wants only these.
         /// </remarks>
         Task<List<NotificationDto>> GetSignalsAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Deletes a signal the app has already acted on.</summary>
+        /// <remarks>
+        /// ⚠️ Not called today. A signal shows in the bell now, so deleting it the moment the
+        /// app acted on it would take a row off a list the driver has not read; the app records
+        /// on the device that it acted (<see cref="ConsumedSignalStore"/>) and lets the row age
+        /// out. Kept because the endpoint is the only safe way to remove one.
+        /// </remarks>
         Task<bool> DeleteSignalAsync(Guid recipientRecordId, CancellationToken cancellationToken = default);
 
         Task<bool> MarkViewedAsync(Guid recipientRecordId, CancellationToken cancellationToken = default);

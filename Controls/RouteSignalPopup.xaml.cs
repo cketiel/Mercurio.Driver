@@ -33,11 +33,28 @@ namespace Raphael.Driver.Controls
         /// <summary>
         /// Shows it and returns when the countdown ends or the driver taps the button.
         /// </summary>
-        public static async Task ShowAsync(
+        /// <remarks>
+        /// ⚠️ Marshalled onto the UI thread here, not left to the callers. What raises this is
+        /// a signal arriving over SignalR, which runs on its own thread, and Android refuses to
+        /// build a dialog from anywhere but the main one. The throw was caught below and only
+        /// written to the debug log, so the countdown ran, the schedule reloaded, and the
+        /// driver saw a list rearrange itself with nothing on screen to explain it.
+        /// </remarks>
+        public static Task ShowAsync(
             string title,
             string message,
             string actionLabel,
             int seconds = DefaultSeconds)
+        {
+            return MainThread.InvokeOnMainThreadAsync(
+                () => ShowOnMainThreadAsync(title, message, actionLabel, seconds));
+        }
+
+        private static async Task ShowOnMainThreadAsync(
+            string title,
+            string message,
+            string actionLabel,
+            int seconds)
         {
             var page = Shell.Current?.CurrentPage;
 

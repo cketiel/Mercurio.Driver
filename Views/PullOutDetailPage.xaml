@@ -10,7 +10,7 @@
              BackgroundColor="{StaticResource PageBackgroundColor}">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="{Binding PageTitle}" ShowBell="False" />
+        <controls:PageTitleBar Title="{Binding PageTitle}" Icon="&#xf1b9;" ShowBell="False" />
     </Shell.TitleView>
 
     <Shell.BackButtonBehavior>

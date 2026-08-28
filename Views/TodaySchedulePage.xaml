@@ -11,7 +11,11 @@
              Title="TODAY' SCHEDULE">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="TODAY'S SCHEDULE" ShowBell="False" />
+        <!--
+            The bell belongs here above all. This is where the driver spends the shift, so a
+            page without it is a driver who never learns a notification arrived.
+        -->
+        <controls:PageTitleBar Title="TODAY'S SCHEDULE" Icon="&#xf783;" />
     </Shell.TitleView>
 
     <ContentPage.Behaviors>
@@ -202,6 +206,8 @@
                        IsVisible="{Binding ShowNoEventsMessage}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="40,0"
                        TextColor="Gray"
                        FontSize="18"/>
 

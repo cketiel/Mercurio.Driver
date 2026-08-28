@@ -66,6 +66,7 @@ namespace Raphael.Driver
             // Singletons: the bell in the navigation bar and the notifications page read the
             // same list and the same counter, so they cannot show different numbers.
             builder.Services.AddSingleton<HiddenNotificationStore>();
+            builder.Services.AddSingleton<ConsumedSignalStore>();
             builder.Services.AddSingleton<IPushTokenProvider, PushTokenProvider>();
             builder.Services.AddSingleton<NotificationStore>();
             builder.Services.AddSingleton<RouteSignalCoordinator>();

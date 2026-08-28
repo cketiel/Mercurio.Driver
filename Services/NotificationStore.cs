@@ -95,11 +95,10 @@ namespace Raphael.Driver.Services
         {
             if (notification is null) return;
 
-            // Signals belong to the route coordinator, not to the inbox. The server already
-            // keeps them out of the list endpoints; over the hub everything arrives down the
-            // same wire, so this is where that separation is kept.
-            if (notification.IsSignal) return;
-
+            // Signals included. They used to be dropped here, to match a server that kept them
+            // out of the inbox; both halves show them now, so the bell moves for a route change
+            // the same way it moves for a cancellation. Whether that change also interrupts
+            // what is on screen is RouteSignalCoordinator's decision, not this one.
             var existing = _all.FindIndex(n => n.Id == notification.Id);
 
             if (existing >= 0)

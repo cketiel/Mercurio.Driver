@@ -3,6 +3,34 @@
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 The record starts at version `1.1.0`; earlier history is not reconstructed.
 
+## [1.3.0] - 2026-08-27
+
+### Added
+- Every page title carries the icon it already had in the side menu.
+- A route change now shows up in the bell like any other notification, so the driver can see
+  what moved their schedule instead of only watching it move.
+
+### Changed
+- Future Schedule shows the **next day only**. It used to list every day ahead in a single
+  list, with several Pull-outs and several Pull-ins in it and nothing to tell the days apart.
+- A route change only interrupts a screen that was already open when it arrived, and only
+  while it is less than an hour old. Every screen loads current data as it opens: being asked
+  to reload what you have just loaded is noise.
+- Settings uses the same title bar as every other page, bell included.
+
+### Fixed
+- The route-change overlay and its countdown never appeared. The schedule reloaded five
+  seconds later with nothing on screen to explain why: the overlay was built off the UI
+  thread and the failure only reached the debug log.
+- Future Schedule was a dead list. No event could be opened, so the calls and texts added in
+  1.2.0 could never be reached. An event opens now and offers exactly two actions: call the
+  patient and text them.
+- The bell was missing from Today's Schedule and Future Schedule - the two screens where a
+  driver spends the shift, and so the two where a new notification went unnoticed.
+- Page titles sat right of centre. Android places the title view after the navigation icon,
+  so a title centred inside it is not centred on the screen.
+- The "no trips" message is centred on both schedule screens.
+
 ## [1.2.0] - 2026-08-27
 
 ### Added

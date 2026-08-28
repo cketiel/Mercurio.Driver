@@ -78,12 +78,13 @@ namespace Raphael.Driver.DTOs
         /// True when this is a signal for the application rather than a notice for the driver.
         /// </summary>
         /// <remarks>
-        /// A signal says the schedule on screen is out of date. The app acts on it and deletes
-        /// it; it never belongs in the inbox and never counts on the bell.
+        /// A signal says the schedule on screen is out of date. The app acts on it — see
+        /// <c>RouteSignalCoordinator</c> — and it is shown in the bell like any other row, so
+        /// the driver can see what moved their schedule underneath them.
         ///
         /// <para>
-        /// The server already keeps signals out of the inbox endpoints. This is the second
-        /// lock, for the live channel: over the hub everything arrives down the same wire.
+        /// What this flag decides is only whether the coordinator is offered it. Both halves,
+        /// the inbox and the coordinator, are fed from the same hub message.
         /// </para>
         /// </remarks>
         [JsonIgnore]

@@ -10,7 +10,7 @@
              BackgroundColor="#F0F0F0">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="CONTACT" />
+        <controls:PageTitleBar Title="CONTACT" Icon="&#xf095;" />
     </Shell.TitleView>
 
     <ContentPage.Resources>

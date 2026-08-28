@@ -13,7 +13,7 @@
 
     <!-- No bell: on a page reached from somewhere else it competes with the back arrow. -->
     <Shell.TitleView>
-        <controls:PageTitleBar Title="HISTORY" ShowBell="False" />
+        <controls:PageTitleBar Title="HISTORY" Icon="&#xf1da;" ShowBell="False" />
     </Shell.TitleView>
 
     <ContentPage.Resources>

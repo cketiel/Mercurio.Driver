@@ -12,7 +12,7 @@
              BackgroundColor="#F0F0F0">
 
     <Shell.TitleView>
-        <controls:PageTitleBar Title="EVENT DETAILS" ShowBell="False" />
+        <controls:PageTitleBar Title="EVENT DETAILS" Icon="&#xf05a;" ShowBell="False" />
     </Shell.TitleView>
 
     <ContentPage.Resources>

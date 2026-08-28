@@ -1,29 +1,52 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Raphael.Driver.Controls.PageTitleBar"
              x:Name="Root">
 
     <!--
-        Shell.TitleView for every page: centred title, with the notification bell on the right
-        where the page wants one. Android left-aligns the Shell title and offers no setting to
-        change it, so the whole title area is replaced instead.
+        Shell.TitleView for every page: the page icon and its title, centred, with the
+        notification bell on the right where the page wants one. Android left-aligns the Shell
+        title and offers no setting to change it, so the whole title area is replaced instead.
+
+        The icon is the same one the page has in the side menu. A screen that names itself the
+        same way in two places is a screen the driver recognises without reading.
 
         The bell sits on top of the title rather than beside it, so the title is centred on the
         same axis whether or not a page shows one — otherwise the text would shift sideways
         from page to page.
+
+        ⚠️ Centred here means centred inside this control, and this control does not start at
+        the left edge of the screen: Android places it after the hamburger or the back arrow.
+        The code behind measures where it actually landed and takes that offset back.
     -->
     <Grid VerticalOptions="Fill">
 
-        <Label Text="{Binding Source={x:Reference Root}, Path=Title}"
-               TextColor="White"
-               FontSize="18"
-               FontAttributes="Bold"
-               LineBreakMode="TailTruncation"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               VerticalOptions="Center"
-               Margin="46,0" />
+        <HorizontalStackLayout x:Name="TitleContent"
+                               Spacing="9"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="46,0">
+
+            <!-- Hidden when the page sets no icon, so the title stays centred on its own. -->
+            <Label x:Name="IconLabel"
+                   Text="{Binding Source={x:Reference Root}, Path=Icon}"
+                   FontFamily="FontAwesomeSolid"
+                   FontSize="17"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   IsVisible="False" />
+
+            <Label x:Name="TitleLabel"
+                   Text="{Binding Source={x:Reference Root}, Path=Title}"
+                   TextColor="White"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   LineBreakMode="TailTruncation"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="Center" />
+
+        </HorizontalStackLayout>
 
         <Grid x:Name="BellArea"
               WidthRequest="46"

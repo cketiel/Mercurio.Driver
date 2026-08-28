@@ -17,6 +17,7 @@ namespace Raphael.Driver.Services
         private readonly INotificationHubService _hub;
         private readonly NotificationStore _store;
         private readonly HiddenNotificationStore _hidden;
+        private readonly ConsumedSignalStore _consumedSignals;
         private readonly IPushTokenProvider _pushTokens;
         private readonly RouteSignalCoordinator _signals;
 
@@ -25,6 +26,7 @@ namespace Raphael.Driver.Services
             INotificationHubService hub,
             NotificationStore store,
             HiddenNotificationStore hidden,
+            ConsumedSignalStore consumedSignals,
             IPushTokenProvider pushTokens,
             RouteSignalCoordinator signals)
         {
@@ -33,6 +35,7 @@ namespace Raphael.Driver.Services
             _hub = hub;
             _store = store;
             _hidden = hidden;
+            _consumedSignals = consumedSignals;
             _pushTokens = pushTokens;
         }
 
@@ -42,6 +45,10 @@ namespace Raphael.Driver.Services
         public async Task StartAsync()
         {
             _hidden.LoadForCurrentUser();
+
+            // Both lists belong to the driver signing in, not to the phone: what the previous
+            // driver dismissed, and the route changes their app already acted on.
+            _consumedSignals.LoadForCurrentUser();
 
             // The inbox first: it is the part that works without Firebase, without a live
             // socket and without permission being granted.
