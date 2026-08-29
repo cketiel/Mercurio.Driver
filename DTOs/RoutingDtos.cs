@@ -46,7 +46,19 @@ namespace Raphael.Driver.DTOs
 
         public double DistanceMiles { get; set; }
 
+        /// <summary>Cache or Google: was anybody billed for this.</summary>
+        /// <remarks>
+        /// It used to be able to say "Buffered" as well, which made it unusable: in MaxSavings
+        /// mode every answer read Buffered whether it had been bought or cached. That question is
+        /// now <see cref="Buffered"/>, and this field means only what its name says.
+        /// </remarks>
         public string Source { get; set; } = string.Empty;
+
+        /// <summary>
+        /// True when the planning duration is the server's own free-flow-plus-margin figure
+        /// rather than a traffic estimate from Google. Independent of <see cref="Source"/>.
+        /// </summary>
+        public bool Buffered { get; set; }
 
         public string Status { get; set; } = RoutingContract.Statuses.Ok;
 
