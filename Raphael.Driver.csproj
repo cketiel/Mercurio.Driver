@@ -14,8 +14,8 @@
 		<!-- Propiedades Generales -->
 		<ApplicationTitle>Raphael.Driver</ApplicationTitle>
 		<ApplicationId>com.raphael.driver</ApplicationId>
-		<ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
-		<ApplicationVersion>8</ApplicationVersion>
+		<ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>9</ApplicationVersion>
 		<AssemblyVersion>1.2.0</AssemblyVersion>
 		<FileVersion>1.2.0</FileVersion>
 	</PropertyGroup>
@@ -73,8 +73,8 @@
 		     ApplicationVersion is the Android versionCode: Google Play refuses an upload whose
 		     versionCode is not strictly greater than the last one, so it only ever goes up,
 		     never back, and never repeats — even for a build that is thrown away. -->
-		<ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
-		<ApplicationVersion>8</ApplicationVersion>
+		<ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>9</ApplicationVersion>
 
 		<!-- Aquí irán las propiedades de firma que el asistente de publicación añade automáticamente -->
 		<!-- Ejemplo: -->
@@ -86,8 +86,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
 	  <!-- Kept in step with Release so a phone under test reports the version it is actually
 	       running. It never reaches a store, so its versionCode has nothing to collide with. -->
-	  <ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>8</ApplicationVersion>
+	  <ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>9</ApplicationVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>

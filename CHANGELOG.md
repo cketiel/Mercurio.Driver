@@ -3,6 +3,15 @@
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 The record starts at version `1.1.0`; earlier history is not reconstructed.
 
+## [1.4.0] - 2026-08-29
+
+### Changed
+- **The Google Maps key is no longer inside the application.** Travel times come from Raphael.Api,
+  which serves what it already knows and buys from Google only what nobody has asked for yet. Until
+  now the key travelled inside every distributed APK, where anyone who unpacked one could read it.
+- Recalculating the arrival times of the next stops asks for both legs in a single request instead
+  of one after the other.
+
 ## [1.3.0] - 2026-08-27
 
 ### Added
